@@ -67,6 +67,8 @@ document.querySelectorAll('.style-form').forEach((form) => {
     const f = new FormData(form);
     if (overlay) overlay.hidden = f.get('logo') !== 'upload' || !(fileInput && fileInput.files.length);
     if (!img) return;
+    const grid = form.querySelector('.emoji-grid');
+    if (grid) grid.hidden = f.get('logo') !== 'emoji';
     const custom = form.querySelector('.custom-colors');
     if (custom) {
       custom.hidden = f.get('color') !== 'custom';
@@ -75,7 +77,7 @@ document.querySelectorAll('.style-form').forEach((form) => {
       const tooLight = ['c1', 'c2'].some((k) => 1.05 / (lum(f.get(k) || '#000000') + 0.05) < 3);
       custom.querySelector('.contrast-hint').hidden = !tooLight;
     }
-    const p = new URLSearchParams({ preview: 1, shape: f.get('shape'), color: f.get('color'), logo: f.get('logo'), eye: f.get('eye') || 'square', c1: f.get('c1') || '', c2: f.get('c2') || '', t: Date.now() });
+    const p = new URLSearchParams({ preview: 1, shape: f.get('shape'), color: f.get('color'), logo: f.get('logo'), eye: f.get('eye') || 'square', c1: f.get('c1') || '', c2: f.get('c2') || '', emoji: f.get('emoji') || '', t: Date.now() });
     img.src = form.dataset.base + '&' + p.toString();
   };
 
@@ -101,7 +103,10 @@ document.querySelectorAll('.style-form').forEach((form) => {
     });
     fileInput.addEventListener('change', () => pick(fileInput.files[0]));
   }
-  form.addEventListener('change', (e) => { if (e.target !== fileInput) update(); });
+  form.addEventListener('change', (e) => {
+    if (e.target.name === 'emoji') { const r = form.querySelector('input[name=logo][value=emoji]'); if (r) r.checked = true; }
+    if (e.target !== fileInput) update();
+  });
   // "My own" without a logo yet: open the file picker and point at the dropzone
   if (uploadRadio && zone) {
     uploadRadio.addEventListener('click', () => {

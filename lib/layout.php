@@ -46,8 +46,8 @@ function page_head(string $title, ?string $active = null): void
 <meta name="robots" content="noindex">
 <title><?= e($title) ?> · qr</title>
 <link rel="icon" href="data:image/svg+xml,<?= rawurlencode(str_replace('currentColor', '%23252321', ICONS['logo'])) ?>">
-<link rel="stylesheet" href="/app/assets/app.css?v=14">
-<link rel="stylesheet" href="/app/assets/street.css?v=13">
+<link rel="stylesheet" href="/app/assets/app.css?v=15">
+<link rel="stylesheet" href="/app/assets/street.css?v=14">
 <link rel="stylesheet" href="/app/assets/street-app.css?v=9">
 </head>
 <body class="street app">
@@ -93,7 +93,7 @@ function page_foot(): void
     ?>
   </main>
 <?php if ($user): ?></div><div class="fade-bottom"></div><?php endif; ?>
-<script src="/app/assets/app.js?v=8"></script>
+<script src="/app/assets/app.js?v=9"></script>
 </body>
 </html>
 <?php

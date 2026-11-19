@@ -270,3 +270,8 @@ body.street {
 .street .dropzone.nudge { animation: dz-nudge .5s ease 3; background: #fff6d6; }
 @keyframes dz-nudge { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(3px, 3px); } }
 @media (prefers-reduced-motion: reduce) { .street .dropzone.nudge { animation: none; } }
+
+.street .emoji-grid .emo span { border: 3px solid var(--ink); border-radius: 14px; box-shadow: 3px 3px 0 var(--ink); transition: transform .12s ease, box-shadow .12s ease; }
+.street .emoji-grid .emo:hover span { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.street .emoji-grid .emo input:checked + span { background: var(--yellow); transform: translate(3px, 3px); box-shadow: inset 3px 3px 0 rgba(23, 10, 44, .5); }
+.street .emoji-credit a { color: var(--ink); }

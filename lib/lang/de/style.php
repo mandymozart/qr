@@ -39,4 +39,6 @@ return [
     'corners' => 'Ecken',
     'The color for the {what} is too light to scan reliably. Pick a darker one.' => 'Die Farbe für die {what} ist zu hell, um zuverlässig gescannt zu werden. Wähl eine dunklere.',
     'Too light: scanners need dark colors on white.' => 'Zu hell: Scanner brauchen dunkle Farben auf Weiß.',
+    'Emoji' => 'Emoji',
+    'Emoji graphics: {link} (CC-BY 4.0)' => 'Emoji-Grafiken: {link} (CC-BY 4.0)',
 ];

@@ -28,7 +28,12 @@ const QR_COLORS = [
     'forest'   => ['label' => 'Forest',   'data' => '#0b6e3a', 'eye' => '#111111', 'dot' => '#0b6e3a'],
 ];
 const QR_SHAPES = ['square', 'dots'];
-const QR_LOGOS = ['none', 'badge', 'upload'];
+const QR_LOGOS = ['none', 'emoji', 'upload', 'badge']; // 'badge' (old qr sticker) still renders for saved codes
+/** Emoji for the middle of the code: Twemoji graphics (CC-BY 4.0, https://github.com/jdecked/twemoji). */
+const QR_EMOJIS = ['1f3a8', '1f5bc', '1f3ad', '1f3b5', '1f3b8', '1f3a4', '1f3a7', '1faa9', '1f3ac', '1f4f7', '2728', '1f525',
+    '2764', '1f49c', '2b50', '1f31e', '1f334', '1f308', '1f30a', '1f389', '1f37a', '1f377', '2615', '1f355',
+    '1f6cd', '1f39f', '1f4cd', '1f4bf', '1f984', '1f441', '1f300', '1f480'];
+const QR_EMOJI_DIR = __DIR__ . '/../app/assets/emoji';
 const QR_EYES = ['square', 'rounded', 'round']; // the three big corner pieces
 const QR_LOGO_DIR = __DIR__ . '/logos';
 const QR_BADGE = __DIR__ . '/../app/assets/qr-badge.png';
@@ -44,7 +49,7 @@ function qr_style(string|array|null $s): array
         'color' => isset(QR_COLORS[$s['color'] ?? '']) || ($s['color'] ?? '') === 'custom' ? $s['color'] : 'classic',
         'logo'  => in_array($s['logo'] ?? '', QR_LOGOS, true) ? $s['logo'] : 'none',
         'eye'   => in_array($s['eye'] ?? '', QR_EYES, true) ? $s['eye'] : 'square',
-    ] + (($s['color'] ?? '') === 'custom' ? [
+    ] + (($s['logo'] ?? '') === 'emoji' ? ['emoji' => in_array($s['emoji'] ?? '', QR_EMOJIS, true) ? $s['emoji'] : QR_EMOJIS[0]] : []) + (($s['color'] ?? '') === 'custom' ? [
         'c1' => qr_valid_hex($s['c1'] ?? '') ?? '#111111', // dots
         'c2' => qr_valid_hex($s['c2'] ?? '') ?? '#111111', // corners
     ] : []);
@@ -84,6 +89,10 @@ function qr_is_default(array $style): bool
 function qr_logo_file(array $style, ?int $linkId): ?string
 {
     if ($style['logo'] === 'badge') return is_file(QR_BADGE) ? QR_BADGE : null;
+    if ($style['logo'] === 'emoji') {
+        $f = QR_EMOJI_DIR . '/' . ($style['emoji'] ?? QR_EMOJIS[0]) . '.png';
+        return is_file($f) ? $f : null;
+    }
     if ($style['logo'] === 'upload' && $linkId) {
         $f = QR_LOGO_DIR . '/' . $linkId . '.png';
         return is_file($f) ? $f : null;
@@ -220,7 +229,14 @@ function qr_svg(string $data, array $style = [], ?string $logoFile = null): stri
         $n = $matrix->getSize();
         $size = $lm - 1; // leave a little white around the logo
         $xy = ($n - $size) / 2;
-        $img = 'data:image/png;base64,' . base64_encode((string) file_get_contents($logoFile));
+        // crisp vector version when there is one (emoji), otherwise the PNG
+        $vector = preg_replace('~\.png$~', '.svg', $logoFile);
+        $img = is_file($vector) && str_starts_with(realpath($vector) ?: '', realpath(QR_EMOJI_DIR) ?: '/none')
+            ? 'data:image/svg+xml;base64,' . base64_encode((string) file_get_contents($vector))
+            : 'data:image/png;base64,' . base64_encode((string) file_get_contents($logoFile));
+        if (str_starts_with($img, 'data:image/svg')) { // emoji: a bit of white space around it
+            $pad = $size * 0.1; $xy += $pad; $size -= 2 * $pad;
+        }
         $svg = str_replace('</svg>', '<image x="' . $xy . '" y="' . $xy . '" width="' . $size . '" height="' . $size . '" href="' . $img . '"/></svg>', $svg);
     }
     return $svg;

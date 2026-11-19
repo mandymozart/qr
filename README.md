@@ -57,3 +57,9 @@ php -S localhost:8088 -t .
 ```
 
 `drafts/index.html` holds the design drafts (styles adapted from the akin dashboard). Not deployed.
+
+## Credits
+
+- QR rendering and decoding: [chillerlan/php-qrcode](https://github.com/chillerlan/php-qrcode) (MIT)
+- Emoji in the middle of codes: [Twemoji](https://github.com/jdecked/twemoji) graphics, CC-BY 4.0 (`app/assets/emoji/`)
+- IP geolocation: [DB-IP](https://db-ip.com) Lite, CC-BY 4.0

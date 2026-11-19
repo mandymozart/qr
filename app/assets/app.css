@@ -422,3 +422,13 @@ body.public .topbar { max-width: 52rem; margin: 0 auto; }
 
 /* the "Style" jump button is only useful when the editor is not already next to the QR */
 @media (min-width: 1251px) { .code-top .button.jump-style { display: none; } }
+
+/* emoji picker */
+.emo-ico { width: 1.1rem; height: 1.1rem; }
+.emoji-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(2.9rem, 1fr)); gap: .4rem; margin-top: .75rem; }
+.emoji-grid .emo input { position: absolute; opacity: 0; pointer-events: none; }
+.emoji-grid .emo span { display: grid; place-items: center; aspect-ratio: 1; border: 2px solid var(--line); border-radius: .7rem; background: #fff; cursor: pointer; }
+.emoji-grid .emo img { width: 70%; height: 70%; }
+.emoji-grid .emo input:checked + span { border-color: var(--text); box-shadow: 0 0 0 2px var(--text); }
+.emoji-grid .emo input:focus-visible + span { outline: 2px solid var(--mint-10); outline-offset: 2px; }
+.emoji-credit { grid-column: 1 / -1; font-size: .72rem; opacity: .75; }

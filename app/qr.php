@@ -49,7 +49,7 @@ $style = qr_style($link['style'] ?? null);
 if (isset($_GET['preview'])) {
     // live preview from the style editor (not saved)
     $style = qr_style(['shape' => $_GET['shape'] ?? '', 'color' => $_GET['color'] ?? '', 'logo' => $_GET['logo'] ?? '', 'eye' => $_GET['eye'] ?? '',
-                        'c1' => $_GET['c1'] ?? '', 'c2' => $_GET['c2'] ?? '']);
+                        'c1' => $_GET['c1'] ?? '', 'c2' => $_GET['c2'] ?? '', 'emoji' => $_GET['emoji'] ?? '']);
     header('Cache-Control: no-store');
 } else {
     header('Cache-Control: private, max-age=3600');

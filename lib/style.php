@@ -11,7 +11,7 @@ function style_save(array $link): array
 {
     $id = (int) $link['id'];
     $style = qr_style(['shape' => post('shape'), 'color' => post('color'), 'logo' => post('logo'), 'eye' => post('eye'),
-                       'c1' => post('c1'), 'c2' => post('c2')]);
+                       'c1' => post('c1'), 'c2' => post('c2'), 'emoji' => post('emoji')]);
     if ($style['color'] === 'custom') {
         foreach (['c1' => t('dots'), 'c2' => t('corners')] as $k => $what) {
             if (qr_contrast_with_white($style[$k]) < 3.0) {
@@ -106,9 +106,17 @@ function style_form(array $link, string $img, string $hidden): void
     <fieldset>
       <legend><?= te('Logo in the middle') ?></legend>
       <div class="choices">
-        <?php foreach (['none' => t('None'), 'badge' => t('qr sticker'), 'upload' => t('My own')] as $k => $label): ?>
-          <label class="choice"><input type="radio" name="logo" value="<?= $k ?>"<?= $style['logo'] === $k ? ' checked' : '' ?>><span><?= e($label) ?></span></label>
+        <?php $logoChoices = ['none' => t('None'), 'emoji' => t('Emoji'), 'upload' => t('My own')];
+              if ($style['logo'] === 'badge') $logoChoices['badge'] = t('qr sticker'); // only for codes saved with the old sticker
+              foreach ($logoChoices as $k => $label): ?>
+          <label class="choice"><input type="radio" name="logo" value="<?= $k ?>"<?= $style['logo'] === $k ? ' checked' : '' ?>><span><?= $k === 'emoji' ? '<img class="emo-ico" src="/app/assets/emoji/1f3a8.svg" alt="">' : '' ?><?= e($label) ?></span></label>
         <?php endforeach; ?>
+      </div>
+      <div class="emoji-grid"<?= $style['logo'] === 'emoji' ? '' : ' hidden' ?>>
+        <?php $cur = $style['emoji'] ?? QR_EMOJIS[0]; foreach (QR_EMOJIS as $em): ?>
+          <label class="emo"><input type="radio" name="emoji" value="<?= $em ?>"<?= $cur === $em ? ' checked' : '' ?>><span><img src="/app/assets/emoji/<?= $em ?>.svg" alt="" loading="lazy"></span></label>
+        <?php endforeach; ?>
+        <small class="emoji-credit"><?= t('Emoji graphics: {link} (CC-BY 4.0)', ['link' => '<a href="https://github.com/jdecked/twemoji" target="_blank" rel="noopener">Twemoji</a>']) ?></small>
       </div>
       <label class="dropzone<?= $hasUpload ? ' has-file' : '' ?>">
         <input type="file" name="logo_file" accept="image/png,image/jpeg,image/gif,image/webp">
