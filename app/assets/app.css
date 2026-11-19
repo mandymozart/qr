@@ -476,3 +476,21 @@ body.public .topbar { max-width: 52rem; margin: 0 auto; }
 .after-scan { border: 0; padding: 0; margin: 1rem 0 0; }
 .after-scan legend { font-size: .8rem; font-weight: 700; margin-bottom: .45rem; padding: 0; text-transform: uppercase; letter-spacing: .04em; }
 .after-scan .after-preset { margin: .75rem 0 0; max-width: 22rem; }
+
+/* "New" side boxes: announce features without breaking the reading flow */
+.side-new { position: relative; border-radius: 1rem; padding: 1.1rem 1.1rem 1rem; background: #fff; }
+.new-badge { position: absolute; top: -.7rem; right: 1rem; font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: .15rem .55rem; border-radius: 999px; background: var(--lavender-500); }
+.edit-form { display: grid; grid-template-columns: minmax(0, 36rem) minmax(15rem, 19rem); gap: 0 2rem; align-items: start; }
+.edit-form > * { grid-column: 1; }
+.edit-form > .after-scan { grid-column: 2; grid-row: 1 / span 30; margin-top: 1.5rem; }
+.tiers-with-side { display: grid; grid-template-columns: minmax(0, 1fr) 15rem; gap: 22px; align-items: start; }
+.landing-new { margin-top: 18px; }
+.landing-new h3 { font-size: 1.1rem; margin: 0 0 .35rem; }
+.landing-new p { margin: 0; font-size: .92rem; }
+@media (max-width: 1000px) {
+  .edit-form { grid-template-columns: 1fr; }
+  .edit-form > .after-scan { grid-column: 1; grid-row: auto; }
+  .tiers-with-side { grid-template-columns: 1fr; }
+}
+.side-new > legend { float: left; width: 100%; padding-right: 3.5rem; }
+.side-new > legend + * { clear: both; }

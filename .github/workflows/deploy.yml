@@ -65,6 +65,7 @@ jobs:
             .claude/**
             drafts/**
             social/**
+            docs/**
             .env
             composer.json
             composer.lock

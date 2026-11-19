@@ -2,9 +2,19 @@ Options -Indexes
 DirectoryIndex index.php
 
 # Internal folders and dotfiles are not public (keep .well-known for SSL certs)
-RedirectMatch 404 ^/(lib|vendor|drafts|social)(/|$)
+RedirectMatch 404 ^/(lib|vendor|drafts|social|docs)(/|$)
 RedirectMatch 404 ^/\.(?!well-known)
-RedirectMatch 404 ^/(composer\.(json|lock)|README\.md)$
+RedirectMatch 404 ^/(composer\.(json|lock)|README\.md|PRIVACY\.md)$
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # clean URLs for content pages: /de/faq, /en/qr-codes-that-never-expire, …
+  RewriteRule ^(de|en)/([a-z0-9-]+)/?$ page.php?lang=$1&slug=$2 [L,QSA]
+  # generated SEO files (they need the current domain)
+  RewriteRule ^sitemap\.xml$ seo-files.php?file=sitemap [L]
+  RewriteRule ^robots\.txt$ seo-files.php?file=robots [L]
+  RewriteRule ^llms\.txt$ seo-files.php?file=llms [L]
+</IfModule>
 
 <IfModule mod_headers.c>
   Header always set X-Content-Type-Options "nosniff"

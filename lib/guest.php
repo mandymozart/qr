@@ -84,7 +84,7 @@ function guest_limit_error(string $creator): ?string
 }
 
 /** Public page shell (landing, guest edit, not found) in the street/pop-art style. */
-function public_head(string $title, string $mainClass = 'narrow'): void
+function public_head(string $title, string $mainClass = 'narrow', array $seo = []): void
 {
     $user = current_user();
     $f = flash();
@@ -94,9 +94,10 @@ function public_head(string $title, string $mainClass = 'narrow'): void
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= e($title) ?></title>
-<meta name="description" content="<?= te('Free QR codes you can change later, with scan stats. No tracking cookies.') ?>">
-<link rel="stylesheet" href="/app/assets/app.css?v=17">
-<link rel="stylesheet" href="/app/assets/street.css?v=17">
+<?= seo_tags($title, $seo) ?>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/app/assets/app.css?v=19">
+<link rel="stylesheet" href="/app/assets/street.css?v=19">
 </head>
 <body class="public street">
 <?php street_defs(); ?>
@@ -120,7 +121,9 @@ function public_foot(): void
 {
     ?>
 </main>
-<footer class="st-foot"><?= te('No tracking cookies. Scans are counted anonymously.') ?><br><small><?= t('Emoji graphics: {link} (CC-BY 4.0)', ['link' => '<a href="https://github.com/jdecked/twemoji" rel="noopener">Twemoji</a>']) ?></small></footer>
+<footer class="st-foot">
+  <nav class="foot-links"><?php foreach (content_pages() as $pg): $pl = $pg[lang()]; ?><a href="/<?= lang() ?>/<?= e($pl['slug']) ?>"><?= e($pl['nav']) ?></a><?php endforeach; ?></nav>
+  <?= te('No tracking cookies. Scans are counted anonymously.') ?><br><small><?= t('Emoji graphics: {link} (CC-BY 4.0)', ['link' => '<a href="https://github.com/jdecked/twemoji" rel="noopener">Twemoji</a>']) ?></small></footer>
 <script src="/app/assets/app.js?v=11"></script>
 </body>
 </html>

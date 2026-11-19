@@ -301,3 +301,24 @@ body.street {
 .street .step-side h3 { font: 400 28px "Permanent Marker", cursive; }
 .street .resp-thumb { border: 2px solid var(--ink); }
 .street .linklike { color: var(--ink); }
+
+/* content pages (FAQ, never expire, for artists) */
+.street .content-page { max-width: 46rem; margin: 0 auto; padding: 1rem 0 2rem; }
+.street .content-page h1 { font: 400 clamp(38px, 6vw, 64px)/1.02 "Permanent Marker", cursive; margin: 12px 0 18px; }
+.street .content-page h2 { font: 400 clamp(26px, 3.4vw, 36px)/1.1 "Permanent Marker", cursive; margin: 32px 0 10px; }
+.street .content-page p, .street .content-page li { font-size: 18px; line-height: 1.55; font-weight: 500; }
+.street .content-page .lead { font-size: 21px; font-weight: 600; }
+.street .content-page ul { padding-left: 1.2rem; }
+.street .faq details { background: #fff; border: 4px solid var(--ink); border-radius: 18px; box-shadow: 5px 5px 0 var(--ink); padding: 14px 18px; margin-bottom: 14px; }
+.street .faq summary { font-weight: 800; font-size: 18px; cursor: pointer; }
+.street .faq details[open] summary { margin-bottom: 6px; }
+.street .faq p { margin: 0; }
+.street .content-cta { margin-top: 36px; text-align: center; }
+.street .foot-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 18px; margin-bottom: 10px; }
+.street .foot-links a { color: var(--ink); font-weight: 800; }
+
+.street .side-new { border: 4px solid var(--ink); border-radius: 20px; box-shadow: 5px 5px 0 var(--ink); background: #fff; }
+.street .new-badge { background: var(--red); color: #fff; border: 3px solid var(--ink); font-size: 12px; transform: rotate(4deg); }
+.street .landing-new h3 { font: 400 24px/1.1 "Permanent Marker", cursive; }
+.street .landing-new p { font-weight: 600; }
+.street .landing-new { transform: rotate(1.5deg); }

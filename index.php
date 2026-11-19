@@ -101,7 +101,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $mine = current_user() ? [] : guest_links();
-public_head(t('qr · QR codes you can change later'), 'wide');
+$langUrl = fn(string $l) => base_url() . '/?lang=' . $l;
+public_head(t('qr · QR codes you can change later'), 'wide', [
+    'index' => true,
+    'description' => t('Free dynamic QR codes that never expire. Change the target any time, see anonymous scan stats, style your code. No sign-up, no tracking cookies.'),
+    'canonical' => $langUrl(lang()),
+    'alternates' => ['de' => $langUrl('de'), 'en' => $langUrl('en'), 'x-default' => base_url() . '/'],
+    'jsonld' => [seo_app_jsonld()],
+]);
 ?>
 <div class="st-hero">
   <div>
@@ -215,6 +222,7 @@ public_head(t('qr · QR codes you can change later'), 'wide');
 <section class="st-sec">
   <span class="tag"><?= te('Free') ?></span>
   <h2><?= te('Start now. Keep more later.') ?></h2>
+  <div class="tiers-with-side">
   <div class="st-tiers">
     <div class="panel">
       <h3><?= te('Without an account') ?></h3>
@@ -228,14 +236,19 @@ public_head(t('qr · QR codes you can change later'), 'wide');
     <div class="panel">
       <h3><?= te('With a free account') ?></h3>
       <ul>
-        <li><?= te('Unlimited codes, kept safe in your account') ?></li>
+        <li><?= te('Up to {n} codes, kept safe in your account', ['n' => FREE_MAX_CODES]) ?></li>
         <li><?= te('Campaigns & bulk codes for print runs') ?></li>
-        <li><?= te('Mini-apps: flyer pages, sign-ups, polls before the target') ?></li>
         <li><?= te('Stats by place, city, time, device & language') ?></li>
         <li><?= te('Codes from this browser move in automatically') ?></li>
       </ul>
       <a class="btn y" href="/app/register.php"><?= te('Create a free account') ?></a>
     </div>
+  </div>
+  <aside class="side-new landing-new">
+    <span class="new-badge"><?= te('New') ?></span>
+    <h3>🧩 <?= te('Mini-apps') ?></h3>
+    <p><?= te('Optional with an account: show a flyer page, a sign-up or a poll before the target.') ?></p>
+  </aside>
   </div>
 </section>
 

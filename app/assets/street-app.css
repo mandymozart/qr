@@ -185,3 +185,17 @@ body.street.app { font-size: 16px; background: var(--paper); color: var(--ink); 
 @media (max-width: 1250px) { .street.app .code-top .code-style { border-top: 0; padding-top: 0; margin-top: 1rem; } }
 
 .street.app .badge.pro { background: var(--yellow); }
+
+/* sidebar items: lift on hover (they get a border + shadow), sink when clicked; the current page stays debossed */
+.street.app .menu-item { transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease, border-color .12s ease; }
+.street.app .menu-item::before { content: ""; position: absolute; top: 0; left: 0; right: -5px; bottom: -5px; }
+.street.app .menu-item:hover:not([aria-current="page"]) {
+  transform: translate(-2px, -2px);
+  border-color: var(--ink); background: #fff;
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.street.app .menu-item:active:not([aria-current="page"]) {
+  transform: translate(3px, 3px);
+  box-shadow: inset 3px 3px 0 rgba(23, 10, 44, .45);
+}
+.street.app .menu-item:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }

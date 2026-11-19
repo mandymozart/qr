@@ -166,4 +166,7 @@ return [
     'Each code can also get a mini-app afterwards (flyer page, sign-up, poll, tickets): open the code and add it there.' => 'Jeder Code kann danach auch eine Mini-App bekommen (Flyer-Seite, Anmeldung, Abstimmung, Tickets): Code öffnen und dort hinzufügen.',
     'Mini-apps: flyer pages, sign-ups, polls before the target' => 'Mini-Apps: Flyer-Seiten, Anmeldungen, Abstimmungen vor dem Ziel',
     'You can also show a flyer page, a sign-up form or a poll before the target.' => 'Außerdem kannst du vor dem Ziel eine Flyer-Seite, ein Anmeldeformular oder eine Abstimmung zeigen.',
+    'New' => 'Neu',
+    'Mini-apps' => 'Mini-Apps',
+    'Optional with an account: show a flyer page, a sign-up or a poll before the target.' => 'Optional mit Konto: Zeig vor dem Ziel eine Flyer-Seite, eine Anmeldung oder eine Abstimmung.',
 ];

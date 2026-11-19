@@ -68,7 +68,7 @@ page_head($link ? t('Edit code') : t('New code'), 'codes');
 <h2 class="entity-title"><?= $link ? e($link['title']) : te('Create a QR link') ?></h2>
 <p class="entity-description"><?= te('The QR code always points to the short link, so you can change the target later without reprinting.') ?></p>
 
-<form method="post" style="max-width:36rem">
+<form method="post" class="edit-form">
   <?= csrf_field() ?>
   <div class="field"><label for="title"><?= te('Name') ?></label>
     <input id="title" name="title" required value="<?= e($data['title']) ?>" placeholder="<?= te('Flyer Westbahnhof') ?>"><?= err($errors, 'title') ?></div>
@@ -87,7 +87,8 @@ page_head($link ? t('Edit code') : t('New code'), 'codes');
   <div class="field check"><label><input type="checkbox" name="utm" value="1"<?= $data['utm'] ? ' checked' : '' ?>> <?= t('Add UTM tags to the target ({utm}), so your website analytics see where visitors came from', ['utm' => '<code>utm_source=qr&amp;utm_campaign=…&amp;utm_content=' . e($data['code'] ?: 'code') . '</code>']) ?></label></div>
   <div class="field check"><label><input type="checkbox" name="active" value="1"<?= $data['active'] ? ' checked' : '' ?>> <?= te('Active (paused codes show a "not found" page)') ?></label></div>
   <?php if (!$link): $after = post('after') ?: 'direct'; ?>
-  <fieldset class="after-scan">
+  <fieldset class="after-scan side-new">
+    <span class="new-badge"><?= te('New') ?></span>
     <legend><?= te('After scanning') ?></legend>
     <div class="choices">
       <label class="choice"><input type="radio" name="after" value="direct"<?= $after !== 'mini' ? ' checked' : '' ?>><span><?= te('Go straight to the target') ?></span></label>
