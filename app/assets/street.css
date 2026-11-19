@@ -205,3 +205,15 @@ body.street {
 .street .notice.ok { background: var(--green); }
 .street .badge.on { background: var(--green); }
 .street .chalk h2 { font-size: clamp(36px, 5vw, 60px); line-height: 1; margin: 0 0 24px; }
+
+/* buttons press INTO the page on hover (no tilt, no lift); flat when clicked */
+.street .btn:hover, .street .button:hover {
+  transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--ink);
+}
+.street .button.small:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
+.street .btn:active, .street .button:active, .street .button.small:active {
+  transform: translate(5px, 5px); box-shadow: 0 0 0 var(--ink);
+}
+.street .button.small:active { transform: translate(4px, 4px); }
+.street .btn:focus-visible, .street .button:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .street .btn, .street .button { transition: none; } }

@@ -146,3 +146,4 @@ body.street.app { font-size: 16px; background: var(--paper); color: var(--ink); 
   .street.app .user-list .row .tools { justify-content: flex-start; }
   .street.app .user-list .row .meta > * { white-space: normal; }
 }
+.street.app .qr-card:hover { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--ink); }
