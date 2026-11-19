@@ -32,7 +32,7 @@ function page_head(string $title, ?string $active = null): void
 <meta name="robots" content="noindex">
 <title><?= e($title) ?> · qr</title>
 <link rel="icon" href="data:image/svg+xml,<?= rawurlencode(str_replace('currentColor', '%23252321', ICONS['logo'])) ?>">
-<link rel="stylesheet" href="/app/assets/app.css?v=2">
+<link rel="stylesheet" href="/app/assets/app.css?v=3">
 </head>
 <body>
 <?php if ($user): ?>
@@ -68,7 +68,7 @@ function page_foot(): void
     ?>
   </main>
 <?php if ($user): ?></div><div class="fade-bottom"></div><?php endif; ?>
-<script src="/app/assets/app.js?v=2"></script>
+<script src="/app/assets/app.js?v=3"></script>
 </body>
 </html>
 <?php

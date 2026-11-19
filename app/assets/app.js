@@ -7,16 +7,31 @@ document.addEventListener('submit', (ev) => {
 });
 
 // Copy to clipboard: <button data-copy="text">
-document.addEventListener('click', async (ev) => {
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text).catch(() => legacyCopy(text));
+  }
+  return Promise.resolve(legacyCopy(text));
+}
+function legacyCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } finally { ta.remove(); }
+}
+document.addEventListener('click', (ev) => {
   const btn = ev.target.closest('[data-copy]');
   if (!btn) return;
   ev.preventDefault();
-  try {
-    await navigator.clipboard.writeText(btn.dataset.copy);
-    const old = btn.textContent;
-    btn.textContent = 'Copied';
+  copyText(btn.dataset.copy).then(() => {
+    const old = btn.dataset.label || btn.textContent;
+    btn.dataset.label = old;
+    btn.textContent = 'Copied ✓';
     setTimeout(() => (btn.textContent = old), 1200);
-  } catch (e) { prompt('Copy:', btn.dataset.copy); }
+  });
 });
 
 // Live filter for lists: <input data-filter="#listId">
