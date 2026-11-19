@@ -107,11 +107,10 @@ public_head($link['title'] . ' · qr');
   </div>
 </div>
 
-<div id="style"></div>
-<?php style_form($link, $imgBase, $viaKey ? '<input type="hidden" name="k" value="' . e($key) . '">' : ''); ?>
-
-<section class="block" style="margin-top:1.5rem">
-  <h3><?= te('Change') ?></h3>
+<div class="manage-grid">
+<section class="block manage-change">
+  <h3><?= te('Change where it leads') ?></h3>
+  <p class="hint"><?= te('The printed code stays the same. Only the target changes.') ?></p>
   <form method="post">
     <?php if ($viaKey): ?><input type="hidden" name="k" value="<?= e($key) ?>"><?php endif; ?>
     <input type="hidden" name="action" value="save">
@@ -128,6 +127,18 @@ public_head($link['title'] . ' · qr');
       <button class="button danger"><?= te('Delete') ?></button></form>
   </div>
 </section>
+
+<aside class="manage-extras">
+  <?php
+  ob_start(); style_form($link, $imgBase, $viaKey ? '<input type="hidden" name="k" value="' . e($key) . '">' : '', true); $styleBody = ob_get_clean();
+  echo feature_card('style', 'style', style_is_default($link['style'] ?? null) ? t('Style it') : t('Style'),
+      style_is_default($link['style'] ?? null) ? t('Dots, colors, an emoji or your logo in the middle.') : style_summary($link['style'] ?? null), $styleBody);
+  echo feature_card('mini', 'miniapp', t('Show a mini-app first'), t('A flyer page, sign-up form, poll or ticket button between the scan and the target.'),
+      '<p>' . te('Mini-apps come with a free account, because they collect answers and need someone responsible for them.') . '</p>'
+      . '<a class="button small" href="/app/register.php">' . te('Create a free account') . '</a>', false, t('New'));
+  ?>
+</aside>
+</div>
 
 <section class="block">
   <h3><?= te('Scans') ?></h3><p class="hint"><?= te('Last 30 days. Bots and link previews are not counted.') ?></p>

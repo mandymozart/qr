@@ -46,11 +46,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash(t('Code created.'));
         }
         // new code with "show a mini-app first": continue in the mini-app editor with the chosen preset
-        $presetKey = post('after') === 'mini' ? post('preset') : '';
+        // side cards on a new code: a picked mini-app preset continues in the mini-app editor, "style it" opens the style card
+        $presetKey = post('preset');
         if ($presetKey !== '' && isset(step_presets()[$presetKey]) && !step_for_link($id)) redirect('/app/step.php?id=' . $id . '&preset=' . rawurlencode($presetKey));
         // no target and no mini-app yet: go set up the hosted page right away
         if ($data['target_url'] === '' && !step_for_link($id)) redirect('/app/step.php?id=' . $id . '&preset=flyer');
-        redirect('/app/code.php?id=' . $id);
+        redirect('/app/code.php?id=' . $id . (post('style_next') ? '#style' : ''));
     }
 }
 
@@ -61,49 +62,49 @@ function err(array $errors, string $k): string
 
 page_head($link ? t('Edit code') : t('New code'), 'codes');
 ?>
-<div style="max-width:44rem">
+<div class="edit-page">
 <span class="entity-type"><?= $link ? te('Edit code') : te('New code') ?></span>
 <h2 class="entity-title"><?= $link ? e($link['title']) : te('Create a QR link') ?></h2>
 <p class="entity-description"><?= te('The QR code always points to the short link, so you can change the target later without reprinting.') ?></p>
 
-<form method="post" class="edit-form">
+<?php $moreOpen = isset($errors['code']) || (!$link && $data['campaign_id']); ?>
+<form method="post" class="edit-form" id="edit-form">
   <?= csrf_field() ?>
   <div class="field"><label for="title"><?= te('Name') ?></label>
     <input id="title" name="title" required value="<?= e($data['title']) ?>" placeholder="<?= te('Flyer Westbahnhof') ?>"><?= err($errors, 'title') ?></div>
   <div class="field"><label for="target_url"><?= te('Target URL') ?></label>
     <input id="target_url" name="target_url" type="url" value="<?= e($data['target_url']) ?>"><?= err($errors, 'target_url') ?: '<div class="field-hint">' . te('Leave empty to host a small page or flyer instead (set it up as a mini-app after saving).') . '</div>' ?></div>
-  <div class="form-grid">
-    <div class="field"><label for="code"><?= te('Short code') ?></label>
-      <input id="code" name="code" value="<?= e($data['code']) ?>" placeholder="<?= te('auto') ?>" pattern="[A-Za-z0-9_\-]{2,40}">
-      <?= err($errors, 'code') ?: '<div class="field-hint">' . te('Leave empty for a random one. Changing it breaks printed codes.') . '</div>' ?></div>
-    <div class="field"><label for="campaign_id"><?= te('Campaign') ?></label><?= campaign_select($user, $data['campaign_id'] ? (int) $data['campaign_id'] : null) ?>
-      <div class="field-hint"><a href="/app/campaigns.php"><?= te('Manage campaigns') ?></a></div></div>
-  </div>
-  <div class="field"><label for="placement"><?= te('Placement') ?> <span style="font-weight:400;color:var(--neutral-20)"><?= te('(optional)') ?></span></label>
-    <input id="placement" name="placement" value="<?= e($data['placement']) ?>" placeholder="<?= te('e.g. Poster, Westbahnhof U6 exit') ?>">
-    <div class="field-hint"><?= te('Where the code is printed or hung. Shows up in the stats.') ?></div></div>
-  <div class="field check"><label><input type="checkbox" name="utm" value="1"<?= $data['utm'] ? ' checked' : '' ?>> <?= t('Add UTM tags to the target ({utm}), so your website analytics see where visitors came from', ['utm' => '<code>utm_source=qr&amp;utm_campaign=…&amp;utm_content=' . e($data['code'] ?: 'code') . '</code>']) ?></label></div>
-  <div class="field check"><label><input type="checkbox" name="active" value="1"<?= $data['active'] ? ' checked' : '' ?>> <?= te('Active (paused codes show a "not found" page)') ?></label></div>
-  <?php if (!$link): $after = post('after') ?: 'direct'; ?>
-  <fieldset class="after-scan side-new">
-    <span class="new-badge"><?= te('New') ?></span>
-    <legend><?= te('After scanning') ?></legend>
-    <div class="choices">
-      <label class="choice"><input type="radio" name="after" value="direct"<?= $after !== 'mini' ? ' checked' : '' ?>><span><?= te('Go straight to the target') ?></span></label>
-      <label class="choice"><input type="radio" name="after" value="mini"<?= $after === 'mini' ? ' checked' : '' ?>><span>🧩 <?= te('Show a mini-app first') ?></span></label>
+
+  <details class="more-options"<?= $moreOpen ? ' open' : '' ?>>
+    <summary><?= te('More options') ?> <small><?= te('short code, campaign, placement, UTM') ?></small></summary>
+    <div class="form-grid">
+      <div class="field"><label for="code"><?= te('Short code') ?></label>
+        <input id="code" name="code" value="<?= e($data['code']) ?>" placeholder="<?= te('auto') ?>" pattern="[A-Za-z0-9_\-]{2,40}">
+        <?= err($errors, 'code') ?: '<div class="field-hint">' . te('Leave empty for a random one. Changing it breaks printed codes.') . '</div>' ?></div>
+      <div class="field"><label for="campaign_id"><?= te('Campaign') ?></label><?= campaign_select($user, $data['campaign_id'] ? (int) $data['campaign_id'] : null) ?>
+        <div class="field-hint"><a href="/app/campaigns.php"><?= te('Manage campaigns') ?></a></div></div>
     </div>
-    <div class="field after-preset"<?= $after === 'mini' ? '' : ' hidden' ?>>
-      <select name="preset" aria-label="<?= te('Mini-app') ?>">
-        <?php foreach (step_presets() as $k => $pr): ?><option value="<?= $k ?>"<?= post('preset') === $k ? ' selected' : '' ?>><?= e($pr['label']) ?></option><?php endforeach; ?>
-      </select>
-      <div class="field-hint"><?= te('A flyer page, sign-up form, poll or ticket button people see before the target. You set it up right after saving.') ?></div>
-    </div>
-  </fieldset>
-  <?php endif; ?>
+    <div class="field"><label for="placement"><?= te('Placement') ?> <span class="opt"><?= te('(optional)') ?></span></label>
+      <input id="placement" name="placement" value="<?= e($data['placement']) ?>" placeholder="<?= te('e.g. Poster, Westbahnhof U6 exit') ?>">
+      <div class="field-hint"><?= te('Where the code is printed or hung. Shows up in the stats.') ?></div></div>
+    <div class="field check"><label><input type="checkbox" name="utm" value="1"<?= $data['utm'] ? ' checked' : '' ?>> <?= t('Add UTM tags to the target ({utm}), so your website analytics see where visitors came from', ['utm' => '<code>utm_source=qr&amp;utm_campaign=…&amp;utm_content=' . e($data['code'] ?: 'code') . '</code>']) ?></label></div>
+    <div class="field check"><label><input type="checkbox" name="active" value="1"<?= $data['active'] ? ' checked' : '' ?>> <?= te('Active (paused codes show a "not found" page)') ?></label></div>
+  </details>
+
   <div class="form-actions" style="justify-content:flex-start">
     <button class="button"><?= $link ? te('Save') : te('Create code') ?></button>
     <a class="button ghost" href="<?= $link ? '/app/code.php?id=' . $link['id'] : '/app/' ?>"><?= te('Cancel') ?></a>
   </div>
+
+  <?php if (!$link): ?>
+  <aside class="edit-side">
+    <p class="side-label"><?= te('Extras, if you like') ?></p>
+    <?= feature_card('style-next', 'style', t('Style it'), t('Dots, colors, an emoji or your logo in the middle.'),
+        '<input type="hidden" name="style_next" value="1"><p>' . te('Right after saving you pick the look, with a live preview.') . '</p>', (bool) post('style_next')) ?>
+    <?= feature_card('mini-next', 'miniapp', t('Show a mini-app first'), t('A flyer page, sign-up form, poll or ticket button between the scan and the target.'),
+        step_preset_cards(post('preset') ?: null, '', true) . '<p class="fc-foot">' . te('You set it up right after saving.') . '</p>', post('preset') !== '', t('New')) ?>
+  </aside>
+  <?php endif; ?>
 </form>
 </div>
 <?php page_foot();

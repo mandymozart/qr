@@ -170,7 +170,7 @@ body.street {
 /* QR style editor on guest pages */
 .street .choice span { border: 3px solid var(--ink); border-radius: 999px; font-weight: 700; }
 .street .choice input:checked + span { background: var(--yellow); box-shadow: 3px 3px 0 var(--ink); }
-.street .style-editor legend { font-weight: 800; text-transform: uppercase; letter-spacing: .04em; font-size: 13px; }
+.street .style-editor legend, .street .style-form legend { font-weight: 800; text-transform: uppercase; letter-spacing: .04em; font-size: 13px; }
 
 /* ===== GTA-6-style sunset palette (same 80s pop-art look, new colors) ===== */
 body.street {
@@ -327,3 +327,64 @@ body.street {
 .street .content-page pre code { background: none; border: 0; color: inherit; padding: 0; }
 .street .content-page code { background: var(--yellow); border: 2px solid var(--ink); border-radius: 6px; padding: 0 5px; font-size: .85em; }
 .street .content-page table.data { margin: 10px 0; }
+
+/* ===== Feature cards: extras stay closed until wanted (progressive disclosure) ===== */
+.street .side-label { font: 800 13px/1.2 inherit; text-transform: uppercase; letter-spacing: .08em; margin: 0 0 10px; }
+.street .feature-card { position: relative; background: #fff; border: 4px solid var(--ink); border-radius: 20px; box-shadow: 5px 5px 0 var(--ink); transition: transform .12s ease, box-shadow .12s ease; }
+.street .feature-card > summary { display: grid; grid-template-columns: 76px 1fr 30px; gap: 12px; align-items: center; padding: 10px 12px 10px 10px; cursor: pointer; list-style: none; border-radius: 16px; }
+.street .feature-card > summary::-webkit-details-marker { display: none; }
+.street .feature-card:not([open]):hover { transform: translate(2px, 2px); box-shadow: 3px 3px 0 var(--ink); }
+.street .feature-card > summary:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+.street .fc-art .preset-art { display: block; width: 76px; height: 52px; border: 3px solid var(--ink); border-radius: 12px; }
+.street .fc-text b { display: block; font: 400 20px/1.1 "Permanent Marker", cursive; }
+.street .fc-text small { display: block; font-size: 13px; line-height: 1.35; margin-top: 3px; }
+.street .fc-go { width: 30px; height: 30px; border: 3px solid var(--ink); border-radius: 50%; background: var(--yellow); position: relative; box-shadow: 2px 2px 0 var(--ink); }
+.street .fc-go::before, .street .fc-go::after { content: ""; position: absolute; left: 50%; top: 50%; width: 12px; height: 3px; background: var(--ink); transform: translate(-50%, -50%); border-radius: 2px; }
+.street .fc-go::after { transform: translate(-50%, -50%) rotate(90deg); transition: transform .15s ease; }
+.street .feature-card[open] .fc-go { background: #fff; box-shadow: inset 2px 2px 0 rgba(23, 10, 44, .4); }
+.street .feature-card[open] .fc-go::after { transform: translate(-50%, -50%) rotate(0deg); }
+.street .feature-card[open] > summary { border-bottom: 3px dashed var(--ink); border-radius: 16px 16px 0 0; }
+.street .fc-body { padding: 14px 14px 16px; }
+.street .fc-body > p { margin: 0 0 10px; font-size: 14px; }
+.street .fc-body .fc-foot { margin: 10px 0 0; font-size: 13px; }
+.street .fc-body .style-form fieldset { margin-bottom: 14px; }
+.street .feature-card .new-badge { position: absolute; top: -12px; right: 14px; z-index: 1; }
+@media (prefers-reduced-motion: reduce) { .street .feature-card, .street .fc-go::after { transition: none; } }
+
+/* ===== Preset cards: illustration + name, selected = debossed ===== */
+.street .preset-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.street .preset-card { position: relative; display: block; cursor: pointer; color: inherit; text-decoration: none; }
+.street .preset-card input { position: absolute; opacity: 0; pointer-events: none; }
+.street .preset-card .pc-body { display: flex; flex-direction: column; height: 100%; background: #fff; border: 3px solid var(--ink); border-radius: 16px; overflow: hidden; box-shadow: 4px 4px 0 var(--ink); transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease; }
+.street .preset-card .preset-art { display: block; width: 100%; height: auto; aspect-ratio: 160 / 110; border-bottom: 3px solid var(--ink); }
+.street .preset-card .pc-label { display: block; padding: 7px 9px 0; font-size: 14px; font-weight: 800; line-height: 1.2; }
+.street .preset-card .pc-hint { display: block; padding: 2px 9px 9px; font-size: 12px; line-height: 1.3; opacity: .8; }
+.street .preset-cards.compact .pc-label { padding-bottom: 7px; font-size: 13px; }
+.street .preset-card:hover .pc-body { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
+.street .preset-card input:checked + .pc-body { transform: translate(4px, 4px); background: var(--yellow); box-shadow: inset 3px 3px 0 rgba(23, 10, 44, .55); }
+.street .preset-card input:focus-visible + .pc-body, .street a.preset-card:focus-visible .pc-body { outline: 3px solid var(--blue); outline-offset: 3px; }
+@media (max-width: 1300px) and (min-width: 1001px) { .street .step-presets .preset-cards { grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); } }
+@media (max-width: 1000px) {
+  .street .step-presets .preset-cards { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding: 2px 6px 10px 2px; }
+  .street .step-presets .preset-card { flex: 0 0 9.5rem; scroll-snap-align: start; }
+}
+
+/* ===== Mini-app live preview: a phone ===== */
+.street .phone { background: var(--ink); border-radius: 34px; padding: 12px; box-shadow: 6px 6px 0 var(--blue); max-width: 17rem; margin: 0 auto; }
+.street .phone-screen { background: var(--paper); border-radius: 24px; min-height: 26rem; max-height: 34rem; overflow-y: auto; padding: 18px 16px; font-size: 14px; }
+.street .phone-screen h4 { font: 400 22px/1.15 "Permanent Marker", cursive; margin: 0 0 8px; overflow-wrap: anywhere; }
+.street .phone-screen p { margin: 0 0 12px; line-height: 1.4; overflow-wrap: anywhere; }
+.street .pv-empty { opacity: .7; text-align: center; margin-top: 8rem !important; }
+.street .pv-img { display: block; width: 100%; border: 3px solid var(--ink); border-radius: 12px; margin-bottom: 12px; }
+.street .pv-label { font-weight: 700; font-size: 12px; margin: 8px 0 4px; }
+.street .pv-in { height: 32px; background: #fff; border: 2px solid var(--ink); border-radius: 8px; padding: 6px 8px; font-size: 12px; }
+.street .pv-tall { height: 64px; }
+.street .pv-sel::after { content: "▾"; float: right; }
+.street .pv-drop { border: 2px dashed var(--ink); border-radius: 10px; padding: 14px 8px; text-align: center; font-size: 12px; background: #fff; }
+.street .pv-check { display: flex; gap: 8px; align-items: flex-start; font-size: 12px; margin: 10px 0; }
+.street .pv-check i { flex: 0 0 14px; height: 14px; border: 2px solid var(--ink); border-radius: 3px; background: #fff; margin-top: 1px; }
+.street .pv-btn, .street .pv-opt { display: block; text-align: center; font-weight: 800; border: 3px solid var(--ink); border-radius: 999px; padding: 8px 12px; margin-top: 10px; box-shadow: 3px 3px 0 var(--ink); overflow-wrap: anywhere; }
+.street .pv-btn { background: var(--red); color: #fff; }
+.street .pv-link { background: var(--yellow); color: var(--ink); }
+.street .pv-opt { background: #fff; }
+.street .pv-skip { text-align: center; margin-top: 14px; font-size: 12px; font-weight: 700; text-decoration: underline; }

@@ -128,18 +128,22 @@ page_head(t('Mini-app') . ' · ' . $link['title'], 'codes');
 
 <?php if ($errors): ?><div class="notice err"><?= e(implode(' ', $errors)) ?></div><?php endif; ?>
 
+<?php $await = !$form && !isset($presets[$_GET['preset'] ?? '']); // new mini-app: the form opens once a preset (or a blank type) is picked ?>
 <div class="step-editor-grid">
-<form method="post" enctype="multipart/form-data" class="step-editor" id="step-editor">
-  <?= csrf_field() ?><input type="hidden" name="action" value="save">
+<aside class="step-presets">
+  <h3 class="side-label"><?= te('Start from a preset') ?></h3>
+  <?= step_preset_cards($cfg['preset'] ?? null, 'step-editor') ?>
+  <p class="blank-start"<?= $await ? '' : ' hidden' ?>><span><?= te('or start blank:') ?></span>
+    <?php foreach (STEP_TYPES as $t): ?><button type="button" class="button small ghost" data-blank="<?= $t ?>"><?= e(step_type_label($t)) ?></button><?php endforeach; ?></p>
+</aside>
 
-  <fieldset>
-    <legend><?= te('Start from a preset') ?></legend>
-    <div class="choices presets">
-      <?php foreach ($presets as $k => $p): ?>
-        <button type="button" class="button small ghost" data-preset="<?= $k ?>"><?= e($p['label']) ?></button>
-      <?php endforeach; ?>
-    </div>
-  </fieldset>
+<div class="step-main">
+<div class="step-wait"<?= $await ? '' : ' hidden' ?>>
+  <?= step_preset_art('miniapp') ?>
+  <p><b><?= te('Pick a preset to start.') ?></b><br><?= te('You can change every text and field afterwards.') ?></p>
+</div>
+<form method="post" enctype="multipart/form-data" class="step-editor" id="step-editor"<?= $await ? ' hidden' : '' ?>>
+  <?= csrf_field() ?><input type="hidden" name="action" value="save">
 
   <fieldset>
     <legend><?= te('Type') ?></legend>
@@ -218,6 +222,17 @@ page_head(t('Mini-app') . ' · ' . $link['title'], 'codes');
     <button class="button"><?= $step ? te('Save mini-app') : te('Create mini-app') ?></button>
   </div>
 </form>
+</div>
+
+<aside class="step-preview" aria-label="<?= te('Live preview') ?>">
+  <h3 class="side-label"><?= te('Live preview') ?></h3>
+  <div class="phone"><div class="phone-screen" id="step-pv"
+    data-img="<?= !empty($cfg['image']) && $step ? e('/step.php?c=' . rawurlencode($link['code']) . '&img=1') : '' ?>"
+    data-t-skip="<?= te('Skip') ?> →" data-t-photo="📷 <?= te('Tap to take a photo') ?>" data-t-file="📄 <?= te('File upload') ?>"
+    data-t-consent="<?= te('I agree that my answers are sent to the owner of this code.') ?>" data-t-continue="<?= te('Continue') ?>"
+    data-t-open="<?= te('Open') ?>" data-t-empty="<?= te('Pick a preset or a type to see the preview.') ?>"></div></div>
+</aside>
+</div>
 
 <?php if ($step): ?>
 <div class="step-side" id="responses">
@@ -256,12 +271,11 @@ page_head(t('Mini-app') . ' · ' . $link['title'], 'codes');
     <button class="button small ghost"><?= te('Remove mini-app') ?></button></form>
 </div>
 <?php endif; ?>
-</div>
 
 <script>
 window.STEP_PRESETS = <?= json_encode(array_map(fn($p) => array_diff_key($p, ['label' => 1]), $presets), JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) ?>;
 <?php if (!$step && isset($presets[$_GET['preset'] ?? ''])): ?>
-document.addEventListener('DOMContentLoaded', () => { const b = document.querySelector('[data-preset="<?= e($_GET['preset']) ?>"]'); if (b) b.click(); });
+window.STEP_INIT_PRESET = <?= json_encode($_GET['preset']) ?>;
 <?php endif; ?>
 </script>
 <?php page_foot();

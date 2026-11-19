@@ -14,6 +14,7 @@ require_once __DIR__ . '/track.php';
 require_once __DIR__ . '/guest.php';
 require_once __DIR__ . '/style.php';
 require_once __DIR__ . '/steps.php';
+require_once __DIR__ . '/preset-art.php';
 require_once __DIR__ . '/plan.php';
 require_once __DIR__ . '/seo.php';
 require_once __DIR__ . '/pages.php';

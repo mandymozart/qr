@@ -57,16 +57,16 @@ function style_save(array $link): array
  * @param string $img     current image URL (preview base; style params are appended by JS)
  * @param string $hidden  extra hidden inputs (csrf, edit key)
  */
-function style_form(array $link, string $img, string $hidden): void
+function style_form(array $link, string $img, string $hidden, bool $bare = false): void
 {
     $style = qr_style($link['style'] ?? null);
     $logoFile = QR_LOGO_DIR . '/' . (int) $link['id'] . '.png';
     $hasUpload = is_file($logoFile);
     $logoThumb = $hasUpload ? 'data:image/png;base64,' . base64_encode((string) file_get_contents($logoFile)) : '';
     ?>
-<section class="block style-editor">
+<?php if (!$bare): ?><section class="block style-editor">
   <h3><?= te('Style') ?></h3>
-  <p class="hint"><?= te('Make it yours. Every style is test-scanned before it is saved.') ?></p>
+  <p class="hint"><?= te('Make it yours. Every style is test-scanned before it is saved.') ?></p><?php endif; ?>
   <form method="post" enctype="multipart/form-data" class="style-form" data-preview="#qr-preview" data-base="<?= e($img) ?>">
     <?= $hidden ?>
     <input type="hidden" name="action" value="style">
@@ -130,6 +130,6 @@ function style_form(array $link, string $img, string $hidden): void
     <p class="field-hint"><?= te('Tip: keep the colors dark and print the code at least 2 cm wide. Logos make the code a bit denser.') ?></p>
     <button class="button"><?= te('Save style') ?></button>
   </form>
-</section>
+<?php if (!$bare): ?></section><?php endif; ?>
 <?php
 }

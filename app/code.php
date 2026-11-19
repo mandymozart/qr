@@ -78,14 +78,26 @@ page_head($link['title'], 'codes');
       <form class="inline-form" method="post" data-confirm="<?= te('Delete this code and all its stats? Printed codes will stop working.') ?>"><?= csrf_field() ?><input type="hidden" name="action" value="delete">
         <button class="button danger"><?= te('Delete') ?></button></form>
     </div>
-    <?php $mini = step_for_link($id); ?>
-    <div class="code-mini">
-      <h4>🧩 <?= te('Mini-app') ?><?= $mini ? ' · ' . e(step_type_label($mini['type'])) . ($mini['active'] ? '' : ' <span class="badge off">' . te('paused') . '</span>') : '' ?></h4>
-      <p><?= $mini ? te('People see “{title}” before they reach the target.', ['title' => $mini['title']]) : te('Show a flyer page, a sign-up form, a poll or a ticket button between the scan and the target.') ?></p>
-      <a class="button small" href="/app/step.php?id=<?= $id ?>"><?= $mini ? te('Edit mini-app') : te('Add a mini-app') ?></a>
-    </div>
   </div>
-  <div class="code-style" id="style"><?php style_form($link, '/app/qr.php?id=' . $id, csrf_field()); ?></div>
+  <div class="code-extras">
+    <?php
+    ob_start(); style_form($link, '/app/qr.php?id=' . $id, csrf_field(), true); $styleBody = ob_get_clean();
+    echo feature_card('style', 'style', style_is_default($link['style'] ?? null) ? t('Style it') : t('Style'),
+        style_is_default($link['style'] ?? null) ? t('Dots, colors, an emoji or your logo in the middle.') : style_summary($link['style'] ?? null), $styleBody);
+    $mini = step_for_link($id);
+    if ($mini) {
+        echo feature_card('mini', 'miniapp', t('Mini-app') . ' · ' . step_type_label($mini['type']),
+            t('People see “{title}” before they reach the target.', ['title' => $mini['title']]),
+            ($mini['active'] ? '' : '<p><span class="badge off">' . te('paused') . '</span></p>')
+            . '<a class="button small" href="/app/step.php?id=' . $id . '">' . te('Edit mini-app') . '</a>', true);
+    } else {
+        echo feature_card('mini', 'miniapp', t('Show a mini-app first'),
+            t('A flyer page, sign-up form, poll or ticket button between the scan and the target.'),
+            step_preset_cards(null, '', true, '/app/step.php?id=' . $id . '&preset=')
+            . '<p class="fc-foot"><a href="/app/step.php?id=' . $id . '">' . te('or start blank') . '</a></p>', false, t('New'));
+    }
+    ?>
+  </div>
 </div>
 
 <section class="block" style="margin-top:2rem">

@@ -33,12 +33,12 @@ function step_for_link(int $linkId): ?array
 function step_presets(): array
 {
     return [
-        'newsletter' => ['label' => t('Newsletter'), 'type' => 'form', 'title' => t('Stay in the loop'), 'intro' => t('Get news about upcoming shows and releases. No spam, unsubscribe any time.'), 'required' => 0,
+        'newsletter' => ['label' => t('Newsletter'), 'hint' => t('Collect emails for your news.'), 'type' => 'form', 'title' => t('Stay in the loop'), 'intro' => t('Get news about upcoming shows and releases. No spam, unsubscribe any time.'), 'required' => 0,
             'config' => ['button' => t('Sign up'), 'fields' => [
                 ['label' => t('Name'), 'type' => 'text', 'required' => false],
                 ['label' => t('Email'), 'type' => 'email', 'required' => true],
             ]]],
-        'registration' => ['label' => t('Registration'), 'type' => 'form', 'title' => t('Register now'), 'intro' => t('Fill in your details to take part.'), 'required' => 1,
+        'registration' => ['label' => t('Registration'), 'hint' => t('Sign-ups for events, races, workshops.'), 'type' => 'form', 'title' => t('Register now'), 'intro' => t('Fill in your details to take part.'), 'required' => 1,
             'config' => ['button' => t('Register'), 'fields' => [
                 ['label' => t('Name'), 'type' => 'text', 'required' => true],
                 ['label' => t('Email'), 'type' => 'email', 'required' => true],
@@ -46,24 +46,24 @@ function step_presets(): array
                 ['label' => t('Team or club'), 'type' => 'text', 'required' => false],
                 ['label' => t('T-shirt size'), 'type' => 'select', 'required' => false, 'options' => ['S', 'M', 'L', 'XL']],
             ]]],
-        'survey' => ['label' => t('Survey'), 'type' => 'form', 'title' => t('Quick question'), 'intro' => t('Takes 20 seconds and helps us a lot.'), 'required' => 0,
+        'survey' => ['label' => t('Survey'), 'hint' => t('Ask a few quick questions.'), 'type' => 'form', 'title' => t('Quick question'), 'intro' => t('Takes 20 seconds and helps us a lot.'), 'required' => 0,
             'config' => ['button' => t('Send'), 'fields' => [
                 ['label' => t('How did you hear about us?'), 'type' => 'select', 'required' => false, 'options' => [t('Poster'), 'Instagram', t('Friends'), t('Other')]],
                 ['label' => t('How do you like it? (1–5)'), 'type' => 'select', 'required' => false, 'options' => ['1', '2', '3', '4', '5']],
                 ['label' => t('Anything else?'), 'type' => 'textarea', 'required' => false],
             ]]],
-        'photo' => ['label' => t('Photo upload'), 'type' => 'form', 'title' => t('Take a photo'), 'intro' => t('Snap a picture and send it to us.'), 'required' => 1,
+        'photo' => ['label' => t('Photo upload'), 'hint' => t('People snap and send a picture.'), 'type' => 'form', 'title' => t('Take a photo'), 'intro' => t('Snap a picture and send it to us.'), 'required' => 1,
             'config' => ['button' => t('Send photo'), 'fields' => [
                 ['label' => t('Photo'), 'type' => 'photo', 'required' => true],
                 ['label' => t('Note'), 'type' => 'textarea', 'required' => false],
             ]]],
-        'poll' => ['label' => t('Poll'), 'type' => 'poll', 'title' => t('Which one should we play as an encore?'), 'intro' => '', 'required' => 0,
+        'poll' => ['label' => t('Poll'), 'hint' => t('One question, live results.'), 'type' => 'poll', 'title' => t('Which one should we play as an encore?'), 'intro' => '', 'required' => 0,
             'config' => ['options' => ['A', 'B', 'C'], 'show_results' => true]],
-        'flyer' => ['label' => t('Flyer page'), 'type' => 'page', 'title' => t('Tonight: our show'), 'intro' => t("Doors 20:00, live 21:00. Bring friends.
+        'flyer' => ['label' => t('Flyer page'), 'hint' => t('A hosted page, even without a link.'), 'type' => 'page', 'title' => t('Tonight: our show'), 'intro' => t("Doors 20:00, live 21:00. Bring friends.
 
 All infos and tickets below."), 'required' => 0,
             'config' => ['links' => [['label' => t('Tickets'), 'url' => 'https://'], ['label' => 'Instagram', 'url' => 'https://instagram.com/']]]],
-        'tickets' => ['label' => t('Tickets'), 'type' => 'info', 'title' => t('Get your ticket'), 'intro' => t('Tickets are limited. Grab yours before the show sells out.'), 'required' => 0,
+        'tickets' => ['label' => t('Tickets'), 'hint' => t('Send people to your ticket shop.'), 'type' => 'info', 'title' => t('Get your ticket'), 'intro' => t('Tickets are limited. Grab yours before the show sells out.'), 'required' => 0,
             'config' => ['button_label' => t('Buy ticket'), 'button_url' => 'https://']],
     ];
 }
@@ -108,6 +108,8 @@ function step_from_post(): array
         if (!valid_url(post('button_url'))) $errors[] = t('The button needs a full web address, starting with https://');
         $config = ['button_label' => mb_substr(post('button_label') ?: t('Open'), 0, 40), 'button_url' => post('button_url')];
     }
+    $preset = post('preset');
+    $config['preset'] = isset(step_presets()[$preset]) ? $preset : '';
     if (post('title') === '') $errors[] = t('Give the step a title.');
     return [[
         'type' => $type,

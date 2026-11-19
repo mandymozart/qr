@@ -96,8 +96,8 @@ function public_head(string $title, string $mainClass = 'narrow', array $seo = [
 <title><?= e($title) ?></title>
 <?= seo_tags($title, $seo) ?>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="/app/assets/app.css?v=19">
-<link rel="stylesheet" href="/app/assets/street.css?v=20">
+<link rel="stylesheet" href="/app/assets/app.css?v=20">
+<link rel="stylesheet" href="/app/assets/street.css?v=21">
 </head>
 <body class="public street">
 <?php street_defs(); ?>
@@ -124,7 +124,7 @@ function public_foot(): void
 <footer class="st-foot">
   <nav class="foot-links"><?php foreach (content_pages() as $pg): $pl = $pg[lang()]; ?><a href="/<?= lang() ?>/<?= e($pl['slug']) ?>"><?= e($pl['nav']) ?></a><?php endforeach; ?></nav>
   <?= te('No tracking cookies. Scans are counted anonymously.') ?><br><small><?= t('Emoji graphics: {link} (CC-BY 4.0)', ['link' => '<a href="https://github.com/jdecked/twemoji" rel="noopener">Twemoji</a>']) ?></small></footer>
-<script src="/app/assets/app.js?v=11"></script>
+<script src="/app/assets/app.js?v=12"></script>
 </body>
 </html>
 <?php

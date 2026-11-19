@@ -175,34 +175,112 @@ document.querySelectorAll('.step-drop').forEach((zone) => {
       if (rows.children.length > 1) row.remove(); else { row.querySelectorAll('input:not([type=checkbox]), textarea').forEach((i) => { i.value = ''; }); }
       renumber();
     }
-    const key = e.target.dataset && e.target.dataset.preset;
-    if (key && window.STEP_PRESETS[key]) {
-      const p = window.STEP_PRESETS[key];
-      form.querySelector('input[name=type][value=' + p.type + ']').checked = true;
-      el('title').value = p.title; el('intro').value = p.intro || '';
-      form.querySelector('input[name=required]').checked = !!p.required;
-      const c = p.config;
-      if (p.type === 'form') {
-        while (rows.children.length > 1) rows.lastElementChild.remove();
-        c.fields.forEach((f, i) => { if (i === 0) { const r = rows.firstElementChild; r.querySelector('input[name$="[label]"]').value = f.label; r.querySelector('select').value = f.type; r.querySelector('input[type=checkbox]').checked = !!f.required; r.querySelector('.opts').value = (f.options || []).join('\n'); syncOpts(r); } else addRow(f); });
-        el('button').value = c.button || '';
-      } else if (p.type === 'poll') {
-        el('poll_options').value = c.options.join('\n'); el('show_results').checked = !!c.show_results;
-      } else if (p.type === 'info') {
-        el('button_label').value = c.button_label; el('button_url').value = c.button_url;
-      } else if (p.type === 'page') {
-        form.querySelectorAll('.link-row').forEach((r, i) => { const l = (c.links || [])[i]; r.children[0].value = l ? l.label : ''; r.children[1].value = l ? l.url : ''; });
-      }
-      showType();
-      el('title').focus();
-    }
   });
+  const reveal = () => {
+    form.hidden = false;
+    document.querySelectorAll('.step-wait, .blank-start').forEach((x) => { x.hidden = true; });
+  };
+  const applyPreset = (key) => {
+    const p = window.STEP_PRESETS[key];
+    if (!p) return;
+    form.querySelector('input[name=type][value=' + p.type + ']').checked = true;
+    el('title').value = p.title; el('intro').value = p.intro || '';
+    form.querySelector('input[name=required]').checked = !!p.required;
+    const c = p.config;
+    if (p.type === 'form') {
+      while (rows.children.length > 1) rows.lastElementChild.remove();
+      c.fields.forEach((f, i) => { if (i === 0) { const r = rows.firstElementChild; r.querySelector('input[name$="[label]"]').value = f.label; r.querySelector('select').value = f.type; r.querySelector('input[type=checkbox]').checked = !!f.required; r.querySelector('.opts').value = (f.options || []).join('\n'); syncOpts(r); } else addRow(f); });
+      el('button').value = c.button || '';
+    } else if (p.type === 'poll') {
+      el('poll_options').value = c.options.join('\n'); el('show_results').checked = !!c.show_results;
+    } else if (p.type === 'info') {
+      el('button_label').value = c.button_label; el('button_url').value = c.button_url;
+    } else if (p.type === 'page') {
+      form.querySelectorAll('.link-row').forEach((r, i) => { const l = (c.links || [])[i]; r.children[0].value = l ? l.label : ''; r.children[1].value = l ? l.url : ''; });
+    }
+    showType(); reveal(); render();
+    el('title').focus({ preventScroll: true });
+  };
+  const presetRadios = document.querySelectorAll('input[name=preset][form=step-editor]');
+  presetRadios.forEach((r) => r.addEventListener('change', () => { if (r.checked) applyPreset(r.value); }));
+  document.querySelectorAll('[data-blank]').forEach((b) => b.addEventListener('click', () => {
+    form.querySelector('input[name=type][value=' + b.dataset.blank + ']').checked = true;
+    presetRadios.forEach((r) => { r.checked = false; });
+    showType(); reveal(); render(); el('title').focus({ preventScroll: true });
+  }));
+  // a type chosen by hand that doesn't match the picked preset: the preset no longer applies
+  form.addEventListener('change', (e) => {
+    if (e.target.name !== 'type') return;
+    presetRadios.forEach((r) => { if (r.checked && window.STEP_PRESETS[r.value].type !== e.target.value) r.checked = false; });
+  });
+
+  // live preview (phone in the third column)
+  const pv = document.getElementById('step-pv');
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  function render() {
+    if (!pv) return;
+    const T = pv.dataset;
+    const t = (form.querySelector('input[name=type]:checked') || {}).value;
+    if (!t || form.hidden) { pv.innerHTML = '<p class="pv-empty">' + esc(T.tEmpty) + '</p>'; return; }
+    let h = '';
+    if (t === 'page') {
+      const f = el('page_image').files && el('page_image').files[0];
+      const src = f ? URL.createObjectURL(f) : (form.querySelector('input[name=remove_image]:checked') ? '' : T.img);
+      if (src) h += '<img class="pv-img" src="' + esc(src) + '" alt="">';
+    }
+    h += '<h4>' + esc(el('title').value || '…') + '</h4>';
+    if (el('intro').value.trim()) h += '<p>' + esc(el('intro').value).replace(/\n/g, '<br>') + '</p>';
+    if (t === 'form') {
+      rows.querySelectorAll('.field-row').forEach((r) => {
+        const label = r.querySelector('input[name$="[label]"]').value.trim();
+        if (!label) return;
+        const ft = r.querySelector('select').value;
+        const req = r.querySelector('input[type=checkbox]').checked ? ' *' : '';
+        if (ft === 'checkbox') { h += '<div class="pv-check"><i></i>' + esc(label) + req + '</div>'; return; }
+        h += '<div class="pv-label">' + esc(label) + req + '</div>';
+        if (ft === 'photo' || ft === 'file') h += '<div class="pv-drop">' + esc(ft === 'photo' ? T.tPhoto : T.tFile) + '</div>';
+        else if (ft === 'select') h += '<div class="pv-in pv-sel">' + esc((r.querySelector('.opts').value.split('\n')[0] || '').trim()) + '</div>';
+        else h += '<div class="pv-in' + (ft === 'textarea' ? ' pv-tall' : '') + '"></div>';
+      });
+      h += '<div class="pv-check"><i></i>' + esc(T.tConsent) + '</div>';
+      h += '<span class="pv-btn">' + esc(el('button').value || T.tContinue) + '</span>';
+    } else if (t === 'poll') {
+      el('poll_options').value.split('\n').map((o) => o.trim()).filter(Boolean).slice(0, 8).forEach((o) => { h += '<span class="pv-opt">' + esc(o) + '</span>'; });
+    } else if (t === 'info') {
+      h += '<span class="pv-btn">' + esc(el('button_label').value || T.tOpen) + '</span>';
+    } else if (t === 'page') {
+      form.querySelectorAll('.link-row').forEach((r) => { const l = r.children[0].value.trim(); if (l) h += '<span class="pv-btn pv-link">' + esc(l) + '</span>'; });
+    }
+    if (!form.querySelector('input[name=required]').checked && t !== 'page') h += '<div class="pv-skip">' + esc(T.tSkip) + '</div>';
+    pv.innerHTML = h;
+  }
+  form.addEventListener('input', render);
+  form.addEventListener('change', render);
+  form.addEventListener('click', (e) => { if (e.target.id === 'add-field' || e.target.classList.contains('rm-field')) setTimeout(render, 0); });
+  if (window.STEP_INIT_PRESET) {
+    const r = document.querySelector('input[name=preset][form=step-editor][value="' + window.STEP_INIT_PRESET + '"]');
+    if (r) { r.checked = true; applyPreset(r.value); }
+  }
+  render();
   rows.querySelectorAll('.field-row').forEach(syncOpts);
   showType();
 })();
 
-// New code: show the mini-app preset picker only when "Show a mini-app first" is chosen
-document.querySelectorAll('.after-scan').forEach((box) => {
-  const pick = box.querySelector('.after-preset');
-  box.addEventListener('change', () => { pick.hidden = (box.querySelector('input[name=after]:checked') || {}).value !== 'mini'; });
-});
+// Feature cards (<details class="feature-card">): extras stay closed until someone wants them.
+// Inputs inside a closed card are disabled, so a closed card means "feature off" when the form is sent.
+(() => {
+  const cards = document.querySelectorAll('details.feature-card');
+  const sync = (d) => d.querySelectorAll('.fc-body input, .fc-body select, .fc-body textarea').forEach((i) => {
+    const f = i.closest('form');
+    if (f && f.contains(d)) i.disabled = !d.open; // only fields of a form around the card, not of a form inside it
+  });
+  cards.forEach((d) => { sync(d); d.addEventListener('toggle', () => sync(d)); });
+  // a link to #style (or a save that returns to it) opens that card
+  const openHash = () => {
+    const d = location.hash && document.getElementById(location.hash.slice(1));
+    if (d && d.matches('details.feature-card')) { d.open = true; d.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+  };
+  window.addEventListener('hashchange', openHash);
+  openHash();
+  document.querySelectorAll('a[href="#style"]').forEach((a) => a.addEventListener('click', () => setTimeout(openHash, 0)));
+})();
