@@ -303,6 +303,22 @@ body.public .topbar { max-width: 52rem; margin: 0 auto; }
 .public-foot a { color: var(--neutral-30); }
 .copy-field input.secret { background: var(--lavender-300); }
 
+/* ---------- Landing marketing sections ---------- */
+.section-title { font-family: var(--font-sans); font-weight: 600; font-size: clamp(1.6rem, 4vw, 2.3rem); letter-spacing: -0.02em; line-height: 1.15; margin: 0.35rem 0 1.25rem; }
+.hl { background: linear-gradient(transparent 12%, var(--lime) 12%, var(--lime) 92%, transparent 92%); color: var(--lime-50); padding: 0 0.08em; border-radius: 0.1em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.steps { display: flex; flex-direction: column; gap: 0.6rem; }
+.step { display: flex; gap: 1rem; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 0.9rem; padding: 0.9rem 1.1rem; }
+.step .n { flex: none; width: 2.6rem; height: 2.6rem; border-radius: 50%; background: var(--lime); color: var(--lime-50); font-weight: 700; font-size: 1.2rem; display: grid; place-items: center; }
+.step b { display: block; font-size: 1.1rem; font-weight: 600; }
+.step span { font-size: 0.92rem; color: var(--neutral-30); }
+.usps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+.usp { background: var(--surface); border: 1px solid var(--line); border-radius: 0.9rem; padding: 1.1rem 1.2rem; }
+.usp .ico { width: 2.4rem; height: 2.4rem; border-radius: 0.6rem; background: var(--mint); display: grid; place-items: center; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.7rem; letter-spacing: -0.1em; }
+.usp b { display: block; font-size: 1.05rem; font-weight: 600; margin-bottom: 0.25rem; }
+.usp p { margin: 0; font-size: 0.9rem; color: var(--neutral-30); line-height: 1.45; }
+.usecases { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+.usecases span { background: var(--lavender-400); color: #2d0d41; border-radius: 2rem; padding: 0.35rem 0.9rem; font-size: 0.9rem; }
+
 /* ---------- Mobile ---------- */
 .mobile-nav { display: none; }
 @media (max-width: 768px) {
@@ -313,8 +329,12 @@ body.public .topbar { max-width: 52rem; margin: 0 auto; }
   .mobile-nav a[aria-current="page"] { background: var(--mint); }
   .form-grid, .qr-panel, .tiers { grid-template-columns: 1fr; }
   .quick-create { flex-direction: column; }
+  .quick-create .button { justify-content: center; }
+  .usps { grid-template-columns: 1fr; }
   .qr-panel .qr-big { max-width: 14rem; }
   .row { flex-wrap: wrap; }
   .row .spark { display: none; }
   .row .tools { width: 100%; justify-content: flex-end; }
 }
+
+@media (min-width: 769px) and (max-width: 900px) { .usps { grid-template-columns: 1fr 1fr; } }

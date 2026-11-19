@@ -132,6 +132,36 @@ public_head('qr · QR codes you can change later');
 </section>
 <?php endif; ?>
 
+<section class="block">
+  <span class="entity-type">How it works</span>
+  <h2 class="section-title">A QR code in 10 seconds.</h2>
+  <div class="steps">
+    <div class="step"><div class="n">1</div><div><b>Paste a link</b><span>Website, Instagram, ticket shop, menu, anything with an address.</span></div></div>
+    <div class="step"><div class="n">2</div><div><b>Get your QR code</b><span>Download it as PNG or SVG, sharp at any size, ready to print.</span></div></div>
+    <div class="step"><div class="n">3</div><div><b>Change the target any time</b><span>The printed code stays the same. Only where it leads changes.</span></div></div>
+  </div>
+</section>
+
+<section class="block">
+  <span class="entity-type">Why qr</span>
+  <h2 class="section-title">Print once. <span class="hl">Stay flexible.</span></h2>
+  <div class="usps">
+    <div class="usp"><div class="ico">↻</div><b>Never reprint</b><p>Event moved, page renamed, offer over? Point the code somewhere else. Posters and flyers keep working.</p></div>
+    <div class="usp"><div class="ico">▁▃▆</div><b>See what works</b><p>Scans per day, unique visitors, city, device, language and time of day.</p></div>
+    <div class="usp"><div class="ico">◎</div><b>No creepy tracking</b><p>No tracking cookies, no stored IP addresses. Your visitors stay anonymous.</p></div>
+    <div class="usp"><div class="ico">⌁</div><b>Pause any time</b><p>Switch a code off and scanners see a friendly note instead of an old page.</p></div>
+    <div class="usp"><div class="ico">▦</div><b>Campaigns &amp; bulk</b><p>Make 50 codes for 50 posters in one go and compare which spot gets scanned most.</p></div>
+    <div class="usp"><div class="ico">✓</div><b>Free, no sign-up</b><p>Start right away. Create an account when you want to keep more codes.</p></div>
+  </div>
+</section>
+
+<section class="block">
+  <span class="entity-type">Good for</span>
+  <div class="usecases">
+    <span>Posters &amp; flyers</span><span>Event tickets</span><span>Menus</span><span>Stickers</span><span>Merch</span><span>Business cards</span><span>Shop windows</span><span>Packaging</span>
+  </div>
+</section>
+
 <section class="block tiers">
   <div>
     <h3>Without an account</h3>

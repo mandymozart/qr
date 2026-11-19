@@ -95,7 +95,7 @@ function public_head(string $title): void
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= e($title) ?></title>
 <meta name="description" content="Free QR codes you can change later, with scan stats. No tracking cookies.">
-<link rel="stylesheet" href="/app/assets/app.css?v=5">
+<link rel="stylesheet" href="/app/assets/app.css?v=6">
 </head>
 <body class="public">
 <header class="topbar">

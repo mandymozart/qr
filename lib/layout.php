@@ -36,7 +36,7 @@ function page_head(string $title, ?string $active = null): void
 <meta name="robots" content="noindex">
 <title><?= e($title) ?> · qr</title>
 <link rel="icon" href="data:image/svg+xml,<?= rawurlencode(str_replace('currentColor', '%23252321', ICONS['logo'])) ?>">
-<link rel="stylesheet" href="/app/assets/app.css?v=5">
+<link rel="stylesheet" href="/app/assets/app.css?v=6">
 </head>
 <body>
 <?php if ($user && !empty($user['impersonator_id'])): ?>
