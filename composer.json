@@ -5,7 +5,8 @@
     "require": {
         "php": ">=8.1",
         "phpmailer/phpmailer": "^6.9",
-        "chillerlan/php-qrcode": "^5.0"
+        "chillerlan/php-qrcode": "^5.0",
+        "maxmind-db/reader": "^1.11"
     },
     "config": {
         "optimize-autoloader": true,

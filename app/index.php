@@ -69,13 +69,13 @@ page_head('Codes', 'codes');
 <div class="list" id="links">
 <?php foreach ($links as $l):
     $counts = array_map(fn($d) => $spark[$l['id']][$d] ?? 0, $days); ?>
-  <div class="row hoverable" data-search="<?= e($l['title'] . ' ' . $l['code'] . ' ' . $l['target_url'] . ' ' . $l['campaign_name']) ?>">
+  <div class="row hoverable" data-search="<?= e($l['title'] . ' ' . $l['placement'] . ' ' . $l['code'] . ' ' . $l['target_url'] . ' ' . $l['campaign_name']) ?>">
     <a href="/app/code.php?id=<?= $l['id'] ?>"><img class="qr-thumb" src="/app/qr.php?id=<?= $l['id'] ?>&amp;v=<?= e($l['code']) ?>" alt="" loading="lazy"></a>
     <div class="main">
       <h4><a href="/app/code.php?id=<?= $l['id'] ?>" style="text-decoration:none"><?= e($l['title']) ?></a>
         <?php if ($l['campaign_name']): ?><span class="badge campaign"><?= e($l['campaign_name']) ?></span><?php endif; ?>
         <?php if (!$l['active']): ?><span class="badge off">paused</span><?php endif; ?></h4>
-      <div class="meta"><span class="url">?c=<?= e($l['code']) ?></span><span class="target">→ <?= e($l['target_url']) ?></span></div>
+      <div class="meta"><span class="url">?c=<?= e($l['code']) ?></span><?php if ($l['placement'] !== ''): ?><span>📍 <?= e($l['placement']) ?></span><?php endif; ?><span class="target">→ <?= e($l['target_url']) ?></span></div>
     </div>
     <?= sparkline($counts) ?>
     <div class="stat"><strong><?= (int) $l['scans'] ?></strong><span>scans</span></div>

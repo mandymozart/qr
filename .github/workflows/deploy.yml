@@ -68,4 +68,5 @@ jobs:
             composer.json
             composer.lock
             README.md
+            PRIVACY.md
             lib/config.sample.php

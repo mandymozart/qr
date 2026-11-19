@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 page_head('Sign in');
 ?>
-<a class="logo" href="/app/"><?= ICONS['logo'] ?>qr</a>
+<a class="logo" href="/app/">qr</a>
 <p class="entity-description">Sign in with your password, or get a secret link by mail.</p>
 
 <?php if ($notice): ?><div class="notice info"><?= e($notice) ?></div><?php endif; ?>

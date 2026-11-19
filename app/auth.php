@@ -21,7 +21,7 @@ if ($user && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
 page_head('Sign in');
 ?>
-<a class="logo" href="/app/"><?= ICONS['logo'] ?>qr</a>
+<a class="logo" href="/app/">qr</a>
 <?php if ($user): ?>
   <p class="entity-description">Welcome<?= $user['name'] ? ', ' . e($user['name']) : '' ?>. You're signing in as <strong><?= e($user['email']) ?></strong>.</p>
   <form method="post">

@@ -3,36 +3,19 @@ declare(strict_types=1);
 
 /*
  * Public redirect endpoint:  https://qr.viennastruggle.at/?c=CODE
- * Logs the scan and 302-redirects to the target. Without ?c= → /app/.
+ * Logs the scan (no cookies, no IP stored) and 302-redirects to the target.
+ * Without ?c= → /app/.
  */
 require __DIR__ . '/lib/bootstrap.php';
+require __DIR__ . '/lib/qr.php';
+require __DIR__ . '/lib/track.php';
 
 $code = (string) ($_GET['c'] ?? '');
 if ($code === '') redirect('/app/');
 
-function device_info(string $ua): array
-{
-    if ($ua === '' || preg_match('~bot|crawl|spider|slurp|facebookexternalhit|preview|curl|wget|python|headless~i', $ua)) return ['bot', ''];
-    $os = match (true) {
-        (bool) preg_match('~iphone|ipad|ipod~i', $ua) => 'iOS',
-        (bool) preg_match('~android~i', $ua) => 'Android',
-        (bool) preg_match('~windows~i', $ua) => 'Windows',
-        (bool) preg_match('~mac os~i', $ua) => 'macOS',
-        (bool) preg_match('~linux~i', $ua) => 'Linux',
-        default => '',
-    };
-    $device = preg_match('~mobile|iphone|ipod|android.*mobile|windows phone~i', $ua) ? 'mobile'
-        : (preg_match('~ipad|tablet|android~i', $ua) ? 'tablet' : 'desktop');
-    return [$device, $os];
-}
-
 try {
-    $link = q('SELECT id, target_url FROM links WHERE code = ? AND active = 1', [$code])->fetch();
-    if ($link) {
-        [$device, $os] = device_info((string) ($_SERVER['HTTP_USER_AGENT'] ?? ''));
-        $ref = (string) parse_url((string) ($_SERVER['HTTP_REFERER'] ?? ''), PHP_URL_HOST);
-        q('INSERT INTO hits (link_id, device, os, referer) VALUES (?, ?, ?, ?)', [$link['id'], $device, $os, substr($ref, 0, 190)]);
-    }
+    $link = q('SELECT l.id, l.code, l.target_url, l.utm, c.name AS campaign FROM links l
+               LEFT JOIN campaigns c ON c.id = l.campaign_id WHERE l.code = ? AND l.active = 1', [$code])->fetch();
 } catch (Throwable $ex) {
     error_log('qr redirect error: ' . $ex->getMessage());
     $link = null;
@@ -40,9 +23,29 @@ try {
 }
 
 if ($link) {
+    // Send the visitor on their way first, record afterwards.
     header('Cache-Control: no-store');
     header('Referrer-Policy: no-referrer');
-    header('Location: ' . $link['target_url'], true, 302);
+    header('Location: ' . ($link['utm'] ? with_utm($link['target_url'], $link['code'], $link['campaign']) : $link['target_url']), true, 302);
+    header('Content-Length: 0');
+    if (function_exists('fastcgi_finish_request')) fastcgi_finish_request();
+
+    try {
+        $ua = (string) ($_SERVER['HTTP_USER_AGENT'] ?? '');
+        $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? '');
+        [$device, $os] = device_info($ua);
+        $ref = (string) parse_url((string) ($_SERVER['HTTP_REFERER'] ?? ''), PHP_URL_HOST);
+        [$country, $city] = $device === 'bot' ? ['', ''] : geo_lookup($ip);
+        q('INSERT INTO hits (link_id, device, os, referer, visitor, country, city, lang, browser) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+            $link['id'], $device, $os, substr($ref, 0, 190),
+            $device === 'bot' ? '' : visitor_id($ip, $ua),
+            $country, $city, accept_language(), $device === 'bot' ? '' : browser_name($ua),
+        ]);
+        unset($ip);
+        if (function_exists('fastcgi_finish_request')) maintenance();
+    } catch (Throwable $ex) {
+        error_log('qr tracking error: ' . $ex->getMessage());
+    }
     exit;
 }
 

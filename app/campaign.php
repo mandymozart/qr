@@ -57,9 +57,10 @@ page_head($c['name'], 'campaigns');
   <div class="list-header"><span><input type="search" placeholder="Search…" data-filter="#grid" aria-label="Search codes"></span><span>sorted by creation</span></div>
   <div class="qr-grid" id="grid">
   <?php foreach ($links as $l): ?>
-    <a class="qr-card" href="/app/code.php?id=<?= $l['id'] ?>" data-search="<?= e($l['title'] . ' ' . $l['code']) ?>">
+    <a class="qr-card" href="/app/code.php?id=<?= $l['id'] ?>" data-search="<?= e($l['title'] . ' ' . $l['placement'] . ' ' . $l['code']) ?>">
       <img src="/app/qr.php?id=<?= $l['id'] ?>&amp;v=<?= e($l['code']) ?>" alt="" loading="lazy">
       <h4><?= e($l['title']) ?><?= $l['active'] ? '' : ' <span class="badge off">paused</span>' ?></h4>
+      <?php if ($l['placement'] !== ''): ?><div class="meta"><span><?= e($l['placement']) ?></span></div><?php endif; ?>
       <div class="meta"><span class="mono">?c=<?= e($l['code']) ?></span><span><?= (int) $l['scans'] ?> scans</span></div>
     </a>
   <?php endforeach; ?>

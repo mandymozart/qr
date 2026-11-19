@@ -26,7 +26,11 @@ $daily = daily_counts('l.id = ?', [$id], 30);
 $total = (int) q("SELECT COUNT(*) FROM hits WHERE link_id = ? AND device <> 'bot'", [$id])->fetchColumn();
 $last = q("SELECT MAX(created_at) FROM hits WHERE link_id = ? AND device <> 'bot'", [$id])->fetchColumn();
 $devices = q("SELECT device, COUNT(*) n FROM hits WHERE link_id = ? AND device <> 'bot' GROUP BY device ORDER BY n DESC", [$id])->fetchAll(PDO::FETCH_KEY_PAIR);
-$recent = q("SELECT created_at, device, os, referer FROM hits WHERE link_id = ? AND device <> 'bot' ORDER BY id DESC LIMIT 25", [$id])->fetchAll();
+$recent = q("SELECT created_at, device, os, referer, city, country, lang, browser FROM hits WHERE link_id = ? AND device <> 'bot' ORDER BY id DESC LIMIT 25", [$id])->fetchAll();
+$uniques = (int) q('SELECT ' . UNIQUES_SQL . " FROM hits h WHERE h.link_id = ? AND h.device <> 'bot'", [$id])->fetchColumn();
+$places = q('SELECT ' . PLACE_SQL . " d, COUNT(*) n FROM hits h WHERE h.link_id = ? AND h.device <> 'bot' GROUP BY d ORDER BY n DESC LIMIT 10", [$id])->fetchAll();
+$langs = q("SELECT h.lang d, COUNT(*) n FROM hits h WHERE h.link_id = ? AND h.device <> 'bot' GROUP BY h.lang ORDER BY n DESC LIMIT 8", [$id])->fetchAll();
+$browsers = q("SELECT CASE WHEN h.browser <> '' THEN h.browser ELSE '— unknown —' END d, COUNT(*) n FROM hits h WHERE h.link_id = ? AND h.device <> 'bot' GROUP BY d ORDER BY n DESC LIMIT 8", [$id])->fetchAll();
 $mobilePct = $total ? round((($devices['mobile'] ?? 0) + ($devices['tablet'] ?? 0)) / $total * 100) : 0;
 
 page_head($link['title'], 'codes');
@@ -53,6 +57,8 @@ page_head($link['title'], 'codes');
     </div>
     <dl class="kv">
       <dt>Target</dt><dd class="mono"><a href="<?= e($link['target_url']) ?>" target="_blank" rel="noopener noreferrer"><?= e($link['target_url']) ?></a></dd>
+      <dt>Placement</dt><dd><?= $link['placement'] !== '' ? e($link['placement']) : '—' ?></dd>
+      <dt>UTM tags</dt><dd><?= $link['utm'] ? 'on' : 'off' ?></dd>
       <dt>Campaign</dt><dd><?= $link['campaign_name'] ? e($link['campaign_name']) : '—' ?></dd>
       <dt>Created</dt><dd><?= e(fmt_date($link['created_at'])) ?></dd>
     </dl>
@@ -70,6 +76,7 @@ page_head($link['title'], 'codes');
   <h3>Scans</h3><p class="hint">Bots and link previews are not counted.</p>
   <div class="tiles">
     <div class="tile"><div class="label">Total</div><div class="value"><?= number_format($total) ?></div></div>
+    <div class="tile"><div class="label">Unique visitors</div><div class="value"><?= number_format($uniques) ?></div><div class="sub">per day</div></div>
     <div class="tile"><div class="label">30 days</div><div class="value"><?= number_format(array_sum($daily)) ?></div></div>
     <div class="tile"><div class="label">Mobile</div><div class="value"><?= $mobilePct ?>%</div></div>
     <div class="tile"><div class="label">Last scan</div><div class="value" style="font-size:1.1rem;padding-top:.6rem"><?= e(ago($last ?: null)) ?></div></div>
@@ -78,11 +85,23 @@ page_head($link['title'], 'codes');
 </section>
 
 <section class="block">
+  <h3>Where</h3><p class="hint">Approximate location from the IP address. The IP itself is never stored.</p>
+  <?= share_table($places, 'Place') ?>
+</section>
+
+<section class="block">
+  <h3>Language &amp; browser</h3><p class="hint">Phone language setting and the app or browser that opened the link.</p>
+  <?= share_table(array_map(fn($r) => ['d' => lang_name($r['d']), 'n' => $r['n']], $langs), 'Language') ?>
+  <div style="height:1rem"></div>
+  <?= share_table($browsers, 'Browser') ?>
+</section>
+
+<section class="block">
   <h3>Recent scans</h3><p class="hint">Newest first, last 25.</p>
   <?php if (!$recent): ?><div class="empty">No scans yet. Scan the code with your phone to test it.</div><?php else: ?>
-  <table class="data"><thead><tr><th>When</th><th>Device</th><th>Referrer</th></tr></thead><tbody>
+  <table class="data"><thead><tr><th>When</th><th>Where</th><th>Device</th><th>Browser</th><th>Lang</th></tr></thead><tbody>
   <?php foreach ($recent as $h): ?>
-    <tr><td><?= e(fmt_date($h['created_at'], 'M j, H:i')) ?></td><td><?= e($h['device'] . ($h['os'] ? ' · ' . $h['os'] : '')) ?></td><td><?= e($h['referer'] ?: '—') ?></td></tr>
+    <tr><td><?= e(fmt_date($h['created_at'], 'M j, H:i')) ?></td><td><?= e($h['city'] ? $h['city'] . ', ' . $h['country'] : ($h['country'] ?: '—')) ?></td><td><?= e($h['device'] . ($h['os'] ? ' · ' . $h['os'] : '')) ?></td><td><?= e($h['browser'] ?: '—') ?></td><td><?= e($h['lang'] ?: '—') ?></td></tr>
   <?php endforeach; ?>
   </tbody></table>
   <?php endif; ?>

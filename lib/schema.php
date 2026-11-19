@@ -5,15 +5,15 @@ declare(strict_types=1);
  * Creates tables on first run and seeds the bootstrap admin (ADMIN_USER).
  * Cheap check on every request: one query against a 1-row table.
  */
-const SCHEMA_VERSION = 1;
+const SCHEMA_VERSION = 2;
 
 function migrate(PDO $pdo): void
 {
     try {
-        $v = (int) $pdo->query('SELECT version FROM schema_version LIMIT 1')->fetchColumn();
+        $v = (int) $pdo->query('SELECT MAX(version) FROM schema_version')->fetchColumn();
         if ($v >= SCHEMA_VERSION) return;
     } catch (PDOException) {
-        // table missing → fresh install
+        $v = 0; // table missing → fresh install
     }
 
     $pdo->exec("CREATE TABLE IF NOT EXISTS schema_version (version INT NOT NULL) ENGINE=InnoDB");
@@ -79,6 +79,20 @@ function migrate(PDO $pdo): void
         $st->execute([$email]);
     }
 
+    // v2: consent-free analytics (placement, UTM passthrough, daily unique visitors, geo, language, browser)
+    if ($v < 2) {
+        $pdo->exec("ALTER TABLE links
+            ADD COLUMN IF NOT EXISTS placement VARCHAR(190) NOT NULL DEFAULT '' AFTER title,
+            ADD COLUMN IF NOT EXISTS utm TINYINT(1) NOT NULL DEFAULT 1 AFTER active");
+        $pdo->exec("ALTER TABLE hits
+            ADD COLUMN IF NOT EXISTS visitor CHAR(16) NOT NULL DEFAULT '',
+            ADD COLUMN IF NOT EXISTS country CHAR(2) NOT NULL DEFAULT '',
+            ADD COLUMN IF NOT EXISTS city VARCHAR(80) NOT NULL DEFAULT '',
+            ADD COLUMN IF NOT EXISTS lang VARCHAR(8) NOT NULL DEFAULT '',
+            ADD COLUMN IF NOT EXISTS browser VARCHAR(24) NOT NULL DEFAULT ''");
+        $pdo->exec("CREATE TABLE IF NOT EXISTS salts (day DATE PRIMARY KEY, salt CHAR(64) NOT NULL) ENGINE=InnoDB");
+    }
+
     $pdo->exec('DELETE FROM schema_version');
     $pdo->exec('INSERT INTO schema_version (version) VALUES (' . SCHEMA_VERSION . ')');
 }
@@ -96,10 +110,13 @@ function migrate_sqlite(PDO $pdo): void
     $pdo->exec("CREATE TABLE campaigns (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         name TEXT NOT NULL, created_at TEXT NOT NULL $now)");
     $pdo->exec("CREATE TABLE links (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        campaign_id INTEGER NULL REFERENCES campaigns(id) ON DELETE SET NULL, code TEXT NOT NULL UNIQUE, title TEXT NOT NULL,
-        target_url TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1, created_at TEXT NOT NULL $now, updated_at TEXT NOT NULL $now)");
+        campaign_id INTEGER NULL REFERENCES campaigns(id) ON DELETE SET NULL, code TEXT NOT NULL UNIQUE, title TEXT NOT NULL, placement TEXT NOT NULL DEFAULT '',
+        target_url TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1, utm INTEGER NOT NULL DEFAULT 1, created_at TEXT NOT NULL $now, updated_at TEXT NOT NULL $now)");
     $pdo->exec("CREATE TABLE hits (id INTEGER PRIMARY KEY AUTOINCREMENT, link_id INTEGER NOT NULL REFERENCES links(id) ON DELETE CASCADE,
-        created_at TEXT NOT NULL $now, device TEXT NOT NULL DEFAULT 'other', os TEXT NOT NULL DEFAULT '', referer TEXT NOT NULL DEFAULT '')");
+        created_at TEXT NOT NULL $now, device TEXT NOT NULL DEFAULT 'other', os TEXT NOT NULL DEFAULT '', referer TEXT NOT NULL DEFAULT '',
+        visitor TEXT NOT NULL DEFAULT '', country TEXT NOT NULL DEFAULT '', city TEXT NOT NULL DEFAULT '',
+        lang TEXT NOT NULL DEFAULT '', browser TEXT NOT NULL DEFAULT '')");
+    $pdo->exec("CREATE TABLE salts (day TEXT PRIMARY KEY, salt TEXT NOT NULL)");
     $pdo->exec("CREATE INDEX link_time ON hits (link_id, created_at)");
     $st = $pdo->prepare("INSERT INTO users (email, name, role) VALUES (?, 'Admin', 'admin')");
     $st->execute([(string) config('admin_user', 'admin')]);

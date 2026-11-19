@@ -7,7 +7,7 @@ $id = int_param('id');
 $link = $id ? find_link($id, $user) : null;
 if ($id && !$link) { http_response_code(404); exit('Not found'); }
 
-$data = $link ?? ['title' => '', 'target_url' => 'https://', 'code' => '', 'campaign_id' => int_param('campaign') ?: null, 'active' => 1];
+$data = $link ?? ['title' => '', 'target_url' => 'https://', 'code' => '', 'campaign_id' => int_param('campaign') ?: null, 'active' => 1, 'placement' => '', 'utm' => 1];
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -18,6 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'code' => post('code'),
         'campaign_id' => (int) post('campaign_id') ?: null,
         'active' => isset($_POST['active']) ? 1 : 0,
+        'placement' => mb_substr(post('placement'), 0, 190),
+        'utm' => isset($_POST['utm']) ? 1 : 0,
     ];
     if ($data['title'] === '') $errors['title'] = 'Give it a name.';
     if (!valid_url($data['target_url'])) $errors['target_url'] = 'Needs to be a full http(s):// URL.';
@@ -33,12 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$errors) {
         if ($link) {
-            q('UPDATE links SET title = ?, target_url = ?, code = ?, campaign_id = ?, active = ? WHERE id = ? AND user_id = ?',
-                [$data['title'], $data['target_url'], $data['code'], $data['campaign_id'], $data['active'], $id, $user['id']]);
+            q('UPDATE links SET title = ?, target_url = ?, code = ?, campaign_id = ?, active = ?, placement = ?, utm = ? WHERE id = ? AND user_id = ?',
+                [$data['title'], $data['target_url'], $data['code'], $data['campaign_id'], $data['active'], $data['placement'], $data['utm'], $id, $user['id']]);
             flash('Saved.');
         } else {
-            q('INSERT INTO links (user_id, campaign_id, code, title, target_url, active) VALUES (?, ?, ?, ?, ?, ?)',
-                [$user['id'], $data['campaign_id'], $data['code'], $data['title'], $data['target_url'], $data['active']]);
+            q('INSERT INTO links (user_id, campaign_id, code, title, target_url, active, placement, utm) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                [$user['id'], $data['campaign_id'], $data['code'], $data['title'], $data['target_url'], $data['active'], $data['placement'], $data['utm']]);
             $id = (int) db()->lastInsertId();
             flash('Code created.');
         }
@@ -71,6 +73,10 @@ page_head($link ? 'Edit code' : 'New code', 'codes');
     <div class="field"><label for="campaign_id">Campaign</label><?= campaign_select($user, $data['campaign_id'] ? (int) $data['campaign_id'] : null) ?>
       <div class="field-hint"><a href="/app/campaigns.php">Manage campaigns</a></div></div>
   </div>
+  <div class="field"><label for="placement">Placement <span style="font-weight:400;color:var(--neutral-20)">(optional)</span></label>
+    <input id="placement" name="placement" value="<?= e($data['placement']) ?>" placeholder="e.g. Poster, Westbahnhof U6 exit">
+    <div class="field-hint">Where the code is printed or hung. Shows up in the stats.</div></div>
+  <div class="field check"><label><input type="checkbox" name="utm" value="1"<?= $data['utm'] ? ' checked' : '' ?>> Add UTM tags to the target (<code>utm_source=qr&amp;utm_campaign=…&amp;utm_content=<?= e($data['code'] ?: 'code') ?></code>), so your website analytics see where visitors came from</label></div>
   <div class="field check"><label><input type="checkbox" name="active" value="1"<?= $data['active'] ? ' checked' : '' ?>> Active (paused codes show a "not found" page)</label></div>
   <div class="form-actions" style="justify-content:flex-start">
     <button class="button"><?= $link ? 'Save' : 'Create code' ?></button>

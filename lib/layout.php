@@ -37,7 +37,7 @@ function page_head(string $title, ?string $active = null): void
 <body>
 <?php if ($user): ?>
 <header class="topbar">
-  <a class="logo" href="/app/"><?= ICONS['logo'] ?>qr <small><?= e(parse_url(base_url(), PHP_URL_HOST)) ?></small></a>
+  <a class="logo" href="/app/">qr</a>
   <div class="actions">
     <a class="nav-button" href="/app/account.php" title="<?= e($user['email']) ?>"><?= e($user['name'] ?: $user['email']) ?><?= $user['role'] === 'admin' ? ' <span class="badge admin">admin</span>' : '' ?></a>
     <form class="inline-form" method="post" action="/app/logout.php"><?= csrf_field() ?><button class="nav-button">Sign out</button></form>
@@ -108,4 +108,17 @@ function campaign_select(array $user, ?int $selected, string $name = 'campaign_i
         $out .= '<option value="' . $c['id'] . '"' . ((int) $selected === (int) $c['id'] ? ' selected' : '') . '>' . e($c['name']) . '</option>';
     }
     return $out . '</select>';
+}
+
+function share_table(array $rows, string $label, ?callable $link = null): string
+{
+    if (!$rows) return '<div class="empty">No scans in this period.</div>';
+    $max = max(array_column($rows, 'n'));
+    $sum = array_sum(array_column($rows, 'n'));
+    $h = '<table class="data"><thead><tr><th>' . e($label) . '</th><th style="width:40%"></th><th class="num">Scans</th><th class="num">%</th></tr></thead><tbody>';
+    foreach ($rows as $r) {
+        $name = $link ? $link($r) : e($r['name'] ?? $r['d'] ?? '—');
+        $h .= '<tr><td>' . $name . '</td><td><div class="hbar" style="width:' . round($r['n'] / $max * 100) . '%"></div></td><td class="num">' . (int) $r['n'] . '</td><td class="num">' . round($r['n'] / $sum * 100) . '</td></tr>';
+    }
+    return $h . '</tbody></table>';
 }
