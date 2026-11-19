@@ -1,0 +1,5 @@
+/vendor/
+/lib/config.php
+.env
+.claude/settings.local.json
+/lib/dev.sqlite

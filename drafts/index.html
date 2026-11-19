@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>qr — design drafts</title>
+<link rel="stylesheet" href="../app/assets/app.css">
+<style>
+  .draft-switch { position: fixed; right: 1rem; bottom: 1rem; z-index: 200; display: flex; gap: .25rem; background: var(--grey-900); padding: .35rem; border-radius: 1rem; }
+  .draft-switch button { font: inherit; font-size: .8rem; border: 0; border-radius: .8rem; padding: .3rem .8rem; background: transparent; color: #fff; cursor: pointer; }
+  .draft-switch button.on { background: var(--lime); color: var(--lime-50); }
+  .draft { display: none; } .draft.on { display: block; }
+  .draft-note { margin: 0 0 1rem; font-size: .8rem; color: var(--neutral-30); font-family: var(--font-mono); }
+</style>
+</head>
+<body>
+
+<script>
+// fake QR for drafts only
+function fakeQR(seed){let s=seed*9301+49297,c='';const n=21;for(let y=0;y<n;y++)for(let x=0;x<n;x++){s=(s*9301+49297)%233280;const f=(x<7&&y<7)||(x>13&&y<7)||(x<7&&y>13);const on=f?((x%14<7&&y%14<7)&&(x%14==0||x%14==6||y%14==0||y%14==6||(x%14>1&&x%14<5&&y%14>1&&y%14<5))):s/233280>.55;if(on)c+=`<rect x="${x}" y="${y}" width="1" height="1"/>`}return 'data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 23 23" shape-rendering="crispEdges"><rect x="-1" y="-1" width="23" height="23" fill="#fff"/><g fill="#252321">${c}</g></svg>`)}
+function spark(seed){let s=seed,r='';for(let i=0;i<14;i++){s=(s*9301+49297)%233280;const h=Math.max(1,Math.round(s/233280*22));r+=`<rect x="${i*6}" y="${24-h}" width="4" height="${h}" rx="1"/>`}return `<svg class="spark" viewBox="0 0 84 24">${r}</svg>`}
+const LOGO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM18 18h3v3h-3zM14 20h1M20 14h1"/></svg>`;
+</script>
+
+<div class="draft-switch">
+  <button data-d="a" class="on">A · akin list</button>
+  <button data-d="b">B · table + sparks</button>
+  <button data-d="c">C · QR cards</button>
+  <button data-d="d">Detail + stats</button>
+  <button data-d="e">Login</button>
+</div>
+
+<!-- shared chrome -->
+<template id="chrome">
+  <header class="topbar">
+    <a class="logo" href="#"><span class="lg"></span>qr <small>viennastruggle</small></a>
+    <div class="actions">
+      <a class="nav-button" href="#">tilman</a>
+      <a class="nav-button" href="#">Sign out</a>
+    </div>
+  </header>
+</template>
+<template id="side">
+  <aside class="sidebar"><nav><ul>
+    <li><a class="menu-item" data-k="codes" href="#"><span class="icon">▦</span><div><h4>Codes</h4><p>All your QR links</p></div></a></li>
+    <li><a class="menu-item" data-k="campaigns" href="#"><span class="icon">◫</span><div><h4>Campaigns</h4><p>Groups &amp; bulk codes</p></div></a></li>
+    <li><a class="menu-item" data-k="stats" href="#"><span class="icon">▁▃▆</span><div><h4>Stats</h4><p>Scans over time</p></div></a></li>
+    <li class="group">Admin</li>
+    <li><a class="menu-item" data-k="users" href="#"><span class="icon">☺</span><div><h4>Users</h4><p>Invite, block, resend</p></div></a></li>
+  </ul></nav></aside>
+</template>
+
+<!-- ========== A: akin list ========== -->
+<div class="draft on" id="a">
+  <div class="chrome"></div>
+  <div class="shell">
+    <div class="side" data-active="codes"></div>
+    <main class="content narrow">
+      <p class="draft-note">Draft A: faithful akin. Narrow column, entity header, menu-style rows.</p>
+      <div class="page-head">
+        <div>
+          <span class="entity-type">Codes</span>
+          <h2 class="entity-title">Your QR links</h2>
+          <p class="entity-description">Every code redirects through <span class="url">qr.viennastruggle.at?c=…</span></p>
+        </div>
+        <div><a class="button ghost" href="#">Bulk</a> <a class="button" href="#">+ New code</a></div>
+      </div>
+      <div class="list-header"><span><input placeholder="Search…"></span><span><select><option>All campaigns</option></select> · 7 codes</span></div>
+      <div class="list" id="listA"></div>
+    </main>
+  </div>
+</div>
+
+<!-- ========== B: table ========== -->
+<div class="draft" id="b">
+  <div class="chrome"></div>
+  <div class="shell">
+    <div class="side" data-active="codes"></div>
+    <main class="content">
+      <p class="draft-note">Draft B: wide, data-dense. Thumbnail, 14-day sparkline, inline actions.</p>
+      <div class="page-head">
+        <div><span class="entity-type">Codes</span><h2 class="entity-title">Your QR links</h2></div>
+        <div><a class="button ghost" href="#">Bulk</a> <a class="button" href="#">+ New code</a></div>
+      </div>
+      <div class="tiles">
+        <div class="tile"><div class="label">Scans today</div><div class="value">23</div><div class="sub">+8 vs yesterday</div></div>
+        <div class="tile"><div class="label">Last 30 days</div><div class="value">1,204</div></div>
+        <div class="tile"><div class="label">Codes</div><div class="value">7</div><div class="sub">2 campaigns</div></div>
+      </div>
+      <div class="list" id="listB"></div>
+    </main>
+  </div>
+</div>
+
+<!-- ========== C: cards ========== -->
+<div class="draft" id="c">
+  <div class="chrome"></div>
+  <div class="shell">
+    <div class="side" data-active="campaigns"></div>
+    <main class="content">
+      <p class="draft-note">Draft C: campaign view as QR grid. Good for bulk print runs.</p>
+      <div class="page-head">
+        <div><span class="entity-type">Campaign</span><h2 class="entity-title">Poster run · November</h2>
+          <p class="entity-description">24 codes · 512 scans · created Nov 19, 2026</p></div>
+        <div><a class="button ghost" href="#">Download all (.zip)</a> <a class="button" href="#">+ Add codes</a></div>
+      </div>
+      <div class="qr-grid" id="gridC"></div>
+    </main>
+  </div>
+</div>
+
+<!-- ========== D: detail ========== -->
+<div class="draft" id="d">
+  <div class="chrome"></div>
+  <div class="shell">
+    <div class="side" data-active="codes"></div>
+    <main class="content narrow">
+      <p class="draft-note">Link detail: QR + downloads, settings, scans chart, recent scans.</p>
+      <span class="entity-type">Code</span>
+      <h2 class="entity-title">Flyer Westbahnhof <span class="badge campaign">Poster run</span> <span class="badge on">active</span></h2>
+      <div class="qr-panel" style="margin-top:1rem">
+        <div><div class="qr-big"><img id="bigQR" alt=""></div>
+          <div class="dl"><a class="button small ghost" href="#">SVG</a><a class="button small ghost" href="#">PNG</a></div></div>
+        <div>
+          <dl class="kv">
+            <dt>Short</dt><dd><span class="url">qr.viennastruggle.at?c=k7Fq2</span></dd>
+            <dt>Target</dt><dd class="mono">https://viennastruggle.at/events/winter</dd>
+            <dt>Campaign</dt><dd>Poster run · November</dd>
+            <dt>Created</dt><dd>Nov 19, 2026</dd>
+          </dl>
+          <div class="form-actions" style="justify-content:flex-start"><a class="button" href="#">Edit</a><a class="button ghost" href="#">Pause</a><a class="button danger" href="#">Delete</a></div>
+        </div>
+      </div>
+      <section class="block" style="margin-top:2rem">
+        <h3>Scans</h3><p class="hint">Last 30 days</p>
+        <div class="tiles"><div class="tile"><div class="label">Total</div><div class="value">312</div></div><div class="tile"><div class="label">30 days</div><div class="value">204</div></div><div class="tile"><div class="label">Mobile</div><div class="value">91%</div></div><div class="tile"><div class="label">Last scan</div><div class="value" style="font-size:1.1rem;padding-top:.5rem">2 min ago</div></div></div>
+        <div class="chart"><div class="bars" id="bars"></div><div class="axis"><span>Oct 21</span><span>Nov 19</span></div></div>
+      </section>
+      <section class="block">
+        <h3>Recent scans</h3><p class="hint">Newest first</p>
+        <table class="data"><thead><tr><th>When</th><th>Device</th><th>Referrer</th></tr></thead><tbody>
+          <tr><td>Nov 19, 14:02</td><td>mobile · iOS</td><td>—</td></tr>
+          <tr><td>Nov 19, 13:47</td><td>mobile · Android</td><td>—</td></tr>
+          <tr><td>Nov 19, 11:20</td><td>desktop</td><td>instagram.com</td></tr>
+        </tbody></table>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- ========== E: login ========== -->
+<div class="draft" id="e">
+  <div class="center-card">
+    <a class="logo" href="#"><span class="lg"></span>qr</a>
+    <p class="entity-description">Sign in with a secret link. Enter your email and we'll send one.</p>
+    <div class="notice info">If that address has an account, a link is on its way. It's valid for 30 minutes.</div>
+    <form><div class="field"><label>Email</label><input type="email" placeholder="you@viennastruggle.at"></div>
+      <button class="button" type="button">Send me a link</button></form>
+    <details class="fallback"><summary>Admin password login</summary>
+      <div class="field" style="margin-top:.75rem"><label>User</label><input></div>
+      <div class="field"><label>Password</label><input type="password"></div>
+      <button class="button ghost" type="button">Sign in</button></details>
+  </div>
+</div>
+
+<script>
+const links=[["Flyer Westbahnhof","k7Fq2","https://viennastruggle.at/events/winter","Poster run",312,true],
+["Sticker pack","p2Lx9","https://viennastruggle.at/shop/stickers","Poster run",88,true],
+["Instagram bio","ig","https://instagram.com/viennastruggle",null,604,true],
+["Merch table","m3rch","https://viennastruggle.at/shop",null,41,true],
+["Old newsletter","nws","https://viennastruggle.at/newsletter-2025",null,3,false],
+["Tram ad 1","T8a1c","https://viennastruggle.at/?utm_source=tram","Tram ads",120,true],
+["Tram ad 2","T8a1d","https://viennastruggle.at/?utm_source=tram","Tram ads",36,true]];
+document.querySelectorAll('.chrome').forEach(e=>e.innerHTML=document.getElementById('chrome').innerHTML);
+document.querySelectorAll('.lg').forEach(e=>e.innerHTML=LOGO);
+document.querySelectorAll('.side').forEach(e=>{e.innerHTML=document.getElementById('side').innerHTML;e.querySelector(`[data-k="${e.dataset.active}"]`).setAttribute('aria-current','page')});
+const camp=c=>c?`<span class="badge campaign">${c}</span>`:'';
+const st=a=>a?'':'<span class="badge off">paused</span>';
+document.getElementById('listA').innerHTML=links.map((l,i)=>`<a class="row" href="#"><div class="main"><h4>${l[0]} ${camp(l[3])} ${st(l[5])}</h4><div class="meta"><span class="url">?c=${l[1]}</span><span class="target">${l[2]}</span></div></div><div class="stat"><strong>${l[4]}</strong><span>scans</span></div></a>`).join('');
+document.getElementById('listB').innerHTML=links.map((l,i)=>`<div class="row hoverable"><img class="qr-thumb" src="${fakeQR(i+3)}"><div class="main"><h4>${l[0]} ${camp(l[3])} ${st(l[5])}</h4><div class="meta"><span class="url">?c=${l[1]}</span><span class="target">→ ${l[2]}</span></div></div>${spark(i+7)}<div class="stat"><strong>${l[4]}</strong><span>scans</span></div><div class="tools"><a class="button small ghost" href="#">Stats</a><a class="button small ghost" href="#">Edit</a></div></div>`).join('');
+document.getElementById('gridC').innerHTML=Array.from({length:12},(_,i)=>`<a class="qr-card" href="#"><img src="${fakeQR(i+20)}"><h4>Poster #${String(i+1).padStart(2,'0')}</h4><div class="meta"><span class="mono">?c=PR${(i*7919%9000+1000)}</span><span>${(i*37)%60} scans</span></div></a>`).join('');
+document.getElementById('bigQR').src=fakeQR(3);
+let s=5,b='';for(let i=0;i<30;i++){s=(s*9301+49297)%233280;const h=i%7==3?0:Math.round(s/233280*100);b+=`<div class="bar ${h?'':'zero'}" style="height:${Math.max(h,1)}%" title="${h} scans"></div>`}document.getElementById('bars').innerHTML=b;
+document.querySelectorAll('.draft-switch button').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.draft,.draft-switch button').forEach(x=>x.classList.remove('on'));btn.classList.add('on');document.getElementById(btn.dataset.d).classList.add('on')});
+</script>
+</body>
+</html>

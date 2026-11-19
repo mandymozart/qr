@@ -1,0 +1,70 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency: deploy-production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: composer
+          extensions: gd, zip, pdo_mysql
+
+      - name: Install PHP dependencies
+        run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Lint PHP
+        run: find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l > /dev/null
+
+      - name: Write lib/config.php
+        env:
+          BASE_URL: ${{ vars.BASE_URL || 'https://qr.viennastruggle.at' }}
+          DB_HOST: ${{ vars.DB_HOST || 'localhost' }}
+          DB_NAME: ${{ vars.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USERNAME }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          ADMIN_USER: ${{ secrets.ADMIN_USER }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          MAIL_FROM: ${{ vars.MAIL_FROM }}
+          SMTP_HOST: ${{ vars.SMTP_HOST }}
+          SMTP_PORT: ${{ vars.SMTP_PORT }}
+          SMTP_USER: ${{ vars.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+        run: |
+          php -r '
+            $keys = ["base_url","db_host","db_name","db_user","db_pass","admin_user","admin_password",
+                     "mail_from","smtp_host","smtp_port","smtp_user","smtp_pass"];
+            $c = [];
+            foreach ($keys as $k) { $c[$k] = (string) getenv(strtoupper($k)); }
+            file_put_contents("lib/config.php", "<?php\nreturn " . var_export($c, true) . ";\n");
+          '
+          php -l lib/config.php
+
+      - name: Upload via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ vars.FTP_SERVER }}
+          username: ${{ vars.FTP_USER || secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ vars.FTP_DIR || './' }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .github/**
+            .claude/**
+            drafts/**
+            .env
+            composer.json
+            composer.lock
+            README.md
+            lib/config.sample.php
