@@ -24,6 +24,16 @@ function nav_items(array $user): array
     return $items;
 }
 
+/** Menu icon: the dancing figures for the main sections, line icons for admin pages. */
+function nav_icon(string $k): string
+{
+    $fig = ['codes' => ['jump', 'var(--red)'], 'campaigns' => ['run', 'var(--blue)'], 'stats' => ['hold', 'var(--green)']];
+    if (isset($fig[$k])) {
+        return '<svg class="fig" viewBox="0 0 200 250" aria-hidden="true" style="color:' . $fig[$k][1] . '"><use href="#pose-' . $fig[$k][0] . '"/></svg>';
+    }
+    return ICONS[$k] ?? '';
+}
+
 function page_head(string $title, ?string $active = null): void
 {
     $user = current_user();
@@ -37,8 +47,11 @@ function page_head(string $title, ?string $active = null): void
 <title><?= e($title) ?> · qr</title>
 <link rel="icon" href="data:image/svg+xml,<?= rawurlencode(str_replace('currentColor', '%23252321', ICONS['logo'])) ?>">
 <link rel="stylesheet" href="/app/assets/app.css?v=10">
+<link rel="stylesheet" href="/app/assets/street.css?v=6">
+<link rel="stylesheet" href="/app/assets/street-app.css?v=2">
 </head>
-<body>
+<body class="street app">
+<?php street_defs(); ?>
 <?php if ($user && !empty($user['impersonator_id'])): ?>
 <div class="impersonating">
   <span><?= t("You're logged in as {who} ({email}). Changes you make affect their account.", ['who' => '<strong>' . e($user['name'] ?: $user['email']) . '</strong>', 'email' => e($user['email'])]) ?></span>
@@ -47,9 +60,9 @@ function page_head(string $title, ?string $active = null): void
 <?php endif; ?>
 <?php if ($user): ?>
 <header class="topbar">
-  <a class="logo" href="/app/">qr</a>
+  <a class="st-logo" href="/app/">q<span>r</span></a>
   <div class="actions">
-    <?= lang_switch() ?>
+    <?= lang_switch('lang-switch st') ?>
     <a class="nav-button" href="/app/account.php" title="<?= e($user['email']) ?>"><?= e($user['name'] ?: $user['email']) ?><?= $user['role'] === 'admin' ? ' <span class="badge admin">admin</span>' : '' ?></a>
     <form class="inline-form" method="post" action="/app/logout.php"><?= csrf_field() ?><button class="nav-button"><?= te('Sign out') ?></button></form>
   </div>
@@ -63,12 +76,12 @@ function page_head(string $title, ?string $active = null): void
   <aside class="sidebar"><nav><ul>
 <?php foreach (nav_items($user) as $k => [$href, $label, $hint]): ?>
 <?php if ($k === 'users'): ?><li class="group"><?= te('Admin') ?></li><?php endif; ?>
-    <li><a class="menu-item" href="<?= $href ?>"<?= $k === $active ? ' aria-current="page"' : '' ?>><span class="icon"><?= ICONS[$k] ?></span><div><h4><?= e($label) ?></h4><p><?= e($hint) ?></p></div></a></li>
+    <li><a class="menu-item" href="<?= $href ?>"<?= $k === $active ? ' aria-current="page"' : '' ?>><span class="icon"><?= nav_icon($k) ?></span><div><h4><?= e($label) ?></h4><p><?= e($hint) ?></p></div></a></li>
 <?php endforeach; ?>
   </ul></nav></aside>
   <main class="content">
 <?php else: ?>
-<div class="center-lang"><?= lang_switch() ?></div>
+<div class="center-lang"><?= lang_switch('lang-switch st') ?></div>
 <main class="center-card">
 <?php endif; ?>
 <?php if ($f): ?><div class="notice <?= $f[0] === 'err' ? 'err' : ($f[0] === 'info' ? 'info' : 'ok') ?>"><?= e($f[1]) ?></div><?php endif;

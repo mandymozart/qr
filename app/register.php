@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $guestCount = count(guest_links());
 page_head(t('Create account'));
 ?>
-<a class="logo" href="/">qr</a>
+<a class="st-logo" href="/">q<span>r</span></a>
 <?php if ($sent): ?>
   <div class="notice info"><?= t('Check your inbox: we sent a sign-in link to {email}. It\'s valid for 24 hours.', ['email' => '<strong>' . e($email) . '</strong>']) ?></div>
   <p class="entity-description"><?= t('No mail? Look in your spam folder, or {link} in a minute.', ['link' => '<a href="/app/register.php">' . te('try again') . '</a>']) ?></p>

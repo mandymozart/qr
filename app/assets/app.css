@@ -374,3 +374,4 @@ body.public .topbar { max-width: 52rem; margin: 0 auto; }
   .topbar .actions { gap: 0; padding: 0 .5rem; }
   .topbar .nav-button { padding: .35rem .5rem; }
 }
+/* dl row wraps */ .dl { flex-wrap: wrap; }

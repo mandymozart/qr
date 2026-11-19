@@ -54,6 +54,7 @@ page_head($link['title'], 'codes');
     <div class="dl">
       <a class="button small" href="/app/qr.php?id=<?= $id ?>&amp;fmt=png&amp;dl=1" download>↓ PNG</a>
       <a class="button small" href="/app/qr.php?id=<?= $id ?>&amp;fmt=svg&amp;dl=1" download>↓ SVG</a>
+      <a class="button small ghost" href="#style">🎨 <?= te('Style') ?></a>
     </div>
   </div>
   <div>

@@ -84,6 +84,7 @@ page_head(t('Codes'), 'codes');
       <a class="button small ghost" href="/app/qr.php?id=<?= $l['id'] ?>&amp;fmt=png&amp;dl=1" download title="<?= te('Download PNG') ?>">PNG</a>
       <a class="button small ghost" href="/app/qr.php?id=<?= $l['id'] ?>&amp;fmt=svg&amp;dl=1" download title="<?= te('Download SVG') ?>">SVG</a>
       <a class="button small ghost" href="/app/code.php?id=<?= $l['id'] ?>"><?= te('Stats') ?></a>
+      <a class="button small ghost" href="/app/code.php?id=<?= $l['id'] ?>#style">🎨 <?= te('Style') ?></a>
       <a class="button small ghost" href="/app/edit.php?id=<?= $l['id'] ?>"><?= te('Edit') ?></a>
     </div>
   </div>

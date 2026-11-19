@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 page_head(t('Sign in'));
 ?>
-<a class="logo" href="/">qr</a>
+<a class="st-logo" href="/">q<span>r</span></a>
 <p class="entity-description"><?= te('Sign in with your password, or get a secret link by mail.') ?></p>
 
 <?php if ($notice): ?><div class="notice info"><?= e($notice) ?></div><?php endif; ?>

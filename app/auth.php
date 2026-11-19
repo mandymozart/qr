@@ -21,7 +21,7 @@ if ($user && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
 page_head(t('Sign in'));
 ?>
-<a class="logo" href="/">qr</a>
+<a class="st-logo" href="/">q<span>r</span></a>
 <?php if ($user): ?>
   <p class="entity-description"><?= $user['name']
     ? t('Welcome, {name}. You\'re signing in as {email}.', ['name' => e($user['name']), 'email' => '<strong>' . e($user['email']) . '</strong>'])
