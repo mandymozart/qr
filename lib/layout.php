@@ -47,8 +47,8 @@ function page_head(string $title, ?string $active = null): void
 <title><?= e($title) ?> · qr</title>
 <link rel="icon" href="data:image/svg+xml,<?= rawurlencode(str_replace('currentColor', '%23252321', ICONS['logo'])) ?>">
 <link rel="stylesheet" href="/app/assets/app.css?v=10">
-<link rel="stylesheet" href="/app/assets/street.css?v=7">
-<link rel="stylesheet" href="/app/assets/street-app.css?v=4">
+<link rel="stylesheet" href="/app/assets/street.css?v=9">
+<link rel="stylesheet" href="/app/assets/street-app.css?v=5">
 </head>
 <body class="street app">
 <?php street_defs(); ?>

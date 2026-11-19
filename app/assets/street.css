@@ -27,17 +27,12 @@ body.street {
   border: var(--bw) solid var(--ink); border-radius: 999px; padding: 12px 20px; background: #fff; color: var(--ink);
   box-shadow: 5px 5px 0 var(--ink); cursor: pointer; transition: transform .1s, box-shadow .1s; white-space: nowrap;
 }
-.street .btn:hover, .street .button:hover { transform: translate(-2px, -2px) rotate(-2deg); box-shadow: 7px 7px 0 var(--ink); background-color: inherit; border-radius: 999px; }
-.street .btn:active, .street .button:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--ink); }
 .street .btn.y, .street .button { background: var(--yellow); }
 .street .btn.r { background: var(--red); color: #fff; }
 .street .btn.b { background: var(--blue); color: #fff; }
 .street .button.ghost { background: #fff; }
 .street .button.danger { background: var(--red); color: #fff; }
 .street .button.small { font-size: 13px; padding: 8px 14px; border-width: 4px; box-shadow: 4px 4px 0 var(--ink); }
-.street .btn:hover.y, .street .button:hover { background: var(--yellow); }
-.street .button.ghost:hover { background: #fff; }
-.street .button.danger:hover, .street .btn.r:hover { background: var(--red); }
 
 /* ---------- landing hero ---------- */
 .street .st-wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
@@ -206,14 +201,45 @@ body.street {
 .street .badge.on { background: var(--green); }
 .street .chalk h2 { font-size: clamp(36px, 5vw, 60px); line-height: 1; margin: 0 0 24px; }
 
-/* buttons press INTO the page on hover (no tilt, no lift); flat when clicked */
-.street .btn:hover, .street .button:hover {
-  transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--ink);
+/* ===== Buttons: press INTO the page on hover. Only transform moves them; shape and color stay. ===== */
+.street .btn, .street .button {
+  position: relative; border-radius: 999px;
+  transition: transform .12s ease, box-shadow .12s ease;
 }
-.street .button.small:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
-.street .btn:active, .street .button:active, .street .button.small:active {
-  transform: translate(5px, 5px); box-shadow: 0 0 0 var(--ink);
+/* invisible hit-area extension toward the top-left, so the cursor stays on the button while it shifts down-right */
+.street .btn::before, .street .button::before { content: ""; position: absolute; top: -6px; left: -6px; right: 0; bottom: 0; }
+.street .btn:hover, .street .button:hover, .street .btn:focus-visible, .street .button:focus-visible {
+  transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--ink); border-radius: 999px;
 }
-.street .button.small:active { transform: translate(4px, 4px); }
+.street .button.small:hover, .street .button.small:focus-visible { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
+.street .btn:active, .street .button:active { transform: translate(5px, 5px); box-shadow: 0 0 0 var(--ink); }
+.street .button.small:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--ink); }
+/* keep each button's own color on hover/focus (overrides the base app.css hover colors) */
+.street .btn:hover, .street .btn:focus-visible { background: #fff; }
+.street .btn.y:hover, .street .btn.y:focus-visible, .street .button:hover, .street .button:focus-visible { background: var(--yellow); }
+.street .btn.r:hover, .street .btn.r:focus-visible, .street .button.danger:hover, .street .button.danger:focus-visible { background: var(--red); }
+.street .btn.b:hover, .street .btn.b:focus-visible { background: var(--blue); }
+.street .button.ghost:hover, .street .button.ghost:focus-visible { background: #fff; }
 .street .btn:focus-visible, .street .button:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { .street .btn, .street .button { transition: none; } }
+
+/* ===== Selected = "negative": debossed into the page (shadow inside), unselected = raised like a button ===== */
+.street .choice span {
+  position: relative; background: #fff; box-shadow: 3px 3px 0 var(--ink);
+  transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
+}
+.street .choice span::before { content: ""; position: absolute; top: -5px; left: -5px; right: 0; bottom: 0; }
+.street .choice:hover span { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.street .choice input:checked + span,
+.street .choice:hover input:checked + span {
+  transform: translate(3px, 3px);
+  background: var(--yellow);
+  box-shadow: inset 3px 3px 0 rgba(23, 10, 44, .55), inset -1px -1px 0 rgba(255, 255, 255, .6);
+}
+.street .choice input:focus-visible + span { outline: 3px solid var(--blue); outline-offset: 3px; }
+/* pressing a button: momentarily debossed too */
+.street .btn:active, .street .button:active {
+  box-shadow: inset 3px 3px 0 rgba(23, 10, 44, .45);
+}
+/* active language: pushed in */
+.street .lang-switch.st strong { box-shadow: inset 2px 2px 0 rgba(0, 0, 0, .6); }
