@@ -5,7 +5,7 @@ declare(strict_types=1);
  * Creates tables on first run and seeds the bootstrap admin (ADMIN_USER).
  * Cheap check on every request: one query against a 1-row table.
  */
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 3;
 
 function migrate(PDO $pdo): void
 {
@@ -93,6 +93,11 @@ function migrate(PDO $pdo): void
         $pdo->exec("CREATE TABLE IF NOT EXISTS salts (day DATE PRIMARY KEY, salt CHAR(64) NOT NULL) ENGINE=InnoDB");
     }
 
+    // v3: admins can log in as a user (session remembers which admin did it)
+    if ($v < 3) {
+        $pdo->exec("ALTER TABLE sessions ADD COLUMN IF NOT EXISTS impersonator_id INT UNSIGNED NULL");
+    }
+
     $pdo->exec('DELETE FROM schema_version');
     $pdo->exec('INSERT INTO schema_version (version) VALUES (' . SCHEMA_VERSION . ')');
 }
@@ -106,7 +111,7 @@ function migrate_sqlite(PDO $pdo): void
         name TEXT NOT NULL DEFAULT '', role TEXT NOT NULL DEFAULT 'user', status TEXT NOT NULL DEFAULT 'active',
         password_hash TEXT NULL, token_hash TEXT NULL, token_expires_at TEXT NULL, token_created_at TEXT NULL,
         last_login_at TEXT NULL, created_at TEXT NOT NULL $now)");
-    $pdo->exec("CREATE TABLE sessions (token_hash TEXT PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, expires_at TEXT NOT NULL)");
+    $pdo->exec("CREATE TABLE sessions (token_hash TEXT PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, expires_at TEXT NOT NULL, impersonator_id INTEGER NULL)");
     $pdo->exec("CREATE TABLE campaigns (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         name TEXT NOT NULL, created_at TEXT NOT NULL $now)");
     $pdo->exec("CREATE TABLE links (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,

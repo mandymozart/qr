@@ -79,7 +79,7 @@ function q(string $sql, array $params = []): PDOStatement
 {
     if (is_sqlite()) {
         // NOW() + INTERVAL 30 DAY  →  datetime(NOW(), '+30 day')
-        $sql = preg_replace_callback('~(NOW\(\)|CURDATE\(\))\s*([+-])\s*INTERVAL\s+(\d+)\s+(DAY|MINUTE)~i',
+        $sql = preg_replace_callback('~(NOW\(\)|CURDATE\(\))\s*([+-])\s*INTERVAL\s+(\d+)\s+(DAY|HOUR|MINUTE)~i',
             fn($m) => "datetime({$m[1]}, '{$m[2]}{$m[3]} " . strtolower($m[4]) . "')", $sql);
     }
     $st = db()->prepare($sql);
@@ -175,7 +175,7 @@ function current_user(): ?array
     $user = null;
     $tok = $_COOKIE['qr_s'] ?? '';
     if (strlen($tok) !== 64) return null;
-    $row = q('SELECT u.* FROM sessions s JOIN users u ON u.id = s.user_id
+    $row = q('SELECT u.*, s.impersonator_id FROM sessions s JOIN users u ON u.id = s.user_id
               WHERE s.token_hash = ? AND s.expires_at > NOW()', [hash('sha256', $tok)])->fetch();
     if ($row && $row['status'] === 'active') $user = $row;
     return $user;
@@ -198,15 +198,17 @@ function require_admin(): array
     return $u;
 }
 
-function start_session(int $userId): void
+/** Starts a session. With $impersonatorId an admin is logged in as that user (2 hours, no last-login update). */
+function start_session(int $userId, ?int $impersonatorId = null): void
 {
     $tok = bin2hex(random_bytes(32));
-    q('INSERT INTO sessions (token_hash, user_id, expires_at) VALUES (?, ?, NOW() + INTERVAL ' . SESSION_DAYS . ' DAY)',
-        [hash('sha256', $tok), $userId]);
-    q('UPDATE users SET last_login_at = NOW() WHERE id = ?', [$userId]);
+    $hours = $impersonatorId ? 2 : SESSION_DAYS * 24;
+    q('INSERT INTO sessions (token_hash, user_id, expires_at, impersonator_id) VALUES (?, ?, NOW() + INTERVAL ' . (int) $hours . ' HOUR, ?)',
+        [hash('sha256', $tok), $userId, $impersonatorId]);
+    if (!$impersonatorId) q('UPDATE users SET last_login_at = NOW() WHERE id = ?', [$userId]);
     q('DELETE FROM sessions WHERE expires_at < NOW()');
     setcookie('qr_s', $tok, [
-        'expires' => time() + SESSION_DAYS * 86400, 'path' => '/',
+        'expires' => time() + $hours * 3600, 'path' => '/',
         'httponly' => true, 'samesite' => 'Lax', 'secure' => is_https(),
     ]);
 }

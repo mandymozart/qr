@@ -120,6 +120,10 @@ page_head('Users', 'users');
     <div class="stat"><strong><?= (int) $u['codes'] ?></strong><span>codes</span></div>
     <div class="stat"><strong><?= (int) $u['scans'] ?></strong><span>scans</span></div>
     <div class="tools">
+      <?php if (!is_master($u) && (int) $u['id'] !== (int) $me['id'] && $u['status'] === 'active'): ?>
+      <form class="inline-form" method="post" action="/app/impersonate.php"><?= csrf_field() ?><input type="hidden" name="id" value="<?= $u['id'] ?>"><input type="hidden" name="action" value="start">
+        <button class="button small" title="See and use their account to help them (2 hours max)">Log in as user</button></form>
+      <?php endif; ?>
       <form class="inline-form" method="post"><?= csrf_field() ?><input type="hidden" name="id" value="<?= $u['id'] ?>"><input type="hidden" name="action" value="resend">
         <button class="button small ghost" title="Mail a fresh sign-in link (valid 7 days)">Send link</button></form>
       <a class="button small ghost" href="/app/users.php?edit=<?= $u['id'] ?>">Edit</a>

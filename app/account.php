@@ -12,6 +12,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash('Saved.');
             break;
         case 'password':
+        case 'nopassword':
+            if (!empty($user['impersonator_id']) && in_array(post('action'), ['password', 'nopassword'], true)) {
+                flash("You can't change someone else's password. Send them a sign-in link instead.", 'err');
+                break;
+            }
+            if (post('action') === 'nopassword') {
+                q('UPDATE users SET password_hash = NULL WHERE id = ?', [$user['id']]);
+                flash('Password removed. Sign in with a link from now on.');
+                break;
+            }
             $pw = (string) ($_POST['password'] ?? '');
             if (strlen($pw) < 10) { flash('Use at least 10 characters.', 'err'); break; }
             if ($pw !== ($_POST['password2'] ?? '')) { flash("The passwords don't match.", 'err'); break; }
@@ -19,10 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // sign out other devices
             q('DELETE FROM sessions WHERE user_id = ? AND token_hash <> ?', [$user['id'], hash('sha256', $_COOKIE['qr_s'] ?? '')]);
             flash('Password set. You can now sign in with it (other devices were signed out).');
-            break;
-        case 'nopassword':
-            q('UPDATE users SET password_hash = NULL WHERE id = ?', [$user['id']]);
-            flash('Password removed. Sign in with a link from now on.');
             break;
     }
     redirect('/app/account.php');

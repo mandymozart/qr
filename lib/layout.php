@@ -32,9 +32,15 @@ function page_head(string $title, ?string $active = null): void
 <meta name="robots" content="noindex">
 <title><?= e($title) ?> · qr</title>
 <link rel="icon" href="data:image/svg+xml,<?= rawurlencode(str_replace('currentColor', '%23252321', ICONS['logo'])) ?>">
-<link rel="stylesheet" href="/app/assets/app.css?v=3">
+<link rel="stylesheet" href="/app/assets/app.css?v=4">
 </head>
 <body>
+<?php if ($user && !empty($user['impersonator_id'])): ?>
+<div class="impersonating">
+  <span>You're logged in as <strong><?= e($user['name'] ?: $user['email']) ?></strong> (<?= e($user['email']) ?>). Changes you make affect their account.</span>
+  <form class="inline-form" method="post" action="/app/impersonate.php"><?= csrf_field() ?><input type="hidden" name="action" value="stop"><button class="button small">Back to my account</button></form>
+</div>
+<?php endif; ?>
 <?php if ($user): ?>
 <header class="topbar">
   <a class="logo" href="/app/">qr</a>
