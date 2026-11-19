@@ -26,7 +26,7 @@ return [
     // Users: page
     'Users' => 'Benutzer',
     'Admin' => 'Admin',
-    'Only admins create accounts. People sign in with a secret link sent by mail.' => 'Nur Admins legen Konten an. Angemeldet wird mit einem geheimen Link, der per Mail kommt.',
+    'People can sign up themselves, and admins can add accounts here. Everyone signs in with a password or a secret link by mail.' => 'Leute können sich selbst registrieren, Admins können hier auch Konten anlegen. Angemeldet wird mit Passwort oder einem geheimen Link per Mail.',
     'Name' => 'Name',
     'Email' => 'E-Mail',
     'Save' => 'Speichern',

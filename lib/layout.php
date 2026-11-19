@@ -48,7 +48,7 @@ function page_head(string $title, ?string $active = null): void
 <link rel="icon" href="data:image/svg+xml,<?= rawurlencode(str_replace('currentColor', '%23252321', ICONS['logo'])) ?>">
 <link rel="stylesheet" href="/app/assets/app.css?v=10">
 <link rel="stylesheet" href="/app/assets/street.css?v=6">
-<link rel="stylesheet" href="/app/assets/street-app.css?v=2">
+<link rel="stylesheet" href="/app/assets/street-app.css?v=3">
 </head>
 <body class="street app">
 <?php street_defs(); ?>

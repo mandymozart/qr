@@ -101,11 +101,11 @@ page_head(t('Users'), 'users');
   <div>
     <span class="entity-type"><?= te('Admin') ?></span>
     <h2 class="entity-title"><?= te('Users') ?></h2>
-    <p class="entity-description"><?= te('Only admins create accounts. People sign in with a secret link sent by mail.') ?></p>
+    <p class="entity-description"><?= te('People can sign up themselves, and admins can add accounts here. Everyone signs in with a password or a secret link by mail.') ?></p>
   </div>
 </div>
 
-<div class="list">
+<div class="list user-list">
 <?php foreach ($users as $u): $protected = is_master($u) || (int) $u['id'] === (int) $me['id']; ?>
   <div class="row">
     <div class="main">
