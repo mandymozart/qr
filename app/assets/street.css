@@ -176,3 +176,32 @@ body.street {
 .street .choice span { border: 3px solid var(--ink); border-radius: 999px; font-weight: 700; }
 .street .choice input:checked + span { background: var(--yellow); box-shadow: 3px 3px 0 var(--ink); }
 .street .style-editor legend { font-weight: 800; text-transform: uppercase; letter-spacing: .04em; font-size: 13px; }
+
+/* ===== GTA-6-style sunset palette (same 80s pop-art look, new colors) ===== */
+body.street {
+  --ink: #170a2c;          /* deep night purple, reads as black */
+  --paper: #fff1e3;        /* warm sand */
+  --red: #ff2e88;          /* hot pink   (was red) */
+  --yellow: #ffc23d;       /* sunset gold (was yellow) */
+  --blue: #6b2fd6;         /* violet     (was blue) */
+  --green: #00c2c7;        /* teal       (was green) */
+  --pink: #ff7ad1;         /* neon pink */
+  --orange: #ff7a1a;       /* sunset orange */
+  --night: #1f0d3d;
+}
+.street .create input[type=url]:focus { background: #fff6d6; }
+.street .chalk, .street .chart {
+  background: var(--night);
+  background-image: radial-gradient(90% 70% at 85% 120%, rgba(255, 46, 136, .55), transparent 70%),
+                    radial-gradient(60% 50% at 10% -10%, rgba(0, 194, 199, .35), transparent 70%);
+}
+.street .chalk .tag { background: var(--green); }
+.street .chart .bar { background: linear-gradient(180deg, var(--yellow), var(--red)); }
+.street .chart .bar.zero { background: #4a3a6a; }
+.street h1 .w.r { color: #fff; }
+.street .btn.r { background: var(--red); }
+.street .st-steps .panel:nth-child(3) { background: var(--blue); }
+.street .st-tiers .panel:nth-child(2) { background: var(--green); }
+.street .notice.ok { background: var(--green); }
+.street .badge.on { background: var(--green); }
+.street .chalk h2 { font-size: clamp(36px, 5vw, 60px); line-height: 1; margin: 0 0 24px; }

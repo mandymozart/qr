@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>qr · draft: app in 80s pop-art</title>
+<link rel="stylesheet" href="/app/assets/street.css?v=6">
+<style>
+  /* Draft: the /app/ tool in the same 80s pop-art style as the public pages, sunset palette. */
+  * { box-sizing: border-box; }
+  body.street { margin: 0; display: flex; min-height: 100vh; font-family: "Source Sans 3", sans-serif; }
+  .street aside { width: 250px; flex: none; padding: 20px 16px; border-right: var(--bw) solid var(--ink); background: var(--yellow); position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 10px; }
+  .street .st-logo { padding: 0 6px 10px; }
+  .street .navi a { display: flex; gap: 12px; align-items: center; padding: 10px 12px; border: 4px solid transparent; border-radius: 16px; text-decoration: none; color: var(--ink); font-weight: 800; }
+  .street .navi a small { display: block; font-weight: 600; font-size: 12px; opacity: .75; }
+  .street .navi a:hover { border-color: var(--ink); background: #fff; }
+  .street .navi a.on { background: var(--red); color: #fff; border-color: var(--ink); box-shadow: 4px 4px 0 var(--ink); transform: rotate(-1.5deg); }
+  .street .navi svg { width: 40px; height: 46px; flex: none; overflow: visible; }
+  .street .grp { font: 400 18px "Permanent Marker", cursive; padding: 12px 12px 0; }
+  .street .me { margin-top: auto; border: 4px solid var(--ink); border-radius: 16px; padding: 10px 12px; background: #fff; font-weight: 700; font-size: 14px; box-shadow: 4px 4px 0 var(--ink); }
+  .street main { flex: 1; min-width: 0; padding: 18px 32px 60px; }
+  .street .top { display: flex; justify-content: flex-end; gap: 14px; align-items: center; margin-bottom: 8px; }
+  .street .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+  .street .head h1 { font: 400 clamp(40px, 5vw, 64px)/1 "Permanent Marker", cursive; margin: 6px 0 6px; }
+  .street .head p { margin: 0; font-weight: 600; }
+  .street .tiles4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 26px 0; }
+  .street .t { border: var(--bw) solid var(--ink); border-radius: 20px; padding: 14px 16px; box-shadow: 6px 6px 0 var(--ink); }
+  .street .t small { font-weight: 800; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
+  .street .t b { display: block; font: 400 44px/1.1 "Permanent Marker", cursive; }
+  .street .t:nth-child(1) { background: var(--red); color: #fff; transform: rotate(-1deg); }
+  .street .t:nth-child(2) { background: #fff; transform: rotate(.8deg); }
+  .street .t:nth-child(3) { background: var(--green); transform: rotate(-.6deg); }
+  .street .t:nth-child(4) { background: var(--blue); color: #fff; transform: rotate(1deg); }
+  .street .bar2 { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin: 10px 0 14px; }
+  .street .bar2 h2 { font: 400 34px/1 "Permanent Marker", cursive; margin: 0; }
+  .street .search { border: 4px solid var(--ink); border-radius: 999px; padding: 10px 16px; font: 700 15px "Source Sans 3"; min-width: 200px; background: #fff; }
+  .street .r { display: flex; align-items: center; gap: 16px; padding: 12px 16px; background: #fff; border: 4px solid var(--ink); border-radius: 20px; box-shadow: 5px 5px 0 var(--ink); margin-bottom: 14px; }
+  .street .r:hover { background: #fff6d6; }
+  .street .thumb { width: 56px; height: 56px; border: 3px solid var(--ink); border-radius: 12px; background: #fff; flex: none; padding: 4px; }
+  .street .thumb img { width: 100%; display: block; }
+  .street .r .m { flex: 1; min-width: 0; }
+  .street .r .m b { font-size: 18px; }
+  .street .tg { display: inline-block; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; border: 2px solid var(--ink); border-radius: 999px; padding: 1px 8px; margin-left: 6px; vertical-align: 2px; }
+  .street .tg.c { background: var(--pink); } .street .tg.p { background: var(--green); } .street .tg.off { background: #ddd; }
+  .street .meta2 { font-size: 13px; font-weight: 600; margin-top: 4px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .street .code { font-family: "Source Code Pro", monospace; background: var(--yellow); border: 2px solid var(--ink); border-radius: 6px; padding: 0 6px; }
+  .street .spark { display: flex; align-items: flex-end; gap: 3px; height: 34px; width: 92px; flex: none; }
+  .street .spark i { flex: 1; background: var(--red); border: 2px solid var(--ink); border-bottom: 0; border-radius: 3px 3px 0 0; }
+  .street .n { text-align: right; min-width: 66px; } .street .n b { font: 400 34px/1 "Permanent Marker", cursive; display: block; } .street .n small { font-weight: 800; font-size: 11px; text-transform: uppercase; }
+  .street .tools2 { display: flex; gap: 8px; flex-wrap: wrap; }
+  .street .detail { display: grid; grid-template-columns: 320px 1fr; gap: 26px; margin-top: 34px; }
+  .street .box { border: var(--bw) solid var(--ink); border-radius: 26px; padding: 22px; background: #fff; box-shadow: 8px 8px 0 var(--ink); }
+  .street .box h3 { font: 400 30px/1 "Permanent Marker", cursive; margin: 0 0 14px; }
+  .street .lg { font-weight: 800; text-transform: uppercase; letter-spacing: .06em; font-size: 13px; margin: 16px 0 8px; }
+  .street .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .street .chip { display: inline-flex; gap: 8px; align-items: center; border: 3px solid var(--ink); border-radius: 999px; padding: 6px 14px; font-weight: 800; font-size: 14px; background: #fff; cursor: pointer; }
+  .street .chip.on { background: var(--yellow); box-shadow: 3px 3px 0 var(--ink); }
+  .street .sw { width: 18px; height: 18px; border-radius: 5px; border: 2px solid var(--ink); }
+  .street .chartbox { margin-top: 18px; border: 4px solid var(--ink); border-radius: 18px; padding: 14px; background: var(--night);
+                      background-image: radial-gradient(90% 70% at 85% 120%, rgba(255,46,136,.55), transparent 70%); }
+  .street .chartbox .bars { display: flex; align-items: flex-end; gap: 4px; height: 130px; }
+  .street .chartbox i { flex: 1; background: linear-gradient(180deg, var(--yellow), var(--red)); border-radius: 3px 3px 0 0; }
+  .street .chartbox i.z { background: #4a3a6a; height: 3px !important; }
+  .draft-note { position: fixed; right: 12px; bottom: 12px; z-index: 50; background: #170a2c; color: #fff; font: 600 12px sans-serif; padding: 6px 10px; border-radius: 8px; }
+  @media (max-width: 900px) {
+    body.street { flex-direction: column; }
+    .street aside { width: 100%; height: auto; position: static; flex-direction: row; align-items: center; border-right: 0; border-bottom: var(--bw) solid var(--ink); padding: 10px 12px; overflow-x: auto; }
+    .street .navi { display: flex; gap: 6px; } .street .navi a small, .street .navi svg, .street .grp, .street .me { display: none; }
+    .street .navi a { white-space: nowrap; padding: 8px 12px; }
+    .street main { padding: 14px 16px 50px; }
+    .street .tiles4 { grid-template-columns: 1fr 1fr; }
+    .street .r { flex-wrap: wrap; } .street .spark { display: none; } .street .tools2 { width: 100%; }
+    .street .detail { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body class="street">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <g id="pose-jump"><path d="M100 82 L100 150 M100 96 L62 58 L44 26 M100 96 L140 62 L160 30 M100 150 L70 190 L52 230 M100 150 L132 188 L152 226" stroke="#170a2c" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="100" cy="44" r="27" fill="#170a2c"/><path d="M100 82 L100 150 M100 96 L62 58 L44 26 M100 96 L140 62 L160 30 M100 150 L70 190 L52 230 M100 150 L132 188 L152 226" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="100" cy="44" r="20" fill="currentColor"/></g>
+  <g id="pose-run"><path d="M108 84 L94 150 M104 100 L146 86 L168 104 M104 100 L66 118 L46 98 M94 150 L136 176 L150 220 M94 150 L66 186 L32 196" stroke="#170a2c" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="112" cy="46" r="27" fill="#170a2c"/><path d="M108 84 L94 150 M104 100 L146 86 L168 104 M104 100 L66 118 L46 98 M94 150 L136 176 L150 220 M94 150 L66 186 L32 196" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="112" cy="46" r="20" fill="currentColor"/></g>
+  <g id="pose-hold"><path d="M100 82 L104 152 M102 98 L140 112 L170 96 M102 98 L64 120 L40 100 M104 152 L80 196 L84 236 M104 152 L130 194 L124 234" stroke="#170a2c" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="98" cy="44" r="27" fill="#170a2c"/><path d="M100 82 L104 152 M102 98 L140 112 L170 96 M102 98 L64 120 L40 100 M104 152 L80 196 L84 236 M104 152 L130 194 L124 234" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="98" cy="44" r="20" fill="currentColor"/></g>
+</defs></svg>
+
+<aside>
+  <a class="st-logo" href="#">q<span>r</span></a>
+  <nav class="navi">
+    <a class="on" href="#"><svg viewBox="0 0 200 250" style="color:#fff"><use href="#pose-jump"/></svg><span>Codes<small>All your QR links</small></span></a>
+    <a href="#"><svg viewBox="0 0 200 250" style="color:var(--blue)"><use href="#pose-run"/></svg><span>Campaigns<small>Groups &amp; bulk codes</small></span></a>
+    <a href="#"><svg viewBox="0 0 200 250" style="color:var(--green)"><use href="#pose-hold"/></svg><span>Stats<small>Scans over time</small></span></a>
+    <div class="grp">Admin</div>
+    <a href="#"><span>Users<small>Invite, block, resend</small></span></a>
+    <a href="#"><span>Guest codes<small>Made without account</small></span></a>
+  </nav>
+  <div class="me">Tilman · master admin<br><a href="#" style="color:inherit">Sign out</a></div>
+</aside>
+
+<main>
+  <div class="top"><span class="lang-switch st"><strong>EN</strong><span>/</span><a href="#">DE</a></span></div>
+  <div class="head">
+    <div><span class="tag">Codes</span><h1>Your QR links</h1><p>Every code redirects through <span class="code">qr.viennastruggle.at/?c=…</span></p></div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap"><a class="btn" href="#">Bulk</a><a class="btn r" href="#">+ New code</a></div>
+  </div>
+
+  <div class="tiles4">
+    <div class="t"><small>Scans today</small><b>23</b></div>
+    <div class="t"><small>Last 30 days</small><b>1,204</b></div>
+    <div class="t"><small>Unique visitors</small><b>866</b></div>
+    <div class="t"><small>Codes</small><b>12</b></div>
+  </div>
+
+  <div class="bar2"><h2>All codes</h2><input class="search" placeholder="Search…"></div>
+  <div id="rows"></div>
+
+  <div class="detail">
+    <div class="box">
+      <h3>Flyer Westbahnhof</h3>
+      <div class="qr-big" style="box-shadow:none"><img src="/app/assets/qr-landing.svg" alt=""></div>
+      <div class="dl" style="margin-top:14px"><a class="button small" href="#">↓ PNG</a><a class="button small ghost" href="#">↓ SVG</a></div>
+    </div>
+    <div class="box">
+      <h3>Style</h3>
+      <div class="lg">Shape</div><div class="chips"><span class="chip">Squares</span><span class="chip on">Dots</span></div>
+      <div class="lg">Colors</div>
+      <div class="chips">
+        <span class="chip"><i class="sw" style="background:#170a2c"></i>Classic</span>
+        <span class="chip on"><i class="sw" style="background:linear-gradient(135deg,#6b2fd6,#ff2e88)"></i>Sunset</span>
+        <span class="chip"><i class="sw" style="background:#007b80"></i>Lagoon</span>
+        <span class="chip"><i class="sw" style="background:#c2005f"></i>Berry</span>
+      </div>
+      <div class="lg">Logo</div><div class="chips"><span class="chip">None</span><span class="chip on">qr sticker</span><span class="chip">My own</span></div>
+      <div class="chartbox"><div class="bars" id="chart"></div></div>
+    </div>
+  </div>
+</main>
+<div class="draft-note">Draft · app in 80s pop-art</div>
+<script>
+const rows = [["Flyer Westbahnhof","k7Fq2","https://viennastruggle.at/events/winter","Poster run","Westbahnhof U6",312,1],
+["Sticker pack","p2Lx9","https://viennastruggle.at/shop/stickers","Poster run","Kiosk",88,1],
+["Instagram bio","ig","https://instagram.com/viennastruggle",null,null,604,1],
+["Old newsletter","nws","https://viennastruggle.at/newsletter-2025",null,null,3,0]];
+const sp = s => Array.from({length:12},()=>{s=(s*9301+49297)%233280; return `<i style="height:${15+s/233280*85}%"></i>`}).join('');
+document.getElementById('rows').innerHTML = rows.map((r,i)=>`<div class="r">
+ <div class="thumb"><img src="/app/assets/qr-landing.svg" alt=""></div>
+ <div class="m"><b>${r[0]}</b>${r[3]?`<span class="tg c">${r[3]}</span>`:''}${r[4]?`<span class="tg p">📍 ${r[4]}</span>`:''}${r[6]?'':'<span class="tg off">paused</span>'}
+  <div class="meta2"><span class="code">?c=${r[1]}</span><span>→ ${r[2]}</span></div></div>
+ <div class="spark">${sp(i+3)}</div>
+ <div class="n"><b>${r[5]}</b><small>scans</small></div>
+ <div class="tools2"><a class="button small ghost" href="#">Copy link</a><a class="button small ghost" href="#">PNG</a><a class="button small ghost" href="#">Edit</a></div>
+</div>`).join('');
+let s=9,c=''; for(let i=0;i<30;i++){s=(s*9301+49297)%233280;const h=i%8==3?0:Math.round(15+s/233280*85);c+=`<i class="${h?'':'z'}" style="height:${h}%"></i>`} document.getElementById('chart').innerHTML=c;
+</script>
+</body>
+</html>

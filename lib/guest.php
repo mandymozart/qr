@@ -96,7 +96,7 @@ function public_head(string $title, string $mainClass = 'narrow'): void
 <title><?= e($title) ?></title>
 <meta name="description" content="<?= te('Free QR codes you can change later, with scan stats. No tracking cookies.') ?>">
 <link rel="stylesheet" href="/app/assets/app.css?v=10">
-<link rel="stylesheet" href="/app/assets/street.css?v=4">
+<link rel="stylesheet" href="/app/assets/street.css?v=6">
 </head>
 <body class="public street">
 <?php street_defs(); ?>
