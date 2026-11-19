@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>qr · draft: tropical sunset app</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Source+Code+Pro:wght@500&family=Source+Sans+3:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  /* Draft: the /app/ tool in the tropical sunset mood. Night-purple sidebar, warm sand content, sunset accents. */
+  :root {
+    --night: #1b0f3a; --night-2: #2a1a52; --violet: #6b2fd6; --magenta: #e3006e; --pink: #ff2e88; --coral: #ff5f6d;
+    --orange: #ff7a1a; --peach: #ffb36b; --sun: #ffd23f; --teal: #00c2c7; --aqua: #4fe3e0; --sand: #fff4ea; --card: #ffffff;
+    --line: #f0dccb; --mute: #7a6a8c;
+    --sunset: linear-gradient(135deg, var(--pink), var(--orange));
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Source Sans 3", sans-serif; background: var(--sand); color: var(--night); display: flex; min-height: 100vh; }
+  .anton { font-family: "Anton", sans-serif; font-weight: 400; text-transform: uppercase; letter-spacing: .01em; }
+
+  /* sidebar */
+  aside { width: 250px; flex: none; background: var(--night); color: #fff; padding: 22px 16px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 6px;
+          background-image: radial-gradient(120% 50% at 50% 115%, rgba(255,46,136,.55), transparent 70%); }
+  .logo { font: 400 40px/1 "Anton"; color: #fff; text-decoration: none; text-shadow: 3px 3px 0 var(--magenta); padding: 0 10px 18px; }
+  .nav a { display: flex; gap: 12px; align-items: center; padding: 11px 12px; border-radius: 14px; color: #e9e2ff; text-decoration: none; font-weight: 600; }
+  .nav a small { display: block; font-weight: 400; font-size: 12px; color: #a99bd0; }
+  .nav a:hover { background: rgba(255,255,255,.07); }
+  .nav a.on { background: var(--sunset); color: #fff; box-shadow: 0 8px 24px rgba(255,46,136,.35); }
+  .nav a.on small { color: #ffe9d6; }
+  .ico { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: rgba(255,255,255,.08); font-size: 16px; }
+  .group { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--aqua); padding: 16px 12px 4px; font-weight: 800; }
+  .me { margin-top: auto; padding: 12px; border-radius: 14px; background: rgba(255,255,255,.06); font-size: 14px; }
+  .me b { display: block; } .me span { color: #a99bd0; font-size: 12px; }
+
+  main { flex: 1; min-width: 0; }
+  .band { background: linear-gradient(100deg, #6b2fd6 0%, #e3006e 45%, #ff7a1a 80%, #ffb36b 100%); color: #fff; padding: 26px 36px 70px; position: relative; overflow: hidden; }
+  .band::after { content: ""; position: absolute; right: 60px; bottom: -120px; width: 260px; height: 260px; border-radius: 50%;
+                 background: linear-gradient(180deg, var(--sun), var(--orange)); opacity: .55;
+                 -webkit-mask: repeating-linear-gradient(180deg, #000 0 14px, transparent 14px 22px); mask: repeating-linear-gradient(180deg, #000 0 14px, transparent 14px 22px); }
+  .topline { display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 14px; }
+  .topline .lang { opacity: .85; }
+  .band h1 { font: 400 54px/1 "Anton"; text-transform: uppercase; margin: 18px 0 6px; text-shadow: 3px 3px 0 rgba(27,15,58,.35); }
+  .band p { margin: 0; font-weight: 600; opacity: .95; }
+  .band .url { font-family: "Source Code Pro"; background: rgba(255,255,255,.2); padding: 2px 8px; border-radius: 8px; }
+
+  .wrap { padding: 0 36px 60px; margin-top: -46px; position: relative; z-index: 2; }
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .tile { background: var(--card); border-radius: 20px; padding: 16px 18px; box-shadow: 0 10px 30px rgba(107,47,214,.12); }
+  .tile small { text-transform: uppercase; letter-spacing: .1em; font-weight: 800; font-size: 11px; color: var(--mute); }
+  .tile b { display: block; font: 400 40px/1.1 "Anton"; background: var(--sunset); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .tile i { font-style: normal; font-size: 13px; color: var(--teal); font-weight: 700; }
+
+  .bar { display: flex; justify-content: space-between; align-items: center; margin: 28px 0 12px; gap: 12px; flex-wrap: wrap; }
+  .bar h2 { font: 400 28px/1 "Anton"; text-transform: uppercase; margin: 0; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; border: 0; border-radius: 999px; padding: 11px 20px; font: 800 14px "Source Sans 3"; text-transform: uppercase; letter-spacing: .05em; cursor: pointer; text-decoration: none; }
+  .btn.primary { background: var(--sunset); color: #fff; box-shadow: 0 6px 18px rgba(255,46,136,.35); }
+  .btn.ghost { background: #fff; color: var(--night); box-shadow: inset 0 0 0 2px var(--line); }
+  .btn.small { padding: 7px 13px; font-size: 12px; }
+  .search { border: 0; background: #fff; border-radius: 999px; padding: 11px 18px; font: 600 15px "Source Sans 3"; box-shadow: inset 0 0 0 2px var(--line); min-width: 220px; }
+
+  .rows { display: flex; flex-direction: column; gap: 10px; }
+  .row { display: flex; align-items: center; gap: 16px; background: var(--card); border-radius: 20px; padding: 12px 16px; box-shadow: 0 6px 18px rgba(107,47,214,.07); }
+  .row:hover { box-shadow: 0 10px 26px rgba(255,46,136,.18); }
+  .thumb { width: 54px; height: 54px; border-radius: 12px; flex: none; display: grid; place-items: center; background: #fff; box-shadow: inset 0 0 0 2px var(--line); }
+  .thumb svg { width: 44px; height: 44px; }
+  .main { flex: 1; min-width: 0; }
+  .main b { font-size: 17px; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 2px 9px; border-radius: 999px; margin-left: 6px; vertical-align: 2px; }
+  .badge.camp { background: #ffe1ef; color: var(--magenta); } .badge.place { background: #d8fbfa; color: #007b80; } .badge.off { background: #eee; color: #777; }
+  .meta { font-size: 13px; color: var(--mute); margin-top: 3px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .code { font-family: "Source Code Pro"; color: var(--magenta); background: #fff0f6; padding: 0 6px; border-radius: 6px; }
+  .spark { display: flex; align-items: flex-end; gap: 3px; height: 30px; width: 90px; flex: none; }
+  .spark i { flex: 1; border-radius: 3px; background: linear-gradient(180deg, var(--sun), var(--pink)); }
+  .num { text-align: right; min-width: 64px; } .num b { font: 400 30px/1 "Anton"; display: block; } .num small { font-size: 11px; color: var(--mute); text-transform: uppercase; letter-spacing: .08em; font-weight: 800; }
+  .tools { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  /* detail */
+  .detail { display: grid; grid-template-columns: 300px 1fr; gap: 22px; margin-top: 30px; }
+  .panel { background: var(--card); border-radius: 24px; padding: 22px; box-shadow: 0 10px 30px rgba(107,47,214,.1); }
+  .qrbig { border-radius: 18px; padding: 16px; background: #fff; box-shadow: inset 0 0 0 2px var(--line); }
+  .qrbig svg { width: 100%; display: block; }
+  .copy { display: flex; gap: 8px; margin: 14px 0; }
+  .copy input { flex: 1; min-width: 0; border: 0; border-radius: 12px; padding: 11px 14px; font: 500 14px "Source Code Pro"; background: #fff0f6; color: var(--magenta); }
+  .panel h3 { font: 400 24px/1 "Anton"; text-transform: uppercase; margin: 0 0 14px; }
+  .legend { font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); margin: 14px 0 8px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: #fff; box-shadow: inset 0 0 0 2px var(--line); font-weight: 700; font-size: 14px; cursor: pointer; }
+  .chip.on { box-shadow: inset 0 0 0 2px var(--pink), 0 4px 14px rgba(255,46,136,.25); }
+  .sw { width: 18px; height: 18px; border-radius: 6px; }
+  .chart { display: flex; align-items: flex-end; gap: 4px; height: 140px; margin-top: 10px; }
+  .chart i { flex: 1; border-radius: 4px 4px 1px 1px; background: linear-gradient(180deg, var(--sun), var(--pink)); }
+  .chart i.zero { background: var(--line); height: 3px !important; }
+  .draft-note { position: fixed; right: 12px; bottom: 12px; z-index: 50; background: var(--night); color: #fff; font-size: 12px; padding: 6px 10px; border-radius: 8px; opacity: .85; }
+
+  @media (max-width: 900px) {
+    body { flex-direction: column; }
+    aside { width: 100%; height: auto; position: static; flex-direction: row; flex-wrap: wrap; align-items: center; padding: 12px; }
+    .logo { padding: 0 8px 0 4px; } .nav { display: flex; gap: 4px; overflow-x: auto; } .nav a small, .group, .me { display: none; } .ico { display: none; }
+    .nav a { padding: 8px 12px; white-space: nowrap; }
+    .band { padding: 18px 16px 60px; } .band h1 { font-size: 40px; }
+    .wrap { padding: 0 16px 40px; }
+    .tiles { grid-template-columns: 1fr 1fr; }
+    .row { flex-wrap: wrap; } .spark { display: none; } .tools { width: 100%; }
+    .detail { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <g id="qr-mini"><rect width="21" height="21" fill="#fff"/>
+    <path fill="#e3006e" d="M0 0h7v7H0zM14 0h7v7h-7zM0 14h7v7H0z"/><path fill="#fff" d="M1 1h5v5H1zM15 1h5v5h-5zM1 15h5v5H1z"/><path fill="#1b0f3a" d="M2 2h3v3H2zM16 2h3v3h-3zM2 16h3v3H2z"/>
+    <g fill="#6b2fd6"><circle cx="9.5" cy="1.5" r=".45"/><circle cx="11.5" cy="2.5" r=".45"/><circle cx="9.5" cy="4.5" r=".45"/><circle cx="12.5" cy="5.5" r=".45"/><circle cx="8.5" cy="8.5" r=".45"/><circle cx="10.5" cy="9.5" r=".45"/><circle cx="13.5" cy="8.5" r=".45"/><circle cx="16.5" cy="9.5" r=".45"/><circle cx="19.5" cy="8.5" r=".45"/><circle cx="1.5" cy="9.5" r=".45"/><circle cx="3.5" cy="10.5" r=".45"/><circle cx="5.5" cy="8.5" r=".45"/><circle cx="9.5" cy="12.5" r=".45"/><circle cx="11.5" cy="14.5" r=".45"/><circle cx="14.5" cy="15.5" r=".45"/><circle cx="16.5" cy="13.5" r=".45"/><circle cx="18.5" cy="16.5" r=".45"/><circle cx="12.5" cy="18.5" r=".45"/><circle cx="15.5" cy="19.5" r=".45"/><circle cx="19.5" cy="19.5" r=".45"/><circle cx="9.5" cy="17.5" r=".45"/><circle cx="17.5" cy="11.5" r=".45"/><circle cx="7.5" cy="12.5" r=".45"/></g>
+  </g>
+</defs></svg>
+
+<aside>
+  <a class="logo" href="#">qr</a>
+  <nav class="nav">
+    <a class="on" href="#"><span class="ico">▦</span><span>Codes<small>All your QR links</small></span></a>
+    <a href="#"><span class="ico">◫</span><span>Campaigns<small>Groups &amp; bulk codes</small></span></a>
+    <a href="#"><span class="ico">▁▃▆</span><span>Stats<small>Scans over time</small></span></a>
+    <div class="group">Admin</div>
+    <a href="#"><span class="ico">☺</span><span>Users<small>Invite, block, resend</small></span></a>
+    <a href="#"><span class="ico">◌</span><span>Guest codes<small>Made without account</small></span></a>
+  </nav>
+  <div class="me"><b>Tilman</b><span>master admin · Sign out</span></div>
+</aside>
+
+<main>
+  <div class="band">
+    <div class="topline"><span>Codes</span><span class="lang">EN / DE</span></div>
+    <h1>Your QR links</h1>
+    <p>Every code redirects through <span class="url">qr.viennastruggle.at/?c=…</span></p>
+  </div>
+
+  <div class="wrap">
+    <div class="tiles">
+      <div class="tile"><small>Scans today</small><b>23</b><i>+8 vs yesterday</i></div>
+      <div class="tile"><small>Last 30 days</small><b>1,204</b></div>
+      <div class="tile"><small>Unique visitors</small><b>866</b></div>
+      <div class="tile"><small>Codes</small><b>12</b><i>3 campaigns</i></div>
+    </div>
+
+    <div class="bar">
+      <h2>All codes</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><input class="search" placeholder="Search…"><a class="btn ghost" href="#">Bulk</a><a class="btn primary" href="#">+ New code</a></div>
+    </div>
+    <div class="rows" id="rows"></div>
+
+    <div class="detail">
+      <div class="panel">
+        <div class="qrbig"><svg viewBox="-2 -2 25 25"><rect x="-2" y="-2" width="25" height="25" fill="#fff"/><use href="#qr-mini"/></svg></div>
+        <div class="copy"><input value="https://qr.viennastruggle.at/?c=k7Fq2" readonly><button class="btn primary small">Copy</button></div>
+        <div style="display:flex;gap:8px"><a class="btn ghost small" href="#">↓ PNG</a><a class="btn ghost small" href="#">↓ SVG</a></div>
+      </div>
+      <div class="panel">
+        <h3>Style</h3>
+        <div class="legend">Shape</div>
+        <div class="chips"><span class="chip">Squares</span><span class="chip on">Dots</span></div>
+        <div class="legend">Colors</div>
+        <div class="chips">
+          <span class="chip"><i class="sw" style="background:#111"></i>Classic</span>
+          <span class="chip on"><i class="sw" style="background:linear-gradient(135deg,#6b2fd6,#e3006e)"></i>Sunset</span>
+          <span class="chip"><i class="sw" style="background:#007b80"></i>Lagoon</span>
+          <span class="chip"><i class="sw" style="background:#b0103a"></i>Berry</span>
+        </div>
+        <div class="legend">Logo</div>
+        <div class="chips"><span class="chip on">None</span><span class="chip">qr sticker</span><span class="chip">My own</span></div>
+        <h3 style="margin-top:26px">Scans · 30 days</h3>
+        <div class="chart" id="chart"></div>
+      </div>
+    </div>
+  </div>
+</main>
+<div class="draft-note">Draft · tropical sunset app</div>
+<script>
+const rows = [["Flyer Westbahnhof","k7Fq2","https://viennastruggle.at/events/winter","Poster run","Westbahnhof U6",312,1],
+["Sticker pack","p2Lx9","https://viennastruggle.at/shop/stickers","Poster run","Kiosk",88,1],
+["Instagram bio","ig","https://instagram.com/viennastruggle",null,null,604,1],
+["Beach bar menu","bb26","https://viennastruggle.at/menu",null,"Donaukanal",141,1],
+["Old newsletter","nws","https://viennastruggle.at/newsletter-2025",null,null,3,0]];
+const spark = s => Array.from({length:14},(_,i)=>{s=(s*9301+49297)%233280; return `<i style="height:${10+s/233280*90}%"></i>`}).join('');
+document.getElementById('rows').innerHTML = rows.map((r,i)=>`<div class="row">
+  <div class="thumb"><svg viewBox="-1 -1 23 23"><use href="#qr-mini"/></svg></div>
+  <div class="main"><b>${r[0]}</b>${r[3]?`<span class="badge camp">${r[3]}</span>`:''}${r[4]?`<span class="badge place">📍 ${r[4]}</span>`:''}${r[6]?'':'<span class="badge off">paused</span>'}
+    <div class="meta"><span class="code">?c=${r[1]}</span><span>→ ${r[2]}</span></div></div>
+  <div class="spark">${spark(i+5)}</div>
+  <div class="num"><b>${r[5]}</b><small>scans</small></div>
+  <div class="tools"><a class="btn ghost small" href="#">Copy link</a><a class="btn ghost small" href="#">PNG</a><a class="btn ghost small" href="#">Stats</a><a class="btn ghost small" href="#">Edit</a></div>
+</div>`).join('');
+let s=7, c=''; for (let i=0;i<30;i++){ s=(s*9301+49297)%233280; const h=i%9==4?0:Math.round(15+s/233280*85); c+=`<i class="${h?'':'zero'}" style="height:${h}%"></i>`; } document.getElementById('chart').innerHTML=c;
+</script>
+</body>
+</html>
