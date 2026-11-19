@@ -103,12 +103,13 @@ function redirect(string $to): never
 function flash(?string $msg = null, string $type = 'ok'): ?array
 {
     if ($msg !== null) {
-        setcookie('qr_flash', json_encode([$type, $msg]), ['path' => '/app/', 'httponly' => true, 'samesite' => 'Lax', 'secure' => is_https()]);
+        setcookie('qr_flash', json_encode([$type, $msg]), ['path' => '/', 'httponly' => true, 'samesite' => 'Lax', 'secure' => is_https()]);
         return null;
     }
     if (empty($_COOKIE['qr_flash'])) return null;
     $f = json_decode($_COOKIE['qr_flash'], true);
-    setcookie('qr_flash', '', ['expires' => 1, 'path' => '/app/']);
+    setcookie('qr_flash', '', ['expires' => 1, 'path' => '/']);
+    setcookie('qr_flash', '', ['expires' => 1, 'path' => '/app/']); // old path
     return is_array($f) ? $f : null;
 }
 
@@ -205,7 +206,12 @@ function start_session(int $userId, ?int $impersonatorId = null): void
     $hours = $impersonatorId ? 2 : SESSION_DAYS * 24;
     q('INSERT INTO sessions (token_hash, user_id, expires_at, impersonator_id) VALUES (?, ?, NOW() + INTERVAL ' . (int) $hours . ' HOUR, ?)',
         [hash('sha256', $tok), $userId, $impersonatorId]);
-    if (!$impersonatorId) q('UPDATE users SET last_login_at = NOW() WHERE id = ?', [$userId]);
+    if (!$impersonatorId) {
+        q('UPDATE users SET last_login_at = NOW() WHERE id = ?', [$userId]);
+        if (function_exists('claim_guest_codes') && ($n = claim_guest_codes($userId))) {
+            flash($n === 1 ? 'The code from this browser is now in your account.' : "The $n codes from this browser are now in your account.");
+        }
+    }
     q('DELETE FROM sessions WHERE expires_at < NOW()');
     setcookie('qr_s', $tok, [
         'expires' => time() + $hours * 3600, 'path' => '/',

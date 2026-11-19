@@ -5,7 +5,7 @@ declare(strict_types=1);
  * Creates tables on first run and seeds the bootstrap admin (ADMIN_USER).
  * Cheap check on every request: one query against a 1-row table.
  */
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 4;
 
 function migrate(PDO $pdo): void
 {
@@ -98,6 +98,16 @@ function migrate(PDO $pdo): void
         $pdo->exec("ALTER TABLE sessions ADD COLUMN IF NOT EXISTS impersonator_id INT UNSIGNED NULL");
     }
 
+    // v4: guest codes without an account (owned by a browser token and/or a secret edit key)
+    if ($v < 4) {
+        $pdo->exec("ALTER TABLE links MODIFY user_id INT UNSIGNED NULL,
+            ADD COLUMN IF NOT EXISTS guest_hash CHAR(64) NULL,
+            ADD COLUMN IF NOT EXISTS edit_key_hash CHAR(64) NULL,
+            ADD COLUMN IF NOT EXISTS creator CHAR(16) NOT NULL DEFAULT '',
+            ADD INDEX IF NOT EXISTS guest (guest_hash),
+            ADD INDEX IF NOT EXISTS edit_key (edit_key_hash)");
+    }
+
     $pdo->exec('DELETE FROM schema_version');
     $pdo->exec('INSERT INTO schema_version (version) VALUES (' . SCHEMA_VERSION . ')');
 }
@@ -114,7 +124,8 @@ function migrate_sqlite(PDO $pdo): void
     $pdo->exec("CREATE TABLE sessions (token_hash TEXT PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, expires_at TEXT NOT NULL, impersonator_id INTEGER NULL)");
     $pdo->exec("CREATE TABLE campaigns (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         name TEXT NOT NULL, created_at TEXT NOT NULL $now)");
-    $pdo->exec("CREATE TABLE links (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    $pdo->exec("CREATE TABLE links (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NULL REFERENCES users(id) ON DELETE CASCADE,
+        guest_hash TEXT NULL, edit_key_hash TEXT NULL, creator TEXT NOT NULL DEFAULT '',
         campaign_id INTEGER NULL REFERENCES campaigns(id) ON DELETE SET NULL, code TEXT NOT NULL UNIQUE, title TEXT NOT NULL, placement TEXT NOT NULL DEFAULT '',
         target_url TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1, utm INTEGER NOT NULL DEFAULT 1, created_at TEXT NOT NULL $now, updated_at TEXT NOT NULL $now)");
     $pdo->exec("CREATE TABLE hits (id INTEGER PRIMARY KEY AUTOINCREMENT, link_id INTEGER NOT NULL REFERENCES links(id) ON DELETE CASCADE,

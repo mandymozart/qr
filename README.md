@@ -9,7 +9,11 @@ Tiny QR code generator and link tracker. Plain PHP + MariaDB, no framework.
 
 | Route | What |
 |---|---|
-| `/?c=CODE` | Public redirect (bots/link previews are logged but not counted) |
+| `/` | Landing page: create a QR code without an account (guest tier) |
+| `/?c=CODE` | Public redirect (bots/link previews are logged but not counted); unknown codes get a "not found" page with a call to action |
+| `/manage.php?k=KEY` / `?id=` | Guest code: edit target, pause, delete, downloads, basic stats (secret edit link, or the browser that made it) |
+| `/app/register.php` | Sign up with email; guest codes from that browser move into the account on sign-in |
+| `/app/guests.php` | Admin: all guest codes, pause/delete abuse |
 | `/app/` | Your codes: list, search, campaign filter, 14-day sparklines |
 | `/app/edit.php[?id=]` | Create / edit a code |
 | `/app/code.php?id=` | Code detail: QR (SVG/PNG), pause, delete, scan stats |
@@ -22,7 +26,8 @@ Tiny QR code generator and link tracker. Plain PHP + MariaDB, no framework.
 
 ## Auth
 
-- No self sign-up. Admins add users (and other admins) under **Users**. New users get a mail with a secret link (7 days).
+- Anyone can sign up at `/app/register.php` (secret link by mail). Admins can also add users and other admins under **Users**.
+- Guests (no account) can make up to 10 codes per browser, 5 per hour. Their codes are tied to a browser cookie `qr_g` and a secret edit link; signing in moves them into the account.
 - Sign in with a password (optional, set under Account) or a one-time secret link by mail (30 min).
 - "Forgot password?" mails a link that opens the Account page to set a new one.
 - **Master admin** = `ADMIN_USER` secret (an email). Created on first run, can't be blocked/demoted/deleted, and can always sign in with `ADMIN_PASSWORD`.

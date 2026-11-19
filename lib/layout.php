@@ -6,6 +6,7 @@ const ICONS = [
     'codes' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h7M14 17.5h7M14 21h7"/></svg>',
     'campaigns' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg>',
     'stats' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
+    'guests' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><circle cx="17.5" cy="17.5" r="3.5" stroke-dasharray="2 2"/></svg>',
     'users' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6M16 4a4 4 0 010 8M19 15c2 1 3 3 3 6"/></svg>',
 ];
 
@@ -16,7 +17,10 @@ function nav_items(array $user): array
         'campaigns' => ['/app/campaigns.php', 'Campaigns', 'Groups & bulk codes'],
         'stats' => ['/app/stats.php', 'Stats', 'Scans over time'],
     ];
-    if ($user['role'] === 'admin') $items['users'] = ['/app/users.php', 'Users', 'Invite, block, resend'];
+    if ($user['role'] === 'admin') {
+        $items['users'] = ['/app/users.php', 'Users', 'Invite, block, resend'];
+        $items['guests'] = ['/app/guests.php', 'Guest codes', 'Made without account'];
+    }
     return $items;
 }
 
@@ -32,7 +36,7 @@ function page_head(string $title, ?string $active = null): void
 <meta name="robots" content="noindex">
 <title><?= e($title) ?> · qr</title>
 <link rel="icon" href="data:image/svg+xml,<?= rawurlencode(str_replace('currentColor', '%23252321', ICONS['logo'])) ?>">
-<link rel="stylesheet" href="/app/assets/app.css?v=4">
+<link rel="stylesheet" href="/app/assets/app.css?v=5">
 </head>
 <body>
 <?php if ($user && !empty($user['impersonator_id'])): ?>

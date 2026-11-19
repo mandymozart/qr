@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 page_head('Sign in');
 ?>
-<a class="logo" href="/app/">qr</a>
+<a class="logo" href="/">qr</a>
 <p class="entity-description">Sign in with your password, or get a secret link by mail.</p>
 
 <?php if ($notice): ?><div class="notice info"><?= e($notice) ?></div><?php endif; ?>
@@ -68,5 +68,5 @@ page_head('Sign in');
   </div>
   <p style="font-size:.8rem;margin-top:1.5rem"><button class="nav-button" name="mode" value="reset" style="padding:0;text-decoration:underline;color:var(--neutral-30)">Forgot password?</button></p>
 </form>
-<p class="field-hint">No account? Ask an admin to add you.</p>
+<p class="field-hint">No account? <a href="/app/register.php">Create one for free</a>.</p>
 <?php page_foot();

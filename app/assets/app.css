@@ -282,6 +282,27 @@ details.fallback summary { cursor: pointer; }
   background: var(--lavender-500); color: #2d0d41;
 }
 
+/* ---------- Public pages (landing, guest edit, not found) ---------- */
+body.public .topbar { max-width: 52rem; margin: 0 auto; }
+.public-main { max-width: 52rem; margin: 0 auto; padding: 1rem 1rem 6rem; }
+.hero { padding: 8vh 0 2rem; }
+.hero h1 { font-family: var(--font-sans); font-weight: 600; font-size: clamp(2rem, 6vw, 3.2rem); line-height: 1.05; letter-spacing: -0.02em; margin: 0.25rem 0 0.75rem; }
+.hero .entity-description { font-size: 1.1rem; max-width: 36rem; }
+.quick-create { display: flex; gap: 0.5rem; margin-top: 1.5rem; max-width: 40rem; }
+.quick-create input[type=url] {
+  flex: 1; min-width: 0; font: inherit; font-size: 1.1rem; padding: 0.7rem 0.9rem;
+  border: 1px solid var(--neutral-10); border-radius: 0.8rem; background: #fff; outline: none;
+}
+.quick-create input[type=url]:focus { border-color: var(--mint-10); }
+.quick-create .button { font-size: 1rem; line-height: 2.9rem; padding: 0 1.5rem; }
+.hp { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; }
+.tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.tiers ul { padding-left: 1.1rem; margin: 0.75rem 0 1rem; color: var(--neutral-30); font-size: 0.95rem; }
+.tiers li { margin: 0.3rem 0; }
+.public-foot { max-width: 52rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; display: flex; justify-content: space-between; gap: 1rem; font-size: 0.8rem; color: var(--neutral-20); border-top: 1px solid var(--line); }
+.public-foot a { color: var(--neutral-30); }
+.copy-field input.secret { background: var(--lavender-300); }
+
 /* ---------- Mobile ---------- */
 .mobile-nav { display: none; }
 @media (max-width: 768px) {
@@ -290,7 +311,8 @@ details.fallback summary { cursor: pointer; }
   .mobile-nav { display: flex; gap: 0.25rem; overflow-x: auto; padding: 0 1rem 0.5rem; }
   .mobile-nav a { font-size: 0.8rem; white-space: nowrap; }
   .mobile-nav a[aria-current="page"] { background: var(--mint); }
-  .form-grid, .qr-panel { grid-template-columns: 1fr; }
+  .form-grid, .qr-panel, .tiers { grid-template-columns: 1fr; }
+  .quick-create { flex-direction: column; }
   .qr-panel .qr-big { max-width: 14rem; }
   .row { flex-wrap: wrap; }
   .row .spark { display: none; }

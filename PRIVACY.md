@@ -18,6 +18,8 @@ Wenn Sie einen unserer QR-Codes scannen oder einen Kurzlink auf qr.viennastruggl
 
 **Speicherdauer:** Einzelne Aufrufe werden nach 12 Monaten automatisch gelöscht.
 
+**QR-Codes selbst erstellen:** Wenn Sie auf qr.viennastruggle.at ohne Konto einen QR-Code erstellen, setzen wir ein technisch notwendiges Cookie („qr_g“), damit Ihr Browser Ihre Codes wiederfindet. Es enthält nur eine Zufallszahl, wird nicht für Statistiken verwendet und läuft nach 12 Monaten ab. Für ein Konto speichern wir Ihre E-Mail-Adresse und optional Ihren Namen, um Ihnen Anmelde-Links zu senden. Nach der Anmeldung setzen wir ein Sitzungs-Cookie. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Bereitstellung des von Ihnen gewünschten Dienstes). Sie können Ihr Konto jederzeit per E-Mail an uns löschen lassen.
+
 **Rechtsgrundlage:** Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Auswertung der Reichweite unserer Kampagnen). Da wir keine Informationen auf Ihrem Endgerät speichern oder auslesen, ist keine Einwilligung nach § 165 Abs. 3 TKG 2021 erforderlich.
 
 ---
@@ -36,4 +38,6 @@ When you scan one of our QR codes or open a short link on qr.viennastruggle.at, 
 
 **Retention:** individual visits are deleted automatically after 12 months.
 
-**Legal basis:** Art. 6(1)(f) GDPR (legitimate interest in measuring the reach of our campaigns). As we neither store nor read information on your device, no consent under § 165(3) TKG 2021 is required.
+**Creating your own QR codes:** if you create a QR code on qr.viennastruggle.at without an account, we set one technically necessary cookie ("qr_g") so your browser can find your codes again. It only contains a random number, isn't used for statistics and expires after 12 months. For an account we store your email address and optionally your name to send you sign-in links, and set a session cookie after you sign in. Legal basis: Art. 6(1)(b) GDPR (providing the service you asked for). You can have your account deleted any time by emailing us.
+
+**Legal basis (scan statistics):** Art. 6(1)(f) GDPR (legitimate interest in measuring the reach of our campaigns). As we neither store nor read information on your device, no consent under § 165(3) TKG 2021 is required.
