@@ -70,7 +70,7 @@ page_head(t('Codes'), 'codes');
 <?php foreach ($links as $l):
     $counts = array_map(fn($d) => $spark[$l['id']][$d] ?? 0, $days); ?>
   <div class="row hoverable" data-search="<?= e($l['title'] . ' ' . $l['placement'] . ' ' . $l['code'] . ' ' . $l['target_url'] . ' ' . $l['campaign_name']) ?>">
-    <a href="/app/code.php?id=<?= $l['id'] ?>"><img class="qr-thumb" src="/app/qr.php?id=<?= $l['id'] ?>&amp;v=<?= e($l['code']) ?>" alt="" loading="lazy"></a>
+    <a href="/app/code.php?id=<?= $l['id'] ?>"><img class="qr-thumb" src="/app/qr.php?id=<?= $l['id'] ?>&amp;v=<?= e(qr_version($l)) ?>" alt="" loading="lazy"></a>
     <div class="main">
       <h4><a href="/app/code.php?id=<?= $l['id'] ?>" style="text-decoration:none"><?= e($l['title']) ?></a>
         <?php if ($l['campaign_name']): ?><span class="badge campaign"><?= e($l['campaign_name']) ?></span><?php endif; ?>

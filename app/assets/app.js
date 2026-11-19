@@ -44,3 +44,17 @@ document.querySelectorAll('[data-filter]').forEach((input) => {
     });
   });
 });
+
+// QR style editor: live preview + show the upload field only for "My own" logo
+document.querySelectorAll('.style-form').forEach((form) => {
+  const img = document.querySelector(form.dataset.preview);
+  const upload = form.querySelector('.logo-upload');
+  const update = () => {
+    const f = new FormData(form);
+    if (upload) upload.hidden = f.get('logo') !== 'upload';
+    if (!img) return;
+    const p = new URLSearchParams({ preview: 1, shape: f.get('shape'), color: f.get('color'), logo: f.get('logo'), t: Date.now() });
+    img.src = form.dataset.base + '&' + p.toString();
+  };
+  form.addEventListener('change', update);
+});

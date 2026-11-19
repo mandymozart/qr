@@ -12,3 +12,4 @@ header('Referrer-Policy: same-origin');
 header('X-Content-Type-Options: nosniff');
 require_once __DIR__ . '/track.php';
 require_once __DIR__ . '/guest.php';
+require_once __DIR__ . '/style.php';

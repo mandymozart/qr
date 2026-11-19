@@ -10,12 +10,17 @@ $id = (int) $link['id'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     check_csrf();
     switch (post('action')) {
+        case 'style':
+            [$type, $msg] = style_save($link);
+            flash($msg, $type);
+            redirect('/app/code.php?id=' . $id . '#style');
         case 'toggle':
             q('UPDATE links SET active = 1 - active WHERE id = ? AND user_id = ?', [$id, $user['id']]);
             flash($link['active'] ? t('Paused. The code now shows a "not found" page.') : t('Activated.'));
             redirect('/app/code.php?id=' . $id);
         case 'delete':
             q('DELETE FROM links WHERE id = ? AND user_id = ?', [$id, $user['id']]);
+            qr_delete_logo($id);
             flash(t('Deleted "{title}".', ['title' => $link['title']]));
             redirect($link['campaign_id'] ? '/app/campaign.php?id=' . $link['campaign_id'] : '/app/');
     }
@@ -45,7 +50,7 @@ page_head($link['title'], 'codes');
 
 <div class="qr-panel" style="margin-top:1rem">
   <div>
-    <div class="qr-big"><img src="/app/qr.php?id=<?= $id ?>&amp;v=<?= e($link['code']) ?>" alt="<?= te('QR code for {url}', ['url' => $short]) ?>"></div>
+    <div class="qr-big"><img id="qr-preview" src="/app/qr.php?id=<?= $id ?>&amp;v=<?= e(qr_version($link)) ?>" alt="<?= te('QR code for {url}', ['url' => $short]) ?>"></div>
     <div class="dl">
       <a class="button small" href="/app/qr.php?id=<?= $id ?>&amp;fmt=png&amp;dl=1" download>↓ PNG</a>
       <a class="button small" href="/app/qr.php?id=<?= $id ?>&amp;fmt=svg&amp;dl=1" download>↓ SVG</a>
@@ -73,6 +78,9 @@ page_head($link['title'], 'codes');
     </div>
   </div>
 </div>
+
+<div id="style"></div>
+<?php style_form($link, '/app/qr.php?id=' . $id, csrf_field()); ?>
 
 <section class="block" style="margin-top:2rem">
   <h3><?= te('Scans') ?></h3><p class="hint"><?= te('Bots and link previews are not counted.') ?></p>

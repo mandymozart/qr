@@ -33,6 +33,10 @@ $self = '/manage.php?' . ($viaKey ? 'k=' . rawurlencode($key) : 'id=' . $id);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch (post('action')) {
+        case 'style':
+            [$type, $msg] = style_save($link);
+            flash($msg, $type);
+            redirect($self . '#style');
         case 'save':
             if (!valid_url(post('target_url'))) { flash(t('Please use a full web address, starting with https://'), 'err'); break; }
             q('UPDATE links SET title = ?, target_url = ? WHERE id = ?', [mb_substr(post('title') ?: $link['title'], 0, 160), post('target_url'), $id]);
@@ -48,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             redirect($edit . '&new=1');
         case 'delete':
             q('DELETE FROM links WHERE id = ?', [$id]);
+            qr_delete_logo($id);
             flash(t('Deleted.'));
             redirect('/');
     }
@@ -56,7 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $short = short_url($link['code']);
 $editUrl = $viaKey ? base_url() . '/manage.php?k=' . $key : null;
-$img = '/app/qr.php?' . ($viaKey ? 'k=' . rawurlencode($key) : 'id=' . $id) . '&v=' . rawurlencode($link['code']);
+$imgBase = '/app/qr.php?' . ($viaKey ? 'k=' . rawurlencode($key) : 'id=' . $id);
+$img = $imgBase . '&v=' . qr_version($link);
 $daily = daily_counts('l.id = ?', [$id], 30);
 $total = (int) q("SELECT COUNT(*) FROM hits WHERE link_id = ? AND device <> 'bot'", [$id])->fetchColumn();
 $uniques = (int) q('SELECT ' . UNIQUES_SQL . " FROM hits h WHERE h.link_id = ? AND h.device <> 'bot'", [$id])->fetchColumn();
@@ -72,7 +78,7 @@ public_head($link['title'] . ' · qr');
 
 <div class="qr-panel" style="margin-top:1rem">
   <div>
-    <div class="qr-big"><img src="<?= e($img) ?>" alt="<?= te('QR code for {url}', ['url' => $short]) ?>"></div>
+    <div class="qr-big"><img id="qr-preview" src="<?= e($img) ?>" alt="<?= te('QR code for {url}', ['url' => $short]) ?>"></div>
     <div class="dl">
       <a class="button small" href="<?= e($img) ?>&amp;fmt=png&amp;dl=1" download>↓ PNG</a>
       <a class="button small" href="<?= e($img) ?>&amp;fmt=svg&amp;dl=1" download>↓ SVG</a>
@@ -99,6 +105,9 @@ public_head($link['title'] . ' · qr');
     <?php endif; ?>
   </div>
 </div>
+
+<div id="style"></div>
+<?php style_form($link, $imgBase, $viaKey ? '<input type="hidden" name="k" value="' . e($key) . '">' : ''); ?>
 
 <section class="block" style="margin-top:1.5rem">
   <h3><?= te('Change') ?></h3>

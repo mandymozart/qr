@@ -171,3 +171,8 @@ body.street {
   .street .create .btn { padding: 13px 20px; }
   .street .stage { max-width: 340px; }
 }
+
+/* QR style editor on guest pages */
+.street .choice span { border: 3px solid var(--ink); border-radius: 999px; font-weight: 700; }
+.street .choice input:checked + span { background: var(--yellow); box-shadow: 3px 3px 0 var(--ink); }
+.street .style-editor legend { font-weight: 800; text-transform: uppercase; letter-spacing: .04em; font-size: 13px; }

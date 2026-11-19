@@ -351,3 +351,26 @@ body.public .topbar { max-width: 52rem; margin: 0 auto; }
 .lang-switch a:hover { background: var(--grey-300); }
 .lang-switch strong { color: var(--text); font-weight: 600; padding: .1rem .2rem; }
 .center-lang { display: flex; justify-content: flex-end; padding: 1rem 1.25rem 0; }
+
+/* QR style editor */
+.style-editor fieldset { border: 0; padding: 0; margin: 0 0 1rem; }
+.style-editor legend { font-size: .8rem; font-weight: 600; margin-bottom: .4rem; padding: 0; }
+.choices { display: flex; flex-wrap: wrap; gap: .4rem; }
+.choice input { position: absolute; opacity: 0; pointer-events: none; }
+.choice span { display: inline-flex; align-items: center; gap: .45rem; padding: .35rem .7rem; border: 1px solid var(--line); border-radius: 2rem; background: #fff; font-size: .85rem; cursor: pointer; }
+.choice input:checked + span { border-color: var(--text); box-shadow: 0 0 0 2px var(--text); }
+.choice input:focus-visible + span { outline: 2px solid var(--mint-10); outline-offset: 2px; }
+.swatch { width: 1.2rem; height: 1.2rem; border-radius: .3rem; display: inline-block; }
+.shape-square, .shape-dots { width: 1.1rem; height: 1.1rem; display: inline-block; background: radial-gradient(circle, #111 40%, transparent 42%) 0 0 / 50% 50%; }
+.shape-square { background: linear-gradient(#111 0 0) 0 0 / 45% 45% no-repeat, linear-gradient(#111 0 0) 100% 100% / 45% 45% no-repeat, linear-gradient(#111 0 0) 100% 0 / 45% 45% no-repeat; }
+.logo-upload { margin-top: .6rem; }
+
+/* row action buttons wrap instead of overflowing (users list etc.) */
+.row .tools { flex-wrap: wrap; justify-content: flex-end; row-gap: .35rem; }
+@media (max-width: 768px) {
+  .row .main { flex-basis: 100%; }
+  .row .tools { justify-content: flex-start; }
+  .row .tools .inline-form, .row .tools > a { flex: 0 0 auto; }
+  .topbar .actions { gap: 0; padding: 0 .5rem; }
+  .topbar .nav-button { padding: .35rem .5rem; }
+}

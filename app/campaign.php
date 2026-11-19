@@ -58,7 +58,7 @@ page_head($c['name'], 'campaigns');
   <div class="qr-grid" id="grid">
   <?php foreach ($links as $l): ?>
     <a class="qr-card" href="/app/code.php?id=<?= $l['id'] ?>" data-search="<?= e($l['title'] . ' ' . $l['placement'] . ' ' . $l['code']) ?>">
-      <img src="/app/qr.php?id=<?= $l['id'] ?>&amp;v=<?= e($l['code']) ?>" alt="" loading="lazy">
+      <img src="/app/qr.php?id=<?= $l['id'] ?>&amp;v=<?= e(qr_version($l)) ?>" alt="" loading="lazy">
       <h4><?= e($l['title']) ?><?= $l['active'] ? '' : ' <span class="badge off">' . te('paused') . '</span>' ?></h4>
       <?php if ($l['placement'] !== ''): ?><div class="meta"><span><?= e($l['placement']) ?></span></div><?php endif; ?>
       <div class="meta"><span class="mono">?c=<?= e($l['code']) ?></span><span><?= te('{n} scans', ['n' => (int) $l['scans']]) ?></span></div>

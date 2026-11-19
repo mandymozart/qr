@@ -146,7 +146,7 @@ public_head(t('qr · QR codes you can change later'), 'wide');
   <div class="list">
   <?php foreach ($mine as $l): ?>
     <a class="row" href="/manage.php?id=<?= $l['id'] ?>">
-      <img class="qr-thumb" src="/app/qr.php?id=<?= $l['id'] ?>&amp;v=<?= e($l['code']) ?>" alt="">
+      <img class="qr-thumb" src="/app/qr.php?id=<?= $l['id'] ?>&amp;v=<?= e(qr_version($l)) ?>" alt="">
       <div class="main"><h4><?= e($l['title']) ?><?= $l['active'] ? '' : ' <span class="badge off">' . te('paused') . '</span>' ?></h4>
         <div class="meta"><span class="url">?c=<?= e($l['code']) ?></span><span class="target">→ <?= e($l['target_url']) ?></span></div></div>
       <div class="stat"><strong><?= (int) $l['scans'] ?></strong><span><?= te('scans') ?></span></div>

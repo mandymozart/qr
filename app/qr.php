@@ -23,8 +23,10 @@ if ($cid = int_param('campaign')) {
     $csv = "code,title,short_url,target_url\n";
     foreach ($links as $l) {
         $name = slug($l['title']) . '-' . $l['code'];
-        $zip->addFromString("svg/$name.svg", qr_svg(short_url($l['code'])));
-        $zip->addFromString("png/$name.png", qr_png(short_url($l['code'])));
+        $st = qr_style($l['style'] ?? null);
+        $lg = qr_logo_file($st, (int) $l['id']);
+        $zip->addFromString("svg/$name.svg", qr_svg(short_url($l['code']), $st, $lg));
+        $zip->addFromString("png/$name.png", qr_png(short_url($l['code']), $st, $lg));
         $csv .= implode(',', array_map(fn($v) => '"' . str_replace('"', '""', $v) . '"', [$l['code'], $l['title'], short_url($l['code']), $l['target_url']])) . "\n";
     }
     $zip->addFromString('codes.csv', $csv);
@@ -43,13 +45,23 @@ if (!$link) { http_response_code(404); exit(t('Not found')); }
 $data = short_url($link['code']);
 $name = slug($link['title']) . '-' . $link['code'];
 
-header('Cache-Control: private, max-age=3600');
+$style = qr_style($link['style'] ?? null);
+if (isset($_GET['preview'])) {
+    // live preview from the style editor (not saved)
+    $style = qr_style(['shape' => $_GET['shape'] ?? '', 'color' => $_GET['color'] ?? '', 'logo' => $_GET['logo'] ?? '']);
+    header('Cache-Control: no-store');
+} else {
+    header('Cache-Control: private, max-age=3600');
+}
+$logo = qr_logo_file($style, (int) $link['id']);
+if ($style['logo'] === 'upload' && !$logo) $logo = QR_BADGE; // preview before the first upload
+
 if ($fmt === 'png') {
     header('Content-Type: image/png');
     if (!empty($_GET['dl'])) header('Content-Disposition: attachment; filename="' . $name . '.png"');
-    echo qr_png($data);
+    echo qr_png($data, $style, $logo);
 } else {
     header('Content-Type: image/svg+xml');
     if (!empty($_GET['dl'])) header('Content-Disposition: attachment; filename="' . $name . '.svg"');
-    echo qr_svg($data);
+    echo qr_svg($data, $style, $logo);
 }
