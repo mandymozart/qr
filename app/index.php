@@ -47,7 +47,9 @@ page_head(t('Codes'), 'codes');
 <div class="tiles">
   <div class="tile"><div class="label"><?= te('Scans today') ?></div><div class="value"><?= $today ?></div></div>
   <div class="tile"><div class="label"><?= te('Last 30 days') ?></div><div class="value"><?= number_format($month) ?></div></div>
-  <div class="tile"><div class="label"><?= te('Codes') ?></div><div class="value"><?= count($links) ?></div><div class="sub"><?= te('{n} campaigns', ['n' => count($campaigns)]) ?></div></div>
+  <?php $left = user_codes_left($user); ?>
+  <div class="tile"><div class="label"><?= te('Codes') ?></div><div class="value"><?= count($links) ?></div><div class="sub"><?= $left === null ? te('{n} campaigns', ['n' => count($campaigns)]) : te('{used} of {max} used', ['used' => user_code_count($user), 'max' => FREE_MAX_CODES]) ?></div>
+    <?php if ($left !== null && $left <= FREE_MAX_CODES * 0.2): ?><div style="margin-top:.5rem"><?= pro_button() ?></div><?php endif; ?></div>
 </div>
 
 <div class="list-header">

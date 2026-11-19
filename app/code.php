@@ -64,7 +64,7 @@ page_head($link['title'], 'codes');
       <button class="button" data-copy="<?= e($short) ?>"><?= te('Copy') ?></button>
     </div>
     <dl class="kv">
-      <dt><?= te('Target') ?></dt><dd class="mono"><a href="<?= e($link['target_url']) ?>" target="_blank" rel="noopener noreferrer"><?= e($link['target_url']) ?></a></dd>
+      <dt><?= te('Target') ?></dt><dd class="mono"><?php if ($link['target_url'] !== ''): ?><a href="<?= e($link['target_url']) ?>" target="_blank" rel="noopener noreferrer"><?= e($link['target_url']) ?></a><?php else: ?><?= te('— hosted page (mini-app) —') ?><?php endif; ?></dd>
       <dt><?= te('Placement') ?></dt><dd><?= $link['placement'] !== '' ? e($link['placement']) : '—' ?></dd>
       <dt><?= te('UTM tags') ?></dt><dd><?= $link['utm'] ? te('on') : te('off') ?></dd>
       <dt><?= te('Campaign') ?></dt><dd><?= $link['campaign_name'] ? e($link['campaign_name']) : '—' ?></dd>
@@ -76,6 +76,12 @@ page_head($link['title'], 'codes');
         <button class="button ghost"><?= $link['active'] ? te('Pause') : te('Activate') ?></button></form>
       <form class="inline-form" method="post" data-confirm="<?= te('Delete this code and all its stats? Printed codes will stop working.') ?>"><?= csrf_field() ?><input type="hidden" name="action" value="delete">
         <button class="button danger"><?= te('Delete') ?></button></form>
+    </div>
+    <?php $mini = step_for_link($id); ?>
+    <div class="code-mini">
+      <h4>🧩 <?= te('Mini-app') ?><?= $mini ? ' · ' . e(step_type_label($mini['type'])) . ($mini['active'] ? '' : ' <span class="badge off">' . te('paused') . '</span>') : '' ?></h4>
+      <p><?= $mini ? te('People see “{title}” before they reach the target.', ['title' => $mini['title']]) : te('Show a flyer page, a sign-up form, a poll or a ticket button between the scan and the target.') ?></p>
+      <a class="button small" href="/app/step.php?id=<?= $id ?>"><?= $mini ? te('Edit mini-app') : te('Add a mini-app') ?></a>
     </div>
   </div>
   <div class="code-style" id="style"><?php style_form($link, '/app/qr.php?id=' . $id, csrf_field()); ?></div>

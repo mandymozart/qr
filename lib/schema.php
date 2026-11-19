@@ -5,7 +5,7 @@ declare(strict_types=1);
  * Creates tables on first run and seeds the bootstrap admin (ADMIN_USER).
  * Cheap check on every request: one query against a 1-row table.
  */
-const SCHEMA_VERSION = 5;
+const SCHEMA_VERSION = 6;
 
 function migrate(PDO $pdo): void
 {
@@ -75,7 +75,8 @@ function migrate(PDO $pdo): void
     // Bootstrap admin from ADMIN_USER
     if (!(int) $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn()) {
         $email = (string) config('admin_user', 'admin');
-        $st = $pdo->prepare("INSERT INTO users (email, name, role) VALUES (?, 'Admin', 'admin')");
+        $stepTables();
+    $st = $pdo->prepare("INSERT INTO users (email, name, role) VALUES (?, 'Admin', 'admin')");
         $st->execute([$email]);
     }
 
@@ -113,6 +114,33 @@ function migrate(PDO $pdo): void
         $pdo->exec("ALTER TABLE links ADD COLUMN IF NOT EXISTS style VARCHAR(255) NULL");
     }
 
+    // v6: mini-apps between scan and target (form, poll, info + button, page) and their responses; free/pro plans
+    if ($v < 6) {
+        $pdo->exec("ALTER TABLE users ADD COLUMN IF NOT EXISTS plan VARCHAR(8) NOT NULL DEFAULT 'free',
+            ADD COLUMN IF NOT EXISTS pro_requested_at DATETIME NULL");
+        $pdo->exec("CREATE TABLE IF NOT EXISTS steps (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            link_id INT UNSIGNED NOT NULL UNIQUE,
+            type VARCHAR(16) NOT NULL,
+            title VARCHAR(190) NOT NULL DEFAULT '',
+            intro TEXT NULL,
+            config TEXT NULL,
+            required TINYINT(1) NOT NULL DEFAULT 0,
+            active TINYINT(1) NOT NULL DEFAULT 1,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (link_id) REFERENCES links(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+        $pdo->exec("CREATE TABLE IF NOT EXISTS responses (
+            id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            step_id INT UNSIGNED NOT NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            visitor CHAR(16) NOT NULL DEFAULT '',
+            data TEXT NOT NULL,
+            KEY step_time (step_id, created_at),
+            FOREIGN KEY (step_id) REFERENCES steps(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    }
+
     $pdo->exec('DELETE FROM schema_version');
     $pdo->exec('INSERT INTO schema_version (version) VALUES (' . SCHEMA_VERSION . ')');
 }
@@ -120,15 +148,26 @@ function migrate(PDO $pdo): void
 /** Local-dev schema for SQLite (same tables, SQLite types). */
 function migrate_sqlite(PDO $pdo): void
 {
+    $stepTables = function () use ($pdo) {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS steps (id INTEGER PRIMARY KEY AUTOINCREMENT, link_id INTEGER NOT NULL UNIQUE REFERENCES links(id) ON DELETE CASCADE,
+            type TEXT NOT NULL, title TEXT NOT NULL DEFAULT '', intro TEXT NULL, config TEXT NULL, required INTEGER NOT NULL DEFAULT 0,
+            active INTEGER NOT NULL DEFAULT 1, created_at TEXT NOT NULL DEFAULT (datetime('now','localtime')))");
+        $pdo->exec("CREATE TABLE IF NOT EXISTS responses (id INTEGER PRIMARY KEY AUTOINCREMENT, step_id INTEGER NOT NULL REFERENCES steps(id) ON DELETE CASCADE,
+            created_at TEXT NOT NULL DEFAULT (datetime('now','localtime')), visitor TEXT NOT NULL DEFAULT '', data TEXT NOT NULL)");
+    };
     if ($pdo->query("SELECT 1 FROM sqlite_master WHERE name = 'users'")->fetchColumn()) {
         try { $pdo->exec('ALTER TABLE links ADD COLUMN style TEXT NULL'); } catch (PDOException) {} // dev DBs from before v5
+        $stepTables();
+        foreach (["ALTER TABLE users ADD COLUMN plan TEXT NOT NULL DEFAULT 'free'", 'ALTER TABLE users ADD COLUMN pro_requested_at TEXT NULL'] as $sql) {
+            try { $pdo->exec($sql); } catch (PDOException) {}
+        }
         return;
     }
     $now = "DEFAULT (datetime('now','localtime'))";
     $pdo->exec("CREATE TABLE users (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE COLLATE NOCASE,
         name TEXT NOT NULL DEFAULT '', role TEXT NOT NULL DEFAULT 'user', status TEXT NOT NULL DEFAULT 'active',
         password_hash TEXT NULL, token_hash TEXT NULL, token_expires_at TEXT NULL, token_created_at TEXT NULL,
-        last_login_at TEXT NULL, created_at TEXT NOT NULL $now)");
+        last_login_at TEXT NULL, created_at TEXT NOT NULL $now, plan TEXT NOT NULL DEFAULT 'free', pro_requested_at TEXT NULL)");
     $pdo->exec("CREATE TABLE sessions (token_hash TEXT PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, expires_at TEXT NOT NULL, impersonator_id INTEGER NULL)");
     $pdo->exec("CREATE TABLE campaigns (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         name TEXT NOT NULL, created_at TEXT NOT NULL $now)");

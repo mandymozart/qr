@@ -22,7 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'utm' => isset($_POST['utm']) ? 1 : 0,
     ];
     if ($data['title'] === '') $errors['title'] = t('Give it a name.');
-    if (!valid_url($data['target_url'])) $errors['target_url'] = t('Needs to be a full http(s):// URL.');
+    if ($data['target_url'] === 'https://' || $data['target_url'] === 'http://') $data['target_url'] = '';
+    if ($data['target_url'] !== '' && !valid_url($data['target_url'])) $errors['target_url'] = t('Needs to be a full http(s):// URL.');
+    if (!$link && ($left = user_codes_left($user)) !== null && $left < 1) $errors['limit'] = limit_message(0);
     if ($data['campaign_id'] && !find_campaign($data['campaign_id'], $user)) $data['campaign_id'] = null;
 
     if ($data['code'] === '') {
@@ -44,6 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = (int) db()->lastInsertId();
             flash(t('Code created.'));
         }
+        // no target and no mini-app yet: go set up the hosted page right away
+        if ($data['target_url'] === '' && !step_for_link($id)) redirect('/app/step.php?id=' . $id . '&preset=flyer');
         redirect('/app/code.php?id=' . $id);
     }
 }
@@ -55,6 +59,7 @@ function err(array $errors, string $k): string
 
 page_head($link ? t('Edit code') : t('New code'), 'codes');
 ?>
+<?php if (isset($errors['limit'])): ?><div class="notice err"><?= e($errors['limit']) ?> <?= pro_button() ?></div><?php endif; ?>
 <div style="max-width:44rem">
 <span class="entity-type"><?= $link ? te('Edit code') : te('New code') ?></span>
 <h2 class="entity-title"><?= $link ? e($link['title']) : te('Create a QR link') ?></h2>
@@ -65,7 +70,7 @@ page_head($link ? t('Edit code') : t('New code'), 'codes');
   <div class="field"><label for="title"><?= te('Name') ?></label>
     <input id="title" name="title" required value="<?= e($data['title']) ?>" placeholder="<?= te('Flyer Westbahnhof') ?>"><?= err($errors, 'title') ?></div>
   <div class="field"><label for="target_url"><?= te('Target URL') ?></label>
-    <input id="target_url" name="target_url" type="url" required value="<?= e($data['target_url']) ?>"><?= err($errors, 'target_url') ?></div>
+    <input id="target_url" name="target_url" type="url" value="<?= e($data['target_url']) ?>"><?= err($errors, 'target_url') ?: '<div class="field-hint">' . te('Leave empty to host a small page or flyer instead (set it up as a mini-app after saving).') . '</div>' ?></div>
   <div class="form-grid">
     <div class="field"><label for="code"><?= te('Short code') ?></label>
       <input id="code" name="code" value="<?= e($data['code']) ?>" placeholder="<?= te('auto') ?>" pattern="[A-Za-z0-9_\-]{2,40}">

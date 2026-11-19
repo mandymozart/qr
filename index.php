@@ -23,28 +23,28 @@ if ($code !== '') {
     }
 
     if ($link) {
+        // A mini-app (or a code without a target) shows our hosted step page first.
+        $hasStep = false;
+        try {
+            $hasStep = (bool) q('SELECT 1 FROM steps WHERE link_id = ? AND active = 1', [$link['id']])->fetch();
+        } catch (Throwable) {
+        }
+        if ($hasStep || trim((string) $link['target_url']) === '') {
+            record_hit((int) $link['id']);
+            header('Cache-Control: no-store');
+            header('Location: /step.php?c=' . rawurlencode($link['code']), true, 302);
+            exit;
+        }
+
         // Send the visitor on their way first, record afterwards.
         header('Cache-Control: no-store');
         header('Referrer-Policy: no-referrer');
         header('Location: ' . ($link['utm'] ? with_utm($link['target_url'], $link['code'], $link['campaign']) : $link['target_url']), true, 302);
         header('Content-Length: 0');
         if (function_exists('fastcgi_finish_request')) fastcgi_finish_request();
-
-        try {
-            $ua = (string) ($_SERVER['HTTP_USER_AGENT'] ?? '');
-            $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? '');
-            [$device, $os] = device_info($ua);
-            $ref = (string) parse_url((string) ($_SERVER['HTTP_REFERER'] ?? ''), PHP_URL_HOST);
-            [$country, $city] = $device === 'bot' ? ['', ''] : geo_lookup($ip);
-            q('INSERT INTO hits (link_id, device, os, referer, visitor, country, city, lang, browser) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [
-                $link['id'], $device, $os, substr($ref, 0, 190),
-                $device === 'bot' ? '' : visitor_id($ip, $ua),
-                $country, $city, accept_language(), $device === 'bot' ? '' : browser_name($ua),
-            ]);
-            unset($ip);
-            if (function_exists('fastcgi_finish_request')) maintenance();
-        } catch (Throwable $ex) {
-            error_log('qr tracking error: ' . $ex->getMessage());
+        record_hit((int) $link['id']);
+        if (function_exists('fastcgi_finish_request')) {
+            try { maintenance(); } catch (Throwable $ex) { error_log('qr maintenance error: ' . $ex->getMessage()); }
         }
         exit;
     }
@@ -235,6 +235,41 @@ public_head(t('qr · QR codes you can change later'), 'wide');
       </ul>
       <a class="btn y" href="/app/register.php"><?= te('Create a free account') ?></a>
     </div>
+  </div>
+</section>
+
+<section class="st-sec vienna">
+  <div class="vienna-box">
+    <div>
+      <span class="tag"><?= te('Made in Vienna') ?></span>
+      <h2><?= te('Made in Vienna. For the scene.') ?></h2>
+      <p class="lead"><?= te('qr is built in Vienna for artists, bands, galleries, off-spaces, collectives and everyone who puts posters on walls.') ?></p>
+      <div class="goodfor">
+        <span><?= te('Built in Vienna') ?></span><span><?= te('Free for the scene') ?></span><span><?= te('Hosted in the EU') ?></span><span><?= te('No ads') ?></span>
+      </div>
+    </div>
+    <svg class="wheel" viewBox="0 0 320 340" aria-hidden="true">
+      <!-- an original Ferris-wheel doodle, Vienna-style: only the wheel turns, the stand stays -->
+      <g fill="none" stroke="#170a2c" stroke-width="9" stroke-linecap="round"><path d="M160 150l-70 170M160 150l70 170M70 320h180"/></g>
+      <g class="spin">
+        <g fill="none" stroke="#170a2c" stroke-width="9" stroke-linecap="round">
+          <circle cx="160" cy="150" r="118"/>
+          <circle cx="160" cy="150" r="96" stroke-width="5"/>
+          <path d="M160 32v236M42 150h236M77 67l166 166M243 67L77 233"/>
+        </g>
+        <g stroke="#170a2c" stroke-width="6">
+          <rect x="146" y="14" width="28" height="22" rx="6" fill="var(--red)"/>
+          <rect x="263" y="139" width="28" height="22" rx="6" fill="var(--green)"/>
+          <rect x="146" y="264" width="28" height="22" rx="6" fill="var(--blue)"/>
+          <rect x="29" y="139" width="28" height="22" rx="6" fill="var(--yellow)"/>
+          <rect x="229" y="55" width="28" height="22" rx="6" fill="var(--pink)"/>
+          <rect x="63" y="55" width="28" height="22" rx="6" fill="var(--orange)"/>
+          <rect x="229" y="222" width="28" height="22" rx="6" fill="var(--yellow)"/>
+          <rect x="63" y="222" width="28" height="22" rx="6" fill="var(--green)"/>
+        </g>
+      </g>
+      <circle cx="160" cy="150" r="16" fill="var(--yellow)" stroke="#170a2c" stroke-width="7"/>
+    </svg>
   </div>
 </section>
 

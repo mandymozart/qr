@@ -133,4 +133,11 @@ return [
     'Want more?' => 'Lust auf mehr?',
     'With a free account you keep all your codes safely, make campaigns and bulk codes, and see where, when and on what devices people scan.' => 'Mit einem Gratis-Account sind alle deine Codes sicher aufgehoben, du kannst Kampagnen und Massen-Codes anlegen und siehst, wo, wann und mit welchen Geräten gescannt wird.',
     'Codes from this browser move in automatically.' => 'Codes aus diesem Browser ziehen automatisch mit um.',
+    'Made in Vienna' => 'Made in Vienna',
+    'Made in Vienna. For the scene.' => 'Aus Wien. Für die Szene.',
+    'qr is built in Vienna for artists, bands, galleries, off-spaces, collectives and everyone who puts posters on walls.' => 'qr wird in Wien gebaut, für Künstler:innen, Bands, Galerien, Off-Spaces, Kollektive und alle, die Plakate an Wände kleben.',
+    'Built in Vienna' => 'Gebaut in Wien',
+    'Free for the scene' => 'Gratis für die Szene',
+    'Hosted in the EU' => 'Gehostet in der EU',
+    'No ads' => 'Keine Werbung',
 ];

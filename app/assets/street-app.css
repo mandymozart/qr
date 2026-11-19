@@ -183,3 +183,5 @@ body.street.app { font-size: 16px; background: var(--paper); color: var(--ink); 
 .street.app section.block { border-top: 0; padding-top: 0; margin-top: 2.75rem; }
 .street.app .user-list .row .tools, .street.app #links .row .tools, .street.app #guests .row .tools { border-top: 0; padding-top: 4px; }
 @media (max-width: 1250px) { .street.app .code-top .code-style { border-top: 0; padding-top: 0; margin-top: 1rem; } }
+
+.street.app .badge.pro { background: var(--yellow); }

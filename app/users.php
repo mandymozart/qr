@@ -65,6 +65,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ? t('{email} is blocked and signed out. Their codes keep working.', ['email' => $u['email']])
                 : t('{email} is active again.', ['email' => $u['email']]));
             break;
+        case 'plan':
+            if ($u['role'] === 'admin') { flash(t('Admins have no limit anyway.'), 'info'); break; }
+            $plan = ($u['plan'] ?? 'free') === 'pro' ? 'free' : 'pro';
+            q('UPDATE users SET plan = ? WHERE id = ?', [$plan, $u['id']]);
+            $mailed = $plan === 'pro' && send_mail($u['email'], t('Your account is now Pro'),
+                t('Your account on {host} is now Pro: create as many QR codes as you like.', ['host' => parse_url(base_url(), PHP_URL_HOST)]) . "\n\n" . base_url() . "/app/\n") === null;
+            flash($plan === 'pro'
+                ? ($mailed ? t('{email} is now Pro (no code limit). We let them know by mail.', ['email' => $u['email']]) : t('{email} is now Pro (no code limit).', ['email' => $u['email']]))
+                : t('{email} is back on the free plan.', ['email' => $u['email']]));
+            break;
         case 'role':
             if ($protected) { flash(t('You can\'t change the role of this account.'), 'err'); break; }
             $role = $u['role'] === 'admin' ? 'user' : 'admin';
@@ -119,6 +129,8 @@ page_head(t('Users'), 'users');
       <?php else: ?>
         <h4><?= e($u['name'] ?: $u['email']) ?>
           <?php if ($u['role'] === 'admin'): ?><span class="badge admin"><?= te(is_master($u) ? 'master admin' : 'admin') ?></span><?php endif; ?>
+          <?php if (($u['plan'] ?? 'free') === 'pro' && $u['role'] !== 'admin'): ?><span class="badge pro">⭐ Pro</span><?php endif; ?>
+          <?php if (!empty($u['pro_requested_at']) && ($u['plan'] ?? 'free') !== 'pro' && $u['role'] !== 'admin'): ?><span class="badge campaign"><?= te('wants Pro') ?></span><?php endif; ?>
           <span class="badge <?= $u['status'] ?>"><?= te($u['status'] === 'active' ? 'active' : 'blocked') ?></span>
           <?php if ((int) $u['id'] === (int) $me['id']): ?><span class="badge"><?= te('you') ?></span><?php endif; ?></h4>
         <div class="meta"><span><?= e($u['email']) ?></span><span><?= te('last sign-in {when}', ['when' => ago($u['last_login_at'])]) ?></span><span><?= te('since {date}', ['date' => fmt_date($u['created_at'])]) ?></span></div>
@@ -135,6 +147,8 @@ page_head(t('Users'), 'users');
         <button class="button small ghost" title="<?= te('Mail a fresh sign-in link (valid 7 days)') ?>"><?= te('Send link') ?></button></form>
       <a class="button small ghost" href="/app/users.php?edit=<?= $u['id'] ?>"><?= te('Edit') ?></a>
       <?php if (!$protected): ?>
+        <?php if ($u['role'] !== 'admin'): ?><form class="inline-form" method="post"><?= csrf_field() ?><input type="hidden" name="id" value="<?= $u['id'] ?>"><input type="hidden" name="action" value="plan">
+          <button class="button small ghost"><?= ($u['plan'] ?? 'free') === 'pro' ? te('Make free') : '⭐ ' . te('Make Pro') ?></button></form><?php endif; ?>
         <form class="inline-form" method="post"><?= csrf_field() ?><input type="hidden" name="id" value="<?= $u['id'] ?>"><input type="hidden" name="action" value="role">
           <button class="button small ghost"><?= te($u['role'] === 'admin' ? 'Make user' : 'Make admin') ?></button></form>
         <form class="inline-form" method="post"><?= csrf_field() ?><input type="hidden" name="id" value="<?= $u['id'] ?>"><input type="hidden" name="action" value="block">

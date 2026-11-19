@@ -32,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$cid && $name === '') $errors[] = t('Name the campaign (or pick an existing one).');
     if ($count < 0 || $count > 500) $errors[] = t('Between 0 and 500 codes at once.');
+    if ($count > 0 && ($left = user_codes_left($user)) !== null && $count > $left) { $errors[] = limit_message($left); $limitHit = true; }
     if ($count > 0 && !valid_url(str_replace(['{n}', '{code}'], ['1', 'x'], $url))) $errors[] = t('Target URL needs to be a full http(s):// URL.');
     if ($cid && !find_campaign($cid, $user)) $errors[] = t('Unknown campaign.');
 
@@ -62,7 +63,7 @@ page_head(t('Campaigns'), 'campaigns');
   </div>
 </div>
 
-<?php if ($errors): ?><div class="notice err"><?= e(implode(' ', $errors)) ?></div><?php endif; ?>
+<?php if ($errors): ?><div class="notice err"><?= e(implode(' ', $errors)) ?><?= !empty($limitHit) ? ' ' . pro_button() : '' ?></div><?php endif; ?>
 
 <?php if ($campaigns): ?>
 <div class="list">

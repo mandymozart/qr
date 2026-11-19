@@ -120,3 +120,83 @@ document.querySelectorAll('.style-form').forEach((form) => {
   // color pickers: update the preview while dragging, but not on every pixel
   let t; form.querySelectorAll('input[type=color]').forEach((c) => c.addEventListener('input', () => { clearTimeout(t); t = setTimeout(update, 250); }));
 });
+
+// Generic dropzones (mini-app photo/file fields, flyer upload): show a thumbnail and the file name
+document.querySelectorAll('.step-drop').forEach((zone) => {
+  const input = zone.querySelector('input[type=file]');
+  const show = (file) => {
+    if (!file) return;
+    zone.classList.add('has-file');
+    const thumb = zone.querySelector('.dz-thumb');
+    thumb.innerHTML = /^image\//.test(file.type) ? '<img alt="" src="' + URL.createObjectURL(file) + '">' : '<b>PDF</b>';
+    zone.querySelector('.dz-text b').textContent = file.name;
+  };
+  ['dragenter', 'dragover'].forEach((t) => zone.addEventListener(t, (e) => { e.preventDefault(); zone.classList.add('drag'); }));
+  ['dragleave', 'drop'].forEach((t) => zone.addEventListener(t, (e) => { e.preventDefault(); zone.classList.remove('drag'); }));
+  zone.addEventListener('drop', (e) => {
+    const f = e.dataTransfer.files[0]; if (!f) return;
+    const dt = new DataTransfer(); dt.items.add(f); input.files = dt.files; show(f);
+  });
+  input.addEventListener('change', () => show(input.files[0]));
+});
+
+// Mini-app editor: type panels, presets, field rows
+(() => {
+  const form = document.getElementById('step-editor');
+  if (!form) return;
+  const el = (n) => form.elements.namedItem(n); // form.title etc. would hit built-in properties
+  const panels = form.querySelectorAll('.type-panel');
+  const rows = document.getElementById('field-rows');
+  const showType = () => {
+    const t = (form.querySelector('input[name=type]:checked') || {}).value;
+    panels.forEach((p) => { p.hidden = p.dataset.type !== t; });
+  };
+  const renumber = () => rows.querySelectorAll('.field-row').forEach((row, i) => {
+    row.querySelectorAll('[name]').forEach((el) => { el.name = el.name.replace(/fields\[\d+\]/, 'fields[' + i + ']'); });
+  });
+  const syncOpts = (row) => { row.querySelector('.opts').hidden = row.querySelector('select').value !== 'select'; };
+  const addRow = (f) => {
+    const tpl = rows.querySelector('.field-row');
+    const row = tpl.cloneNode(true);
+    row.querySelector('input[name$="[label]"]').value = f ? f.label : '';
+    row.querySelector('select').value = f ? f.type : 'text';
+    row.querySelector('input[type=checkbox]').checked = f ? !!f.required : false;
+    row.querySelector('.opts').value = f && f.options ? f.options.join('\n') : '';
+    rows.appendChild(row); syncOpts(row); renumber();
+  };
+  form.addEventListener('change', (e) => {
+    if (e.target.name === 'type') showType();
+    if (e.target.matches('.field-row select')) syncOpts(e.target.closest('.field-row'));
+  });
+  form.addEventListener('click', (e) => {
+    if (e.target.id === 'add-field') { if (rows.children.length < 12) addRow(null); }
+    if (e.target.classList.contains('rm-field')) {
+      const row = e.target.closest('.field-row');
+      if (rows.children.length > 1) row.remove(); else { row.querySelectorAll('input:not([type=checkbox]), textarea').forEach((i) => { i.value = ''; }); }
+      renumber();
+    }
+    const key = e.target.dataset && e.target.dataset.preset;
+    if (key && window.STEP_PRESETS[key]) {
+      const p = window.STEP_PRESETS[key];
+      form.querySelector('input[name=type][value=' + p.type + ']').checked = true;
+      el('title').value = p.title; el('intro').value = p.intro || '';
+      form.querySelector('input[name=required]').checked = !!p.required;
+      const c = p.config;
+      if (p.type === 'form') {
+        while (rows.children.length > 1) rows.lastElementChild.remove();
+        c.fields.forEach((f, i) => { if (i === 0) { const r = rows.firstElementChild; r.querySelector('input[name$="[label]"]').value = f.label; r.querySelector('select').value = f.type; r.querySelector('input[type=checkbox]').checked = !!f.required; r.querySelector('.opts').value = (f.options || []).join('\n'); syncOpts(r); } else addRow(f); });
+        el('button').value = c.button || '';
+      } else if (p.type === 'poll') {
+        el('poll_options').value = c.options.join('\n'); el('show_results').checked = !!c.show_results;
+      } else if (p.type === 'info') {
+        el('button_label').value = c.button_label; el('button_url').value = c.button_url;
+      } else if (p.type === 'page') {
+        form.querySelectorAll('.link-row').forEach((r, i) => { const l = (c.links || [])[i]; r.children[0].value = l ? l.label : ''; r.children[1].value = l ? l.url : ''; });
+      }
+      showType();
+      el('title').focus();
+    }
+  });
+  rows.querySelectorAll('.field-row').forEach(syncOpts);
+  showType();
+})();

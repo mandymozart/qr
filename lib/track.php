@@ -151,3 +151,22 @@ function lang_name(string $code): string
         'zh' => 'Chinese', 'ja' => 'Japanese', 'ko' => 'Korean', 'sl' => 'Slovenian', 'bg' => 'Bulgarian', 'sq' => 'Albanian'];
     return $code === '' ? t('— unknown —') : (isset($names[$code]) ? t($names[$code]) : $code);
 }
+
+/** Logs one scan of a link (device, coarse place, language, daily visitor hash; never the IP). */
+function record_hit(int $linkId): void
+{
+    try {
+        $ua = (string) ($_SERVER['HTTP_USER_AGENT'] ?? '');
+        $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? '');
+        [$device, $os] = device_info($ua);
+        $ref = (string) parse_url((string) ($_SERVER['HTTP_REFERER'] ?? ''), PHP_URL_HOST);
+        [$country, $city] = $device === 'bot' ? ['', ''] : geo_lookup($ip);
+        q('INSERT INTO hits (link_id, device, os, referer, visitor, country, city, lang, browser) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+            $linkId, $device, $os, substr($ref, 0, 190),
+            $device === 'bot' ? '' : visitor_id($ip, $ua),
+            $country, $city, accept_language(), $device === 'bot' ? '' : browser_name($ua),
+        ]);
+    } catch (Throwable $ex) {
+        error_log('qr tracking error: ' . $ex->getMessage());
+    }
+}
