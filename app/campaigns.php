@@ -31,8 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cid = (int) post('campaign_id');
 
     if (!$cid && $name === '') $errors[] = t('Name the campaign (or pick an existing one).');
-    if ($count < 0 || $count > 500) $errors[] = t('Between 0 and 500 codes at once.');
-    if ($count > 0 && ($left = user_codes_left($user)) !== null && $count > $left) { $errors[] = limit_message($left); $limitHit = true; }
+    if ($count < 0 || $count > BULK_MAX_PER_RUN) $errors[] = t('Between 0 and {n} codes at once.', ['n' => BULK_MAX_PER_RUN]);
+    if ($count > 0 && $count > ($left = bulk_left_today($user))) $errors[] = t('You can create {n} more codes today (max. {max} per day). Please continue tomorrow.', ['n' => $left, 'max' => BULK_MAX_PER_DAY]);
     if ($count > 0 && !valid_url(str_replace(['{n}', '{code}'], ['1', 'x'], $url))) $errors[] = t('Target URL needs to be a full http(s):// URL.');
     if ($cid && !find_campaign($cid, $user)) $errors[] = t('Unknown campaign.');
 
@@ -63,7 +63,7 @@ page_head(t('Campaigns'), 'campaigns');
   </div>
 </div>
 
-<?php if ($errors): ?><div class="notice err"><?= e(implode(' ', $errors)) ?><?= !empty($limitHit) ? ' ' . pro_button() : '' ?></div><?php endif; ?>
+<?php if ($errors): ?><div class="notice err"><?= e(implode(' ', $errors)) ?></div><?php endif; ?>
 
 <?php if ($campaigns): ?>
 <div class="list">
@@ -88,7 +88,7 @@ page_head(t('Campaigns'), 'campaigns');
     <div class="form-grid">
       <div class="field"><label for="name"><?= te('New campaign name') ?></label><input id="name" name="name" value="<?= e($_POST['name'] ?? '') ?>" placeholder="<?= te('Poster run November') ?>"></div>
       <div class="field"><label for="campaign_id"><?= te('…or add to existing') ?></label><?= campaign_select($user, (int) ($_POST['campaign_id'] ?? 0) ?: null) ?></div>
-      <div class="field"><label for="count"><?= te('Number of codes') ?></label><input id="count" name="count" type="number" min="0" max="500" value="<?= e($_POST['count'] ?? '1') ?>"></div>
+      <div class="field"><label for="count"><?= te('Number of codes') ?></label><input id="count" name="count" type="number" min="0" max="<?= BULK_MAX_PER_RUN ?>" value="<?= e($_POST['count'] ?? '1') ?>"></div>
       <div class="field"><label for="title"><?= te('Code names') ?></label><input id="title" name="title" value="<?= e($_POST['title'] ?? '') ?>" placeholder="<?= te('Poster #{n}') ?>"></div>
     </div>
     <div class="field"><label for="target_url"><?= te('Target URL (same for all)') ?></label><input id="target_url" name="target_url" value="<?= e($_POST['target_url'] ?? 'https://') ?>"></div>

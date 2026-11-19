@@ -4,7 +4,7 @@
     {
       "name": "qr",
       "runtimeExecutable": "php",
-      "runtimeArgs": ["-d", "extension=pdo_sqlite", "-S", "localhost:8088", "-t", "."],
+      "runtimeArgs": ["-d", "extension=pdo_sqlite", "-S", "localhost:8088", "-t", ".", "router.php"],
       "port": 8088
     }
   ]

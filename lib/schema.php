@@ -5,7 +5,7 @@ declare(strict_types=1);
  * Creates tables on first run and seeds the bootstrap admin (ADMIN_USER).
  * Cheap check on every request: one query against a 1-row table.
  */
-const SCHEMA_VERSION = 6;
+const SCHEMA_VERSION = 7;
 
 function migrate(PDO $pdo): void
 {
@@ -76,6 +76,7 @@ function migrate(PDO $pdo): void
     if (!(int) $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn()) {
         $email = (string) config('admin_user', 'admin');
         $stepTables();
+    $apiTables();
     $st = $pdo->prepare("INSERT INTO users (email, name, role) VALUES (?, 'Admin', 'admin')");
         $st->execute([$email]);
     }
@@ -141,6 +142,31 @@ function migrate(PDO $pdo): void
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
     }
 
+    // v7: API keys and an API call log (rate limits per plan; anonymous calls are keyed by the daily visitor hash)
+    if ($v < 7) {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS api_keys (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            user_id INT UNSIGNED NOT NULL,
+            name VARCHAR(80) NOT NULL DEFAULT '',
+            prefix CHAR(12) NOT NULL,
+            key_hash CHAR(64) NOT NULL UNIQUE,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            last_used_at DATETIME NULL,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+        $pdo->exec("CREATE TABLE IF NOT EXISTS api_calls (
+            id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            user_id INT UNSIGNED NULL,
+            visitor CHAR(16) NOT NULL DEFAULT '',
+            action VARCHAR(32) NOT NULL,
+            units INT UNSIGNED NOT NULL DEFAULT 0,
+            via VARCHAR(8) NOT NULL DEFAULT 'rest',
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            KEY user_time (user_id, created_at),
+            KEY visitor_time (visitor, created_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+    }
+
     $pdo->exec('DELETE FROM schema_version');
     $pdo->exec('INSERT INTO schema_version (version) VALUES (' . SCHEMA_VERSION . ')');
 }
@@ -148,6 +174,12 @@ function migrate(PDO $pdo): void
 /** Local-dev schema for SQLite (same tables, SQLite types). */
 function migrate_sqlite(PDO $pdo): void
 {
+    $apiTables = function () use ($pdo) {
+        $pdo->exec("CREATE TABLE IF NOT EXISTS api_keys (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            name TEXT NOT NULL DEFAULT '', prefix TEXT NOT NULL, key_hash TEXT NOT NULL UNIQUE, created_at TEXT NOT NULL DEFAULT (datetime('now','localtime')), last_used_at TEXT NULL)");
+        $pdo->exec("CREATE TABLE IF NOT EXISTS api_calls (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NULL, visitor TEXT NOT NULL DEFAULT '',
+            action TEXT NOT NULL, units INTEGER NOT NULL DEFAULT 0, via TEXT NOT NULL DEFAULT 'rest', created_at TEXT NOT NULL DEFAULT (datetime('now','localtime')))");
+    };
     $stepTables = function () use ($pdo) {
         $pdo->exec("CREATE TABLE IF NOT EXISTS steps (id INTEGER PRIMARY KEY AUTOINCREMENT, link_id INTEGER NOT NULL UNIQUE REFERENCES links(id) ON DELETE CASCADE,
             type TEXT NOT NULL, title TEXT NOT NULL DEFAULT '', intro TEXT NULL, config TEXT NULL, required INTEGER NOT NULL DEFAULT 0,
@@ -158,6 +190,7 @@ function migrate_sqlite(PDO $pdo): void
     if ($pdo->query("SELECT 1 FROM sqlite_master WHERE name = 'users'")->fetchColumn()) {
         try { $pdo->exec('ALTER TABLE links ADD COLUMN style TEXT NULL'); } catch (PDOException) {} // dev DBs from before v5
         $stepTables();
+        $apiTables();
         foreach (["ALTER TABLE users ADD COLUMN plan TEXT NOT NULL DEFAULT 'free'", 'ALTER TABLE users ADD COLUMN pro_requested_at TEXT NULL'] as $sql) {
             try { $pdo->exec($sql); } catch (PDOException) {}
         }

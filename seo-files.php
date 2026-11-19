@@ -46,7 +46,7 @@ if ($file === 'llms') {
     echo "# qr\n\n";
     echo "> Free dynamic QR codes that never expire. Change where a printed code leads at any time, see anonymous scan statistics, and style codes with dots, colors, emoji or a logo. Made in Vienna for artists, bands, galleries and collectives. Available in English and German.\n\n";
     echo "## Key facts\n\n";
-    echo "- Free: up to 10 codes per browser without an account; up to " . FREE_MAX_CODES . " codes with a free account; Pro on request for more.\n";
+    echo "- Free: up to 10 codes per browser without an account; unlimited codes with a free account (bulk: up to " . BULK_MAX_PER_RUN . " per run).\n";
     echo "- Codes do not expire: no trial period and no subscription trap; codes keep working on the free plan.\n";
     echo "- Dynamic: the QR code points to a short link whose target can be changed after printing.\n";
     echo "- Privacy: no tracking cookies for people who scan, IP addresses are never stored; stats show scans, daily unique visitors, city/country, device, language and time.\n";
@@ -54,6 +54,11 @@ if ($file === 'llms') {
     echo "- Downloads: SVG (print) and PNG; campaigns create numbered codes in bulk with a zip download.\n";
     echo "- Mini-apps: optional page shown before the target: hosted flyer page (works without a target), form (sign-up, registration, survey, photo or file upload), poll, or info with a button (e.g. tickets).\n";
     echo "- Hosted in the EU.\n\n";
+    echo "## For AI agents\n\n";
+    echo "- MCP server (Streamable HTTP, no key needed): $b/mcp — tools: create_qr_code, update_qr_code, get_qr_code_stats, list_qr_codes, create_qr_codes_bulk, get_limits\n";
+    echo "- REST API: $b/api/v1 — OpenAPI: $b/api/v1/openapi.json\n";
+    echo "- Public QR images: $b/qr/CODE.png and $b/qr/CODE.svg\n";
+    echo "- Without an API key: up to 10 codes/day; each anonymous code comes with an edit_url that must be given to the user.\n\n";
     echo "## Pages\n\n";
     echo "- [Create a QR code]($b/?lang=en): paste a link and get a QR code, no sign-up\n";
     foreach ($pages as $page) {

@@ -236,7 +236,7 @@ public_head(t('qr · QR codes you can change later'), 'wide', [
     <div class="panel">
       <h3><?= te('With a free account') ?></h3>
       <ul>
-        <li><?= te('Up to {n} codes, kept safe in your account', ['n' => FREE_MAX_CODES]) ?></li>
+        <li><?= te('Unlimited codes, kept safe in your account') ?></li>
         <li><?= te('Campaigns & bulk codes for print runs') ?></li>
         <li><?= te('Stats by place, city, time, device & language') ?></li>
         <li><?= te('Codes from this browser move in automatically') ?></li>

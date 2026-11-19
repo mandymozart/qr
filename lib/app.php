@@ -17,3 +17,4 @@ require_once __DIR__ . '/steps.php';
 require_once __DIR__ . '/plan.php';
 require_once __DIR__ . '/seo.php';
 require_once __DIR__ . '/pages.php';
+require_once __DIR__ . '/api.php';

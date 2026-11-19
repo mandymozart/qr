@@ -24,7 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($data['title'] === '') $errors['title'] = t('Give it a name.');
     if ($data['target_url'] === 'https://' || $data['target_url'] === 'http://') $data['target_url'] = '';
     if ($data['target_url'] !== '' && !valid_url($data['target_url'])) $errors['target_url'] = t('Needs to be a full http(s):// URL.');
-    if (!$link && ($left = user_codes_left($user)) !== null && $left < 1) $errors['limit'] = limit_message(0);
     if ($data['campaign_id'] && !find_campaign($data['campaign_id'], $user)) $data['campaign_id'] = null;
 
     if ($data['code'] === '') {
@@ -62,7 +61,6 @@ function err(array $errors, string $k): string
 
 page_head($link ? t('Edit code') : t('New code'), 'codes');
 ?>
-<?php if (isset($errors['limit'])): ?><div class="notice err"><?= e($errors['limit']) ?> <?= pro_button() ?></div><?php endif; ?>
 <div style="max-width:44rem">
 <span class="entity-type"><?= $link ? te('Edit code') : te('New code') ?></span>
 <h2 class="entity-title"><?= $link ? e($link['title']) : te('Create a QR link') ?></h2>

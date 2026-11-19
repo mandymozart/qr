@@ -8,6 +8,13 @@ RedirectMatch 404 ^/(composer\.(json|lock)|README\.md|PRIVACY\.md)$
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
+  # pass the Authorization header to PHP (API keys); many shared hosts drop it otherwise
+  RewriteCond %{HTTP:Authorization} .
+  RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+  # API, MCP server for AI agents, public QR images
+  RewriteRule ^api/v1/(.*)$ api.php?path=$1 [L,QSA]
+  RewriteRule ^mcp/?$ mcp.php [L]
+  RewriteRule ^qr/([A-Za-z0-9_-]{2,40})\.(png|svg)$ qr-image.php?c=$1&fmt=$2 [L]
   # clean URLs for content pages: /de/faq, /en/qr-codes-that-never-expire, …
   RewriteRule ^(de|en)/([a-z0-9-]+)/?$ page.php?lang=$1&slug=$2 [L,QSA]
   # generated SEO files (they need the current domain)

@@ -135,6 +135,7 @@ function maintenance(): void
     @touch($stamp);
     q('DELETE FROM hits WHERE created_at < NOW() - INTERVAL ' . (RETENTION_MONTHS * 31) . ' DAY');
     q('DELETE FROM salts WHERE day < ?', [date('Y-m-d')]);
+    q('DELETE FROM api_calls WHERE created_at < NOW() - INTERVAL 3 DAY');
     // uploaded mini-app files whose mini-app (or code, or user) was deleted
     $updir = __DIR__ . '/uploads';
     if (is_dir($updir)) {

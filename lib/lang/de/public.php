@@ -75,7 +75,7 @@ return [
     'Scan count for the last 30 days' => 'Anzahl der Scans der letzten 30 Tage',
     'Up to {n} codes per browser' => 'Bis zu {n} Codes pro Browser',
     'With a free account' => 'Mit Gratis-Account',
-    'Up to {n} codes, kept safe in your account' => 'Bis zu {n} Codes, sicher in deinem Konto',
+    'Unlimited codes, kept safe in your account' => 'Unbegrenzt viele Codes, sicher in deinem Konto',
     'Campaigns & bulk codes for print runs' => 'Kampagnen & Massen-Codes für Druckauflagen',
     'Stats by place, city, time, device & language' => 'Statistik nach Ort, Stadt, Zeit, Gerät & Sprache',
     'Codes from this browser move in automatically' => 'Codes aus diesem Browser ziehen automatisch mit um',

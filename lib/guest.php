@@ -97,7 +97,7 @@ function public_head(string $title, string $mainClass = 'narrow', array $seo = [
 <?= seo_tags($title, $seo) ?>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/app/assets/app.css?v=19">
-<link rel="stylesheet" href="/app/assets/street.css?v=19">
+<link rel="stylesheet" href="/app/assets/street.css?v=20">
 </head>
 <body class="public street">
 <?php street_defs(); ?>

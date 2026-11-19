@@ -41,7 +41,7 @@ public_head($page['title'] . ' · qr', 'narrow', [
       <?php endforeach; ?>
     </div>
   <?php else: ?>
-    <?= $page['html'] ?>
+    <?= str_replace('{base}', e(base_url()), $page['html']) ?>
   <?php endif; ?>
   <div class="content-cta">
     <a class="btn r" href="/?lang=<?= $lang ?>"><?= te('Make your own QR code.') ?></a>
