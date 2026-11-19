@@ -17,18 +17,18 @@ if (post('action') === 'stop') {
     $admin = $adminId ? q("SELECT * FROM users WHERE id = ? AND role = 'admin' AND status = 'active'", [$adminId])->fetch() : null;
     if (!$admin) redirect('/app/login.php');
     start_session((int) $admin['id']);
-    flash('Back in your own account.');
+    flash(t('Back in your own account.'));
     redirect('/app/users.php');
 }
 
 // start
-if ($me['role'] !== 'admin' || !empty($me['impersonator_id'])) { http_response_code(403); exit('Admins only.'); }
+if ($me['role'] !== 'admin' || !empty($me['impersonator_id'])) { http_response_code(403); exit(t('Admins only.')); }
 $u = q('SELECT * FROM users WHERE id = ?', [int_param('id')])->fetch();
 if (!$u || (int) $u['id'] === (int) $me['id'] || $u['status'] !== 'active' || strcasecmp($u['email'], (string) config('admin_user')) === 0) {
-    flash("You can't log in as this user.", 'err');
+    flash(t('You can\'t log in as this user.'), 'err');
     redirect('/app/users.php');
 }
 end_session();
 start_session((int) $u['id'], (int) $me['id']);
-flash('You are now logged in as ' . $u['email'] . '.', 'info');
+flash(t('You are now logged in as {email}.', ['email' => $u['email']]), 'info');
 redirect('/app/');

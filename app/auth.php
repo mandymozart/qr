@@ -19,18 +19,20 @@ if ($user && $_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-page_head('Sign in');
+page_head(t('Sign in'));
 ?>
 <a class="logo" href="/">qr</a>
 <?php if ($user): ?>
-  <p class="entity-description">Welcome<?= $user['name'] ? ', ' . e($user['name']) : '' ?>. You're signing in as <strong><?= e($user['email']) ?></strong>.</p>
+  <p class="entity-description"><?= $user['name']
+    ? t('Welcome, {name}. You\'re signing in as {email}.', ['name' => e($user['name']), 'email' => '<strong>' . e($user['email']) . '</strong>'])
+    : t('Welcome. You\'re signing in as {email}.', ['email' => '<strong>' . e($user['email']) . '</strong>']) ?></p>
   <form method="post">
     <input type="hidden" name="t" value="<?= e($tok) ?>">
     <input type="hidden" name="next" value="<?= e($_GET['next'] ?? '') ?>">
-    <button class="button">Continue to qr →</button>
+    <button class="button"><?= te('Continue to qr →') ?></button>
   </form>
 <?php else: ?>
-  <div class="notice err">This link is invalid, already used or expired.</div>
-  <a class="button" href="/app/login.php">Request a new link</a>
+  <div class="notice err"><?= te('This link is invalid, already used or expired.') ?></div>
+  <a class="button" href="/app/login.php"><?= te('Request a new link') ?></a>
 <?php endif; ?>
 <?php page_foot();

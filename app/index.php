@@ -33,38 +33,38 @@ $today = (int) q("SELECT COUNT(*) FROM hits h JOIN links l ON l.id = h.link_id W
 $month = (int) q("SELECT COUNT(*) FROM hits h JOIN links l ON l.id = h.link_id WHERE l.user_id = ? AND h.device <> 'bot' AND h.created_at >= CURDATE() - INTERVAL 29 DAY", [$uid])->fetchColumn();
 $campaigns = user_campaigns($user);
 
-page_head('Codes', 'codes');
+page_head(t('Codes'), 'codes');
 ?>
 <div class="page-head">
   <div>
-    <span class="entity-type">Codes</span>
-    <h2 class="entity-title">Your QR links</h2>
-    <p class="entity-description">Every code redirects through <span class="url"><?= e(base_url()) ?>/?c=…</span></p>
+    <span class="entity-type"><?= te('Codes') ?></span>
+    <h2 class="entity-title"><?= te('Your QR links') ?></h2>
+    <p class="entity-description"><?= t('Every code redirects through {url}', ['url' => '<span class="url">' . e(base_url()) . '/?c=…</span>']) ?></p>
   </div>
-  <div><a class="button ghost" href="/app/campaigns.php#bulk">Bulk</a> <a class="button" href="/app/edit.php">+ New code</a></div>
+  <div><a class="button ghost" href="/app/campaigns.php#bulk"><?= te('Bulk') ?></a> <a class="button" href="/app/edit.php"><?= te('+ New code') ?></a></div>
 </div>
 
 <div class="tiles">
-  <div class="tile"><div class="label">Scans today</div><div class="value"><?= $today ?></div></div>
-  <div class="tile"><div class="label">Last 30 days</div><div class="value"><?= number_format($month) ?></div></div>
-  <div class="tile"><div class="label">Codes</div><div class="value"><?= count($links) ?></div><div class="sub"><?= count($campaigns) ?> campaigns</div></div>
+  <div class="tile"><div class="label"><?= te('Scans today') ?></div><div class="value"><?= $today ?></div></div>
+  <div class="tile"><div class="label"><?= te('Last 30 days') ?></div><div class="value"><?= number_format($month) ?></div></div>
+  <div class="tile"><div class="label"><?= te('Codes') ?></div><div class="value"><?= count($links) ?></div><div class="sub"><?= te('{n} campaigns', ['n' => count($campaigns)]) ?></div></div>
 </div>
 
 <div class="list-header">
-  <span><input type="search" placeholder="Search…" data-filter="#links" aria-label="Search codes"></span>
+  <span><input type="search" placeholder="<?= te('Search…') ?>" data-filter="#links" aria-label="<?= te('Search codes') ?>"></span>
   <span>
     <form method="get" class="inline-form">
-      <select name="campaign" onchange="this.form.submit()" aria-label="Filter by campaign">
-        <option value="0">All campaigns</option>
+      <select name="campaign" onchange="this.form.submit()" aria-label="<?= te('Filter by campaign') ?>">
+        <option value="0"><?= te('All campaigns') ?></option>
         <?php foreach ($campaigns as $c): ?><option value="<?= $c['id'] ?>"<?= $campaignFilter === (int) $c['id'] ? ' selected' : '' ?>><?= e($c['name']) ?></option><?php endforeach; ?>
       </select>
     </form>
-    · <?= count($links) ?> codes
+    · <?= te('{n} codes', ['n' => count($links)]) ?>
   </span>
 </div>
 
 <?php if (!$links): ?>
-  <div class="empty">No codes yet. <a href="/app/edit.php">Create your first one</a> or <a href="/app/campaigns.php#bulk">make a bunch at once</a>.</div>
+  <div class="empty"><?= t('No codes yet. {first} or {bulk}.', ['first' => '<a href="/app/edit.php">' . te('Create your first one') . '</a>', 'bulk' => '<a href="/app/campaigns.php#bulk">' . te('make a bunch at once') . '</a>']) ?></div>
 <?php else: ?>
 <div class="list" id="links">
 <?php foreach ($links as $l):
@@ -74,17 +74,17 @@ page_head('Codes', 'codes');
     <div class="main">
       <h4><a href="/app/code.php?id=<?= $l['id'] ?>" style="text-decoration:none"><?= e($l['title']) ?></a>
         <?php if ($l['campaign_name']): ?><span class="badge campaign"><?= e($l['campaign_name']) ?></span><?php endif; ?>
-        <?php if (!$l['active']): ?><span class="badge off">paused</span><?php endif; ?></h4>
+        <?php if (!$l['active']): ?><span class="badge off"><?= te('paused') ?></span><?php endif; ?></h4>
       <div class="meta"><span class="url">?c=<?= e($l['code']) ?></span><?php if ($l['placement'] !== ''): ?><span>📍 <?= e($l['placement']) ?></span><?php endif; ?><span class="target">→ <?= e($l['target_url']) ?></span></div>
     </div>
     <?= sparkline($counts) ?>
-    <div class="stat"><strong><?= (int) $l['scans'] ?></strong><span>scans</span></div>
+    <div class="stat"><strong><?= (int) $l['scans'] ?></strong><span><?= te('scans') ?></span></div>
     <div class="tools">
-      <button class="button small ghost" data-copy="<?= e(short_url($l['code'])) ?>">Copy link</button>
-      <a class="button small ghost" href="/app/qr.php?id=<?= $l['id'] ?>&amp;fmt=png&amp;dl=1" download title="Download PNG">PNG</a>
-      <a class="button small ghost" href="/app/qr.php?id=<?= $l['id'] ?>&amp;fmt=svg&amp;dl=1" download title="Download SVG">SVG</a>
-      <a class="button small ghost" href="/app/code.php?id=<?= $l['id'] ?>">Stats</a>
-      <a class="button small ghost" href="/app/edit.php?id=<?= $l['id'] ?>">Edit</a>
+      <button class="button small ghost" data-copy="<?= e(short_url($l['code'])) ?>"><?= te('Copy link') ?></button>
+      <a class="button small ghost" href="/app/qr.php?id=<?= $l['id'] ?>&amp;fmt=png&amp;dl=1" download title="<?= te('Download PNG') ?>">PNG</a>
+      <a class="button small ghost" href="/app/qr.php?id=<?= $l['id'] ?>&amp;fmt=svg&amp;dl=1" download title="<?= te('Download SVG') ?>">SVG</a>
+      <a class="button small ghost" href="/app/code.php?id=<?= $l['id'] ?>"><?= te('Stats') ?></a>
+      <a class="button small ghost" href="/app/edit.php?id=<?= $l['id'] ?>"><?= te('Edit') ?></a>
     </div>
   </div>
 <?php endforeach; ?>

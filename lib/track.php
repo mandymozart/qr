@@ -149,5 +149,5 @@ function lang_name(string $code): string
         'hu' => 'Hungarian', 'cs' => 'Czech', 'sk' => 'Slovak', 'pl' => 'Polish', 'ro' => 'Romanian', 'it' => 'Italian', 'fr' => 'French',
         'es' => 'Spanish', 'pt' => 'Portuguese', 'ru' => 'Russian', 'uk' => 'Ukrainian', 'ar' => 'Arabic', 'fa' => 'Persian', 'nl' => 'Dutch',
         'zh' => 'Chinese', 'ja' => 'Japanese', 'ko' => 'Korean', 'sl' => 'Slovenian', 'bg' => 'Bulgarian', 'sq' => 'Albanian'];
-    return $code === '' ? '— unknown —' : ($names[$code] ?? $code);
+    return $code === '' ? t('— unknown —') : (isset($names[$code]) ? t($names[$code]) : $code);
 }

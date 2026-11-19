@@ -152,3 +152,22 @@ body.street {
   .street .st-nav a.plain { display: none; }
   .street .st-logo { font-size: 36px; }
 }
+
+/* language switch */
+.street .lang-switch.st { font: 800 15px/1 "Source Sans 3", sans-serif; color: var(--ink); gap: 4px; margin: 0; }
+.street .lang-switch.st a { color: var(--ink); padding: 6px; border-radius: 8px; }
+.street .lang-switch.st a:hover { background: var(--yellow); }
+.street .lang-switch.st strong { background: var(--ink); color: #fff; padding: 6px 8px; border-radius: 8px; font-weight: 800; }
+@media (max-width: 820px) { .street .st-nav { gap: 8px; } .street .st-nav .btn { padding: 10px 14px; font-size: 13px; } }
+
+/* keep the create field above the fold on laptops and phones */
+.street .st-hero { padding: 4px 0 40px; }
+.street .st-hero h1 { font-size: clamp(38px, min(6.2vw, 9.2vh), 88px); margin-bottom: 16px; }
+.street .lead { font-size: clamp(17px, 2.4vh, 21px); margin-bottom: 18px; }
+@media (max-width: 820px) {
+  .street .st-hero { gap: 8px; padding-top: 0; }
+  .street .st-hero h1 { font-size: clamp(34px, 10.5vw, 46px); margin-bottom: 12px; }
+  .street .lead { font-size: 17px; margin-bottom: 14px; }
+  .street .create .btn { padding: 13px 20px; }
+  .street .stage { max-width: 340px; }
+}

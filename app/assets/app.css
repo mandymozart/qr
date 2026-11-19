@@ -344,3 +344,10 @@ body.public .topbar { max-width: 52rem; margin: 0 auto; }
 }
 
 @media (min-width: 769px) and (max-width: 900px) { .usps { grid-template-columns: 1fr 1fr; } }
+
+/* language switch */
+.lang-switch { display: inline-flex; gap: .3rem; align-items: center; font-size: .8rem; color: var(--neutral-20); margin-right: .5rem; }
+.lang-switch a { color: var(--neutral-30); text-decoration: none; padding: .1rem .2rem; border-radius: .3rem; }
+.lang-switch a:hover { background: var(--grey-300); }
+.lang-switch strong { color: var(--text); font-weight: 600; padding: .1rem .2rem; }
+.center-lang { display: flex; justify-content: flex-end; padding: 1rem 1.25rem 0; }

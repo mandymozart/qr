@@ -1,0 +1,136 @@
+<?php
+// German: public pages (landing page index.php, guest code page manage.php). English → German.
+return [
+    // index.php: unknown / paused code
+    'Code not found · qr' => 'Code nicht gefunden · qr',
+    'Hmm.' => 'Hmm.',
+    'This QR code doesn\'t lead anywhere (anymore).' => 'Dieser QR-Code führt nirgendwohin (mehr).',
+    'The code {code} doesn\'t exist or was paused by its owner.' => 'Den Code {code} gibt es nicht, oder er wurde von seinem Besitzer pausiert.',
+    'If you scanned it from a poster or flyer, the organisers may have ended that campaign.' => 'Hast du ihn von einem Plakat oder Flyer gescannt? Dann ist die Aktion vielleicht schon vorbei.',
+    'Make your own QR code →' => 'Mach deinen eigenen QR-Code →',
+    'Free, takes 10 seconds, and you can change where it points to any time.' => 'Gratis, dauert 10 Sekunden, und du kannst jederzeit ändern, wohin er führt.',
+
+    // index.php: landing form
+    'Something went wrong. Please try again.' => 'Da ist was schiefgelaufen. Bitte probier’s nochmal.',
+    'Please paste a full web address, starting with https://' => 'Bitte füg eine vollständige Webadresse ein, beginnend mit https://',
+    'That\'s already a qr link. Paste the address it should lead to.' => 'Das ist schon ein qr-Link. Füg die Adresse ein, zu der er führen soll.',
+    'qr · QR codes you can change later' => 'qr · QR-Codes, die du später ändern kannst',
+    'QR codes you can {change} {later}' => 'QR-Codes, die du {later} {change} kannst!',
+    'change' => 'ändern',
+    'later!' => 'später',
+    'Print it once. Point it anywhere, any time. See who scans. Free, no sign-up.' => 'Einmal drucken. Jederzeit umleiten, wohin du willst. Sehen, wer scannt. Gratis, ohne Anmeldung.',
+    'Link the QR code should open' => 'Link, den der QR-Code öffnen soll',
+    'https://your-show.at' => 'https://deine-show.at',
+    'Make my QR!' => 'Mach meinen QR!',
+    'You\'re signed in. {link} for campaigns and full stats.' => 'Du bist angemeldet. {link} – mit Kampagnen und allen Statistiken.',
+    'Make it in your account' => 'Erstell ihn in deinem Account',
+    'For posters, flyers, stickers, gallery walls & merch tables.' => 'Für Plakate, Flyer, Sticker, Galeriewände & Merch-Tische.',
+    'Dancing figures around a QR code' => 'Tanzende Figuren rund um einen QR-Code',
+
+    // index.php: guest codes in this browser
+    'Yours' => 'Deine',
+    'Your codes in this browser' => 'Deine Codes in diesem Browser',
+    'Use each code\'s edit link on other devices, or {link} to keep them for good.' => 'Nutz auf anderen Geräten den Bearbeitungslink des jeweiligen Codes, oder {link}, um sie dauerhaft zu behalten.',
+    'create an account' => 'leg dir einen Account an',
+    'paused' => 'pausiert',
+    'scans' => 'Scans',
+
+    // index.php: how it works
+    'How it works' => 'So geht’s',
+    'A QR code in 10 seconds.' => 'Ein QR-Code in 10 Sekunden.',
+    'Paste a link' => 'Link einfügen',
+    'Your show, your shop, your Insta, your ticket page.' => 'Deine Show, dein Shop, dein Insta, deine Ticketseite.',
+    'Get your QR' => 'QR-Code holen',
+    'PNG or SVG. Sharp on a sticker, sharp on a billboard.' => 'PNG oder SVG. Scharf am Sticker, scharf am Billboard.',
+    'Change it any time' => 'Jederzeit ändern',
+    'Show\'s over? Point the same printed code to the next one.' => 'Show vorbei? Lass denselben gedruckten Code einfach auf die nächste zeigen.',
+
+    // index.php: stats
+    'Stats included' => 'Statistik inklusive',
+    'See who scans.{br}Not who they are.' => 'Sieh, wer scannt.{br}Nicht, wer sie sind.',
+    'Scans per day, unique visitors' => 'Scans pro Tag, eindeutige Besucher',
+    'City, device, language, time of day' => 'Stadt, Gerät, Sprache, Tageszeit',
+    'No tracking cookies' => 'Keine Tracking-Cookies',
+    'No stored IP addresses' => 'Keine gespeicherten IP-Adressen',
+
+    // index.php: good for
+    'Good for' => 'Perfekt für',
+    'Exhibition posters' => 'Ausstellungsplakate',
+    'Gallery walls' => 'Galeriewände',
+    'Flyers' => 'Flyer',
+    'Stickers' => 'Sticker',
+    'Merch' => 'Merch',
+    'Zines' => 'Zines',
+    'Tickets' => 'Tickets',
+    'Price tags' => 'Preisschilder',
+    'Studio doors' => 'Ateliertüren',
+    'Tote bags' => 'Stoffsackerl',
+
+    // index.php: tiers
+    'Free' => 'Gratis',
+    'Start now. Keep more later.' => 'Jetzt loslegen. Später mehr behalten.',
+    'Without an account' => 'Ohne Account',
+    'QR code as PNG and SVG' => 'QR-Code als PNG und SVG',
+    'Change the target any time with your edit link' => 'Ziel jederzeit über deinen Bearbeitungslink ändern',
+    'Scan count for the last 30 days' => 'Anzahl der Scans der letzten 30 Tage',
+    'Up to {n} codes per browser' => 'Bis zu {n} Codes pro Browser',
+    'With a free account' => 'Mit Gratis-Account',
+    'Unlimited codes, kept safe in your account' => 'Unbegrenzt viele Codes, sicher in deinem Account',
+    'Campaigns & bulk codes for print runs' => 'Kampagnen & Massen-Codes für Druckauflagen',
+    'Stats by place, city, time, device & language' => 'Statistik nach Ort, Stadt, Zeit, Gerät & Sprache',
+    'Codes from this browser move in automatically' => 'Codes aus diesem Browser ziehen automatisch mit um',
+    'Create a free account' => 'Gratis-Account anlegen',
+
+    // index.php: final call to action
+    'Make your own QR code.' => 'Mach deinen eigenen QR-Code.',
+    'Let\'s go!' => 'Los geht’s!',
+    'Free · No sign-up · With stats' => 'Gratis · Ohne Anmeldung · Mit Statistik',
+
+    // manage.php: not found
+    'Not found · qr' => 'Nicht gefunden · qr',
+    'Edit link' => 'Bearbeitungslink',
+    'This code now lives in an account.' => 'Dieser Code wohnt jetzt in einem Account.',
+    'This edit link doesn\'t work.' => 'Dieser Bearbeitungslink funktioniert nicht.',
+    'It was moved into an account when its owner signed in. {link} to manage it.' => 'Er ist in einen Account umgezogen, als sich sein Besitzer angemeldet hat. {link}, um ihn zu verwalten.',
+    // 'Sign in' → 'Anmelden' comes from auth.php / layout.php
+    'It may have been replaced by a newer edit link, or the code was deleted.' => 'Vielleicht wurde er durch einen neueren Bearbeitungslink ersetzt, oder der Code wurde gelöscht.',
+    'Make a new QR code' => 'Neuen QR-Code machen',
+
+    // manage.php: actions
+    'Please use a full web address, starting with https://' => 'Bitte verwende eine vollständige Webadresse, beginnend mit https://',
+    'Saved. The QR code stays the same and now leads to the new address.' => 'Gespeichert. Der QR-Code bleibt gleich und führt jetzt zur neuen Adresse.',
+    'Paused. People scanning it see a "not found" page.' => 'Pausiert. Wer ihn scannt, sieht eine „Nicht gefunden“-Seite.',
+    'Active again.' => 'Wieder aktiv.',
+    'New edit link created. The old one no longer works.' => 'Neuer Bearbeitungslink erstellt. Der alte funktioniert nicht mehr.',
+    'Deleted.' => 'Gelöscht.',
+
+    // manage.php: page
+    'Save your edit link!' => 'Speicher dir deinen Bearbeitungslink!',
+    'It\'s the only way to change this code from another browser or device.' => 'Nur damit kannst du diesen Code von einem anderen Browser oder Gerät aus ändern.',
+    'Your QR code' => 'Dein QR-Code',
+    'active' => 'aktiv',
+    'QR code for {url}' => 'QR-Code für {url}',
+    'Link in the QR code' => 'Link im QR-Code',
+    'Copy' => 'Kopieren',
+    'Your secret edit link' => 'Dein geheimer Bearbeitungslink',
+    'Anyone with this link can change the code. Bookmark it or keep it somewhere safe.' => 'Wer diesen Link hat, kann den Code ändern. Setz dir ein Lesezeichen oder heb ihn gut auf.',
+    'For security we only show it once. Lost it?' => 'Aus Sicherheitsgründen zeigen wir ihn nur einmal an. Verloren?',
+    'Make a new edit link' => 'Neuen Bearbeitungslink erstellen',
+    'Change' => 'Ändern',
+    'Leads to' => 'Führt zu',
+    'Name (just for you)' => 'Name (nur für dich)',
+    'Save' => 'Speichern',
+    'Pause' => 'Pausieren',
+    'Activate' => 'Aktivieren',
+    'Delete this QR code? Printed copies will stop working.' => 'Diesen QR-Code löschen? Gedruckte Exemplare funktionieren dann nicht mehr.',
+    'Delete' => 'Löschen',
+    'Scans' => 'Scans',
+    'Last 30 days. Bots and link previews are not counted.' => 'Letzte 30 Tage. Bots und Link-Vorschauen werden nicht gezählt.',
+    'Total' => 'Gesamt',
+    'Unique visitors' => 'Eindeutige Besucher',
+    'per day' => 'pro Tag',
+    '30 days' => '30 Tage',
+    'Want more?' => 'Lust auf mehr?',
+    'With a free account you keep all your codes safely, make campaigns and bulk codes, and see where, when and on what devices people scan.' => 'Mit einem Gratis-Account sind alle deine Codes sicher aufgehoben, du kannst Kampagnen und Massen-Codes anlegen und siehst, wo, wann und mit welchen Geräten gescannt wird.',
+    'Codes from this browser move in automatically.' => 'Codes aus diesem Browser ziehen automatisch mit um.',
+];

@@ -39,11 +39,11 @@ function send_mail(string $to, string $subject, string $text): ?string
 
 function send_login_mail(array $user, string $link, bool $invite = false, ?string $valid = null): ?string
 {
-    $valid ??= $invite ? '7 days' : '30 minutes';
+    $valid = t($valid ?? ($invite ? '7 days' : '30 minutes')); // '7 days' / '30 minutes' / '24 hours'
     $host = parse_url(base_url(), PHP_URL_HOST);
-    $hi = $user['name'] ? "Hi {$user['name']}," : 'Hi,';
-    $body = $invite
-        ? "$hi\n\nwelcome to $host, the QR code and link tracker.\n\nSign in with this secret link (valid $valid, works once):\n$link\n\nLater on, request a fresh link any time at " . base_url() . "/app/\n"
-        : "$hi\n\nhere is your secret sign-in link for $host (valid $valid, works once):\n$link\n\nIf you didn't ask for this, ignore this mail.\n";
-    return send_mail($user['email'], $invite ? "Your access to $host" : "Sign in to $host", $body);
+    $hi = $user['name'] ? t('Hi {name},', ['name' => $user['name']]) : t('Hi,');
+    $body = $hi . "\n\n" . ($invite
+        ? t("welcome to {host}, the QR code and link tracker.\n\nSign in with this secret link (valid {valid}, works once):\n{link}\n\nLater on, request a fresh link any time at {url}\n", ['host' => $host, 'valid' => $valid, 'link' => $link, 'url' => base_url() . '/app/'])
+        : t("here is your secret sign-in link for {host} (valid {valid}, works once):\n{link}\n\nIf you didn't ask for this, ignore this mail.\n", ['host' => $host, 'valid' => $valid, 'link' => $link]));
+    return send_mail($user['email'], $invite ? t('Your access to {host}', ['host' => $host]) : t('Sign in to {host}', ['host' => $host]), $body);
 }

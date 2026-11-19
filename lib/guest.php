@@ -75,10 +75,10 @@ function guest_limit_error(string $creator): ?string
 {
     $h = guest_hash();
     if ($h && (int) q('SELECT COUNT(*) FROM links WHERE guest_hash = ? AND user_id IS NULL', [$h])->fetchColumn() >= GUEST_MAX_CODES) {
-        return 'You have ' . GUEST_MAX_CODES . ' codes in this browser. Create a free account to make more.';
+        return t('You have {n} codes in this browser. Create a free account to make more.', ['n' => GUEST_MAX_CODES]);
     }
     if ($creator !== '' && (int) q('SELECT COUNT(*) FROM links WHERE creator = ? AND created_at > NOW() - INTERVAL 1 HOUR', [$creator])->fetchColumn() >= GUEST_MAX_PER_HOUR) {
-        return 'That was a lot of codes in a short time. Please try again in an hour, or create a free account.';
+        return t('That was a lot of codes in a short time. Please try again in an hour, or create a free account.');
     }
     return null;
 }
@@ -89,25 +89,26 @@ function public_head(string $title, string $mainClass = 'narrow'): void
     $user = current_user();
     $f = flash();
     ?><!doctype html>
-<html lang="en">
+<html lang="<?= lang() ?>">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= e($title) ?></title>
-<meta name="description" content="Free QR codes you can change later, with scan stats. No tracking cookies.">
-<link rel="stylesheet" href="/app/assets/app.css?v=7">
-<link rel="stylesheet" href="/app/assets/street.css?v=1">
+<meta name="description" content="<?= te('Free QR codes you can change later, with scan stats. No tracking cookies.') ?>">
+<link rel="stylesheet" href="/app/assets/app.css?v=8">
+<link rel="stylesheet" href="/app/assets/street.css?v=3">
 </head>
 <body class="public street">
 <?php street_defs(); ?>
 <header class="st-header">
   <a class="st-logo" href="/">q<span>r</span></a>
   <nav class="st-nav">
+    <?= lang_switch('lang-switch st') ?>
     <?php if ($user): ?>
-      <a class="btn y" href="/app/">My codes</a>
+      <a class="btn y" href="/app/"><?= te('My codes') ?></a>
     <?php else: ?>
-      <a class="plain" href="/app/login.php">Sign in</a>
-      <a class="btn y" href="/app/register.php">Create account</a>
+      <a class="plain" href="/app/login.php"><?= te('Sign in') ?></a>
+      <a class="btn y" href="/app/register.php"><?= te('Create account') ?></a>
     <?php endif; ?>
   </nav>
 </header>
@@ -119,8 +120,8 @@ function public_foot(): void
 {
     ?>
 </main>
-<footer class="st-foot">No tracking cookies. Scans are counted anonymously.</footer>
-<script src="/app/assets/app.js?v=3"></script>
+<footer class="st-foot"><?= te('No tracking cookies. Scans are counted anonymously.') ?></footer>
+<script src="/app/assets/app.js?v=4"></script>
 </body>
 </html>
 <?php

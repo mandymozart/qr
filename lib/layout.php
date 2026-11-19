@@ -13,13 +13,13 @@ const ICONS = [
 function nav_items(array $user): array
 {
     $items = [
-        'codes' => ['/app/', 'Codes', 'All your QR links'],
-        'campaigns' => ['/app/campaigns.php', 'Campaigns', 'Groups & bulk codes'],
-        'stats' => ['/app/stats.php', 'Stats', 'Scans over time'],
+        'codes' => ['/app/', t('Codes'), t('All your QR links')],
+        'campaigns' => ['/app/campaigns.php', t('Campaigns'), t('Groups & bulk codes')],
+        'stats' => ['/app/stats.php', t('Stats'), t('Scans over time')],
     ];
     if ($user['role'] === 'admin') {
-        $items['users'] = ['/app/users.php', 'Users', 'Invite, block, resend'];
-        $items['guests'] = ['/app/guests.php', 'Guest codes', 'Made without account'];
+        $items['users'] = ['/app/users.php', t('Users'), t('Invite, block, resend')];
+        $items['guests'] = ['/app/guests.php', t('Guest codes'), t('Made without account')];
     }
     return $items;
 }
@@ -29,28 +29,29 @@ function page_head(string $title, ?string $active = null): void
     $user = current_user();
     $f = flash();
     ?><!doctype html>
-<html lang="en">
+<html lang="<?= lang() ?>">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title><?= e($title) ?> · qr</title>
 <link rel="icon" href="data:image/svg+xml,<?= rawurlencode(str_replace('currentColor', '%23252321', ICONS['logo'])) ?>">
-<link rel="stylesheet" href="/app/assets/app.css?v=7">
+<link rel="stylesheet" href="/app/assets/app.css?v=8">
 </head>
 <body>
 <?php if ($user && !empty($user['impersonator_id'])): ?>
 <div class="impersonating">
-  <span>You're logged in as <strong><?= e($user['name'] ?: $user['email']) ?></strong> (<?= e($user['email']) ?>). Changes you make affect their account.</span>
-  <form class="inline-form" method="post" action="/app/impersonate.php"><?= csrf_field() ?><input type="hidden" name="action" value="stop"><button class="button small">Back to my account</button></form>
+  <span><?= t("You're logged in as {who} ({email}). Changes you make affect their account.", ['who' => '<strong>' . e($user['name'] ?: $user['email']) . '</strong>', 'email' => e($user['email'])]) ?></span>
+  <form class="inline-form" method="post" action="/app/impersonate.php"><?= csrf_field() ?><input type="hidden" name="action" value="stop"><button class="button small"><?= te('Back to my account') ?></button></form>
 </div>
 <?php endif; ?>
 <?php if ($user): ?>
 <header class="topbar">
   <a class="logo" href="/app/">qr</a>
   <div class="actions">
+    <?= lang_switch() ?>
     <a class="nav-button" href="/app/account.php" title="<?= e($user['email']) ?>"><?= e($user['name'] ?: $user['email']) ?><?= $user['role'] === 'admin' ? ' <span class="badge admin">admin</span>' : '' ?></a>
-    <form class="inline-form" method="post" action="/app/logout.php"><?= csrf_field() ?><button class="nav-button">Sign out</button></form>
+    <form class="inline-form" method="post" action="/app/logout.php"><?= csrf_field() ?><button class="nav-button"><?= te('Sign out') ?></button></form>
   </div>
 </header>
 <nav class="mobile-nav">
@@ -61,12 +62,13 @@ function page_head(string $title, ?string $active = null): void
 <div class="shell">
   <aside class="sidebar"><nav><ul>
 <?php foreach (nav_items($user) as $k => [$href, $label, $hint]): ?>
-<?php if ($k === 'users'): ?><li class="group">Admin</li><?php endif; ?>
+<?php if ($k === 'users'): ?><li class="group"><?= te('Admin') ?></li><?php endif; ?>
     <li><a class="menu-item" href="<?= $href ?>"<?= $k === $active ? ' aria-current="page"' : '' ?>><span class="icon"><?= ICONS[$k] ?></span><div><h4><?= e($label) ?></h4><p><?= e($hint) ?></p></div></a></li>
 <?php endforeach; ?>
   </ul></nav></aside>
   <main class="content">
 <?php else: ?>
+<div class="center-lang"><?= lang_switch() ?></div>
 <main class="center-card">
 <?php endif; ?>
 <?php if ($f): ?><div class="notice <?= $f[0] === 'err' ? 'err' : ($f[0] === 'info' ? 'info' : 'ok') ?>"><?= e($f[1]) ?></div><?php endif;
@@ -78,7 +80,7 @@ function page_foot(): void
     ?>
   </main>
 <?php if ($user): ?></div><div class="fade-bottom"></div><?php endif; ?>
-<script src="/app/assets/app.js?v=3"></script>
+<script src="/app/assets/app.js?v=4"></script>
 </body>
 </html>
 <?php
@@ -104,16 +106,16 @@ function bar_chart(array $daily): string
     $max = max(1, max($daily ?: [0]));
     $out = '<div class="chart"><div class="bars">';
     foreach ($daily as $d => $n) {
-        $out .= '<div class="bar' . ($n ? '' : ' zero') . '" style="height:' . max(1, round($n / $max * 100, 1)) . '%" title="' . e(fmt_date($d, 'D, M j') . ': ' . $n . ' scans') . '"></div>';
+        $out .= '<div class="bar' . ($n ? '' : ' zero') . '" style="height:' . max(1, round($n / $max * 100, 1)) . '%" title="' . e(fmt_date($d, 'D, M j') . ': ' . t('{n} scans', ['n' => $n])) . '"></div>';
     }
     $keys = array_keys($daily);
-    $out .= '</div><div class="axis"><span>' . e(fmt_date($keys[0] ?? null, 'M j')) . '</span><span>max ' . $max . '/day</span><span>' . e(fmt_date(end($keys) ?: null, 'M j')) . '</span></div></div>';
+    $out .= '</div><div class="axis"><span>' . e(fmt_date($keys[0] ?? null, 'M j')) . '</span><span>' . e(t('max {n}/day', ['n' => $max])) . '</span><span>' . e(fmt_date(end($keys) ?: null, 'M j')) . '</span></div></div>';
     return $out;
 }
 
 function campaign_select(array $user, ?int $selected, string $name = 'campaign_id'): string
 {
-    $out = '<select name="' . $name . '" id="' . $name . '"><option value="">— none —</option>';
+    $out = '<select name="' . $name . '" id="' . $name . '"><option value="">' . e(t('— none —')) . '</option>';
     foreach (user_campaigns($user) as $c) {
         $out .= '<option value="' . $c['id'] . '"' . ((int) $selected === (int) $c['id'] ? ' selected' : '') . '>' . e($c['name']) . '</option>';
     }
@@ -122,12 +124,12 @@ function campaign_select(array $user, ?int $selected, string $name = 'campaign_i
 
 function share_table(array $rows, string $label, ?callable $link = null): string
 {
-    if (!$rows) return '<div class="empty">No scans in this period.</div>';
+    if (!$rows) return '<div class="empty">' . e(t('No scans in this period.')) . '</div>';
     $max = max(array_column($rows, 'n'));
     $sum = array_sum(array_column($rows, 'n'));
-    $h = '<table class="data"><thead><tr><th>' . e($label) . '</th><th style="width:40%"></th><th class="num">Scans</th><th class="num">%</th></tr></thead><tbody>';
+    $h = '<table class="data"><thead><tr><th>' . e($label) . '</th><th style="width:40%"></th><th class="num">' . e(t('Scans')) . '</th><th class="num">%</th></tr></thead><tbody>';
     foreach ($rows as $r) {
-        $name = $link ? $link($r) : e($r['name'] ?? $r['d'] ?? '—');
+        $name = $link ? $link($r) : e(t((string) ($r['name'] ?? $r['d'] ?? '—')));
         $h .= '<tr><td>' . $name . '</td><td><div class="hbar" style="width:' . round($r['n'] / $max * 100) . '%"></div></td><td class="num">' . (int) $r['n'] . '</td><td class="num">' . round($r['n'] / $sum * 100) . '</td></tr>';
     }
     return $h . '</tbody></table>';

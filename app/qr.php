@@ -15,7 +15,7 @@ $fmt = $_GET['fmt'] ?? 'svg';
 if ($cid = int_param('campaign')) {
     if (!$user) redirect('/app/login.php');
     $c = find_campaign($cid, $user);
-    if (!$c || !class_exists('ZipArchive')) { http_response_code(404); exit('Not available'); }
+    if (!$c || !class_exists('ZipArchive')) { http_response_code(404); exit(t('Not available')); }
     $links = q('SELECT * FROM links WHERE campaign_id = ? AND user_id = ? ORDER BY id', [$cid, $user['id']])->fetchAll();
     $tmp = tempnam(sys_get_temp_dir(), 'qrzip');
     $zip = new ZipArchive();
@@ -39,7 +39,7 @@ if ($cid = int_param('campaign')) {
 
 $link = ($user && !isset($_GET['k'])) ? find_link(int_param('id'), $user) : null;
 if (!$link && ($g = guest_link_access()) && !$g['user_id']) $link = $g;
-if (!$link) { http_response_code(404); exit('Not found'); }
+if (!$link) { http_response_code(404); exit(t('Not found')); }
 $data = short_url($link['code']);
 $name = slug($link['title']) . '-' . $link['code'];
 

@@ -3,134 +3,118 @@
 <head>
 <meta charset="utf-8">
 <title>qr story</title>
-<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@500&family=Source+Sans+3:wght@400;600;800&family=Source+Serif+4:opsz,wght@8..60,900&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Source+Sans+3:wght@400;600;800&family=Source+Code+Pro:wght@600&display=block" rel="stylesheet">
 <style>
-  :root { --bg:#f0efee; --ink:#252321; --mute:#5e5e5e; --lime:#c1ff24; --lime-ink:#232912; --mint:#24ffcf; --mint-d:#2ad0aa; --lav:#e8d2ff; --line:#c6c6c6; }
+  /* 1080x1920 Instagram stories in the site's street/pop-art style. ?s=1..4&lang=de|en */
+  :root { --ink:#111; --paper:#fffdf5; --red:#ff2a2a; --yellow:#ffd60a; --blue:#1f6fff; --green:#00c46a; --pink:#ff4fb0; --orange:#ff8a00; }
   * { box-sizing: border-box; margin: 0; }
   html, body { width: 1080px; height: 1920px; overflow: hidden; }
-  body { background: var(--bg); color: var(--ink); font-family: "Source Sans 3", sans-serif; -webkit-font-smoothing: antialiased; }
-  /* Instagram UI covers ~250px top and bottom: keep content in between */
-  .frame { position: absolute; inset: 380px 96px 270px; display: flex; flex-direction: column; }
-  .logo { position: absolute; top: 255px; left: 96px; font-family: "Source Serif 4", serif; font-weight: 900; font-size: 64px; }
-  .pager { position: absolute; top: 280px; right: 96px; font-family: "Source Code Pro", monospace; font-size: 28px; color: var(--mute); }
-  .kicker { font-size: 34px; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); font-weight: 600; margin-bottom: 36px; }
-  h1 { font-weight: 800; font-size: 128px; line-height: 1.08; letter-spacing: -0.035em; }
-  h2 { font-weight: 800; font-size: 96px; line-height: 1.1; letter-spacing: -0.03em; }
-  .sub { font-size: 46px; line-height: 1.3; color: var(--mute); margin-top: 44px; max-width: 860px; }
-  .hl, .mint { padding: 0 .08em; border-radius: .1em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
-  .hl { background: linear-gradient(transparent 14%, var(--lime) 14%, var(--lime) 94%, transparent 94%); color: var(--lime-ink); }
-  .mint { background: linear-gradient(transparent 14%, var(--mint) 14%, var(--mint) 94%, transparent 94%); }
-  .url { font-family: "Source Code Pro", monospace; font-weight: 500; background: var(--mint); padding: 6px 18px; border-radius: 14px; font-size: 44px; display: inline-block; }
+  body { background: var(--paper); color: var(--ink); font-family: "Source Sans 3", sans-serif; }
+  body.dark { background: #141414; color: #f5f5f0; }
+  .mk { font-family: "Permanent Marker", cursive; font-weight: 400; }
+  /* Instagram UI covers ~250px top / ~270px bottom */
+  .logo { position: absolute; top: 255px; left: 80px; font: 400 76px/1 "Permanent Marker", cursive; }
+  .logo span { color: var(--red); }
+  .pager { position: absolute; top: 275px; right: 80px; font: 800 34px "Source Sans 3"; border: 5px solid var(--ink); border-radius: 999px; padding: 6px 22px; background: #fff; color: var(--ink); }
+  .frame { position: absolute; inset: 400px 80px 290px; display: flex; flex-direction: column; }
+  h1 { font: 400 132px/.98 "Permanent Marker", cursive; }
+  h2 { font: 400 108px/1 "Permanent Marker", cursive; }
+  .w { display: inline-block; padding: 0 .12em; border: 7px solid var(--ink); border-radius: .16em; margin: .05em 0; }
+  .w.r { background: var(--red); color: #fff; transform: rotate(-3deg); }
+  .w.y { background: var(--yellow); transform: rotate(2deg); }
+  .w.g { background: var(--green); color: var(--ink); transform: rotate(-2deg); border-color: #fff; }
+  .sub { font: 600 46px/1.3 "Source Sans 3"; margin-top: 34px; max-width: 880px; }
   .spacer { flex: 1; }
-  .card { background: #f7f7f6; border: 2px solid var(--line); border-radius: 36px; padding: 44px 48px; }
-  .qr { background: #fff; border-radius: 40px; padding: 36px; border: 2px solid var(--line); }
-  .qr img { display: block; width: 100%; }
-  .steps { display: flex; flex-direction: column; gap: 30px; margin-top: 64px; }
-  .step { display: flex; gap: 36px; align-items: center; background: #f7f7f6; border: 2px solid var(--line); border-radius: 32px; padding: 38px 44px; }
-  .step .n { flex: none; width: 104px; height: 104px; border-radius: 52px; background: var(--lime); color: var(--lime-ink); font-weight: 800; font-size: 56px; display: grid; place-items: center; }
-  .step b { display: block; font-size: 52px; font-weight: 700; letter-spacing: -.01em; }
-  .step span { font-size: 36px; color: var(--mute); }
-  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 52px; }
-  .tile { background: #f7f7f6; border: 2px solid var(--line); border-radius: 30px; padding: 34px 38px; }
-  .tile .l { font-size: 26px; letter-spacing: .08em; text-transform: uppercase; color: #919191; font-weight: 600; }
-  .tile .v { font-size: 92px; font-weight: 600; line-height: 1.05; margin-top: 8px; }
-  .bars { display: flex; align-items: flex-end; gap: 8px; height: 180px; margin-top: 26px; }
-  .bars i { flex: 1; background: var(--mint-d); border-radius: 6px 6px 0 0; }
-  .pill { display: inline-flex; gap: 16px; align-items: center; background: var(--ink); color: #fff; border-radius: 60px; padding: 20px 38px; font-size: 36px; font-weight: 600; }
-  .pill.lime { background: var(--lime); color: var(--lime-ink); }
-  .row { display: flex; gap: 18px; flex-wrap: wrap; }
-  .arrow { font-size: 120px; line-height: 1; }
-  .rot { transform: rotate(-4deg); }
+  .stage { position: relative; height: 760px; }
+  .stage svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .panel { border: 7px solid var(--ink); border-radius: 40px; box-shadow: 14px 14px 0 var(--ink); position: relative; display: flex; align-items: center; gap: 26px; padding: 26px 36px 26px 26px; }
+  .panel + .panel { margin-top: 64px; }
+  .panel.p1 { background: var(--red); color: #fff; transform: rotate(-1.5deg); }
+  .panel.p2 { background: var(--yellow); transform: rotate(1.2deg); }
+  .panel.p3 { background: var(--blue); color: #fff; transform: rotate(-.8deg); }
+  .panel .num { position: absolute; top: -40px; left: -22px; width: 92px; height: 92px; border: 7px solid var(--ink); border-radius: 50%; background: #fff; color: var(--ink); display: grid; place-items: center; font: 400 52px "Permanent Marker"; }
+  .panel svg { width: 190px; height: 216px; flex: none; overflow: visible; }
+  .panel b { display: block; font: 400 64px/1 "Permanent Marker"; margin-bottom: 8px; }
+  .panel span { font: 600 36px/1.25 "Source Sans 3"; }
+  .tags { display: flex; flex-wrap: wrap; gap: 20px; }
+  .tag { font: 400 48px "Permanent Marker"; border: 6px solid var(--ink); border-radius: 22px; padding: 8px 26px; box-shadow: 8px 8px 0 var(--ink); background: #fff; color: var(--ink); }
+  .tag.p { background: var(--pink); transform: rotate(-2deg); } .tag.g { background: var(--green); transform: rotate(2deg); } .tag.y { background: var(--yellow); transform: rotate(-1deg); }
+  .url { font: 600 50px "Source Code Pro", monospace; background: var(--yellow); border: 6px solid var(--ink); border-radius: 20px; padding: 10px 28px; box-shadow: 8px 8px 0 var(--ink); display: inline-block; }
+  .chalk ul { list-style: none; padding: 0; font: 600 48px/1.25 "Source Sans 3"; display: grid; gap: 18px; }
+  .chalk li::before { content: "✕  "; color: var(--pink); font-family: "Permanent Marker"; }
+  .chalk li.yes::before { content: "✓  "; color: var(--green); }
+  body.dark .pager { border-color: #fff; }
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <g id="pose-jump"><path d="M100 82 L100 150 M100 96 L62 58 L44 26 M100 96 L140 62 L160 30 M100 150 L70 190 L52 230 M100 150 L132 188 L152 226" stroke="#111" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="100" cy="44" r="27" fill="#111"/><path d="M100 82 L100 150 M100 96 L62 58 L44 26 M100 96 L140 62 L160 30 M100 150 L70 190 L52 230 M100 150 L132 188 L152 226" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="100" cy="44" r="20" fill="currentColor"/></g>
+  <g id="pose-hold"><path d="M100 82 L104 152 M102 98 L140 112 L170 96 M102 98 L64 120 L40 100 M104 152 L80 196 L84 236 M104 152 L130 194 L124 234" stroke="#111" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="98" cy="44" r="27" fill="#111"/><path d="M100 82 L104 152 M102 98 L140 112 L170 96 M102 98 L64 120 L40 100 M104 152 L80 196 L84 236 M104 152 L130 194 L124 234" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="98" cy="44" r="20" fill="currentColor"/></g>
+  <g id="pose-run"><path d="M108 84 L94 150 M104 100 L146 86 L168 104 M104 100 L66 118 L46 98 M94 150 L136 176 L150 220 M94 150 L66 186 L32 196" stroke="#111" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="112" cy="46" r="27" fill="#111"/><path d="M108 84 L94 150 M104 100 L146 86 L168 104 M104 100 L66 118 L46 98 M94 150 L136 176 L150 220 M94 150 L66 186 L32 196" stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="112" cy="46" r="20" fill="currentColor"/></g>
+  <g id="burst" stroke="#111" stroke-width="8" stroke-linecap="round" fill="none"><path d="M0 -40 L0 -62 M28 -28 L44 -44 M40 0 L62 0 M28 28 L44 44 M-28 -28 L-44 -44 M-40 0 L-62 0 M-28 28 L-44 44"/></g>
+  <g id="chalk-fig" stroke="#f5f5f0" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M100 82 L100 150 M100 96 L62 58 L44 26 M100 96 L140 62 L160 30 M100 150 L70 190 L52 230 M100 150 L132 188 L152 226"/><circle cx="100" cy="44" r="22"/></g>
+</defs></svg>
 <div id="root"></div>
 <script>
 const P = new URLSearchParams(location.search);
-const s = +(P.get('s') || 1), lang = P.get('lang') || 'de';
-const T = {
-  de: {
-    1: `<div class="kicker">Neu · gratis</div>
-        <h1>QR-Codes, die du <span class="hl">später ändern</span> kannst.</h1>
-        <p class="sub">Gedruckt ist gedruckt? Nicht mehr. Ich hab ein kleines Tool gebaut. 👇</p>
-        <div class="spacer"></div>
-        <div class="row" style="justify-content:space-between;align-items:flex-end">
-          <div class="qr rot" style="width:520px"><img src="qr-landing.svg"></div>
-          <div class="arrow">→</div>
-        </div>`,
-    2: `<div class="kicker">So geht's</div>
-        <h2>In 10 Sekunden zum QR-Code.</h2>
-        <div class="steps">
-          <div class="step"><div class="n">1</div><div><b>Link einfügen</b><span>Website, Insta, Ticketshop …</span></div></div>
-          <div class="step"><div class="n">2</div><div><b>QR-Code holen</b><span>als PNG oder SVG, druckfertig</span></div></div>
-          <div class="step"><div class="n">3</div><div><b>Ziel jederzeit ändern</b><span>der gedruckte Code bleibt gleich</span></div></div>
-        </div>
-        <div class="spacer"></div>
-        <div class="row"><span class="pill lime">Ohne Anmeldung</span><span class="pill">Gratis</span></div>`,
-    3: `<div class="kicker">Statistik inklusive</div>
-        <h2>Sieh, wer scannt.<br><span class="mint">Ohne Tracking-Cookies.</span></h2>
-        <div class="tiles">
-          <div class="tile"><div class="l">Scans</div><div class="v">312</div></div>
-          <div class="tile"><div class="l">Besucher</div><div class="v">248</div></div>
-          <div class="tile" style="grid-column:span 2"><div class="l">Letzte 30 Tage</div><div class="bars" id="bars"></div></div>
-          <div class="tile"><div class="l">Top-Ort</div><div class="v" style="font-size:64px">Wien</div></div>
-          <div class="tile"><div class="l">Mobil</div><div class="v">91%</div></div>
-        </div>
-        <div class="spacer"></div>
-        <p class="sub" style="margin:0 0 6px;font-size:28px;color:#919191">Beispielwerte</p>
-        <p class="sub" style="margin:0;font-size:38px">Keine IP-Adressen gespeichert. Datenschutzfreundlich gebaut.</p>`,
-    4: `<div class="kicker">Probier's aus</div>
-        <h2>Mach deinen eigenen QR-Code.</h2>
-        <div class="spacer"></div>
-        <div class="qr" style="width:620px;align-self:center"><img src="qr-landing.svg"></div>
-        <div style="text-align:center;margin-top:44px"><span class="url">qr.viennastruggle.at</span></div>
-        <div class="spacer"></div>
-        <div class="row" style="justify-content:center"><span class="pill lime">Gratis</span><span class="pill">Ohne Anmeldung</span><span class="pill">Mit Statistik</span></div>`,
-  },
-  en: {
-    1: `<div class="kicker">New · free</div>
-        <h1>QR codes you can <span class="hl">change later.</span></h1>
-        <p class="sub">Printed means final? Not anymore. I built a little tool. 👇</p>
-        <div class="spacer"></div>
-        <div class="row" style="justify-content:space-between;align-items:flex-end">
-          <div class="qr rot" style="width:520px"><img src="qr-landing.svg"></div>
-          <div class="arrow">→</div>
-        </div>`,
-    2: `<div class="kicker">How it works</div>
-        <h2>A QR code in 10 seconds.</h2>
-        <div class="steps">
-          <div class="step"><div class="n">1</div><div><b>Paste a link</b><span>website, Insta, ticket shop …</span></div></div>
-          <div class="step"><div class="n">2</div><div><b>Get your QR code</b><span>PNG or SVG, ready to print</span></div></div>
-          <div class="step"><div class="n">3</div><div><b>Change the target anytime</b><span>the printed code stays the same</span></div></div>
-        </div>
-        <div class="spacer"></div>
-        <div class="row"><span class="pill lime">No sign-up</span><span class="pill">Free</span></div>`,
-    3: `<div class="kicker">Stats included</div>
-        <h2>See who scans.<br><span class="mint">No tracking cookies.</span></h2>
-        <div class="tiles">
-          <div class="tile"><div class="l">Scans</div><div class="v">312</div></div>
-          <div class="tile"><div class="l">Visitors</div><div class="v">248</div></div>
-          <div class="tile" style="grid-column:span 2"><div class="l">Last 30 days</div><div class="bars" id="bars"></div></div>
-          <div class="tile"><div class="l">Top city</div><div class="v" style="font-size:64px">Vienna</div></div>
-          <div class="tile"><div class="l">Mobile</div><div class="v">91%</div></div>
-        </div>
-        <div class="spacer"></div>
-        <p class="sub" style="margin:0 0 6px;font-size:28px;color:#919191">Example values</p>
-        <p class="sub" style="margin:0;font-size:38px">No IP addresses stored. Built privacy-first.</p>`,
-    4: `<div class="kicker">Try it</div>
-        <h2>Make your own QR code.</h2>
-        <div class="spacer"></div>
-        <div class="qr" style="width:620px;align-self:center"><img src="qr-landing.svg"></div>
-        <div style="text-align:center;margin-top:44px"><span class="url">qr.viennastruggle.at</span></div>
-        <div class="spacer"></div>
-        <div class="row" style="justify-content:center"><span class="pill lime">Free</span><span class="pill">No sign-up</span><span class="pill">With stats</span></div>`,
-  },
+const s = +(P.get('s') || 1), de = (P.get('lang') || 'de') === 'de';
+const L = (d, e) => de ? d : e;
+
+const qrStage = (big) => `
+  <div class="stage" style="height:${big ? 700 : 760}px;${big ? 'margin:10px 0 40px' : ''}">
+    <svg viewBox="0 0 600 600">
+      <rect x="150" y="120" width="300" height="300" rx="26" fill="#fff" stroke="#111" stroke-width="12"/>
+      <image href="qr-landing.svg" x="172" y="142" width="256" height="256"/>
+      <use href="#burst" x="300" y="70"/><use href="#burst" x="545" y="250"/><use href="#burst" x="60" y="500"/>
+      <g transform="translate(-10 150)"><g style="color:var(--red)"><use href="#pose-jump"/></g></g>
+      <g transform="translate(410 330)"><g style="color:var(--blue)"><use href="#pose-run"/></g></g>
+      <g transform="translate(205 395) scale(.85)"><g style="color:var(--yellow)"><use href="#pose-hold"/></g></g>
+      <path d="M480 95 l16 -16 a11 11 0 0 1 16 16 l-16 16 -16 -16 a11 11 0 0 1 16 -16z" fill="var(--pink)" stroke="#111" stroke-width="7"/>
+      <circle cx="105" cy="95" r="18" fill="var(--green)" stroke="#111" stroke-width="7"/>
+    </svg>
+  </div>`;
+
+const slides = {
+  1: () => `
+    <h1>${L('QR-Codes, die du', 'QR codes you can')} <span class="w r">${L('später', 'change')}</span> <span class="w y">${L('ändern', 'later!')}</span>${L(' kannst!', '')}</h1>
+    <p class="sub">${L('Gedruckt ist gedruckt? Nicht mehr. Ich hab ein kleines Tool gebaut.', "Printed means final? Not anymore. I built a little tool.")}</p>
+    <div class="spacer"></div>${qrStage(false)}`,
+  2: () => `
+    <h2>${L('In 10 Sekunden zum QR-Code.', 'A QR code in 10 seconds.')}</h2>
+    <div class="spacer" style="min-height:70px"></div>
+    <div class="panel p1"><div class="num">1</div><svg viewBox="0 0 200 250"><g style="color:#fff"><use href="#pose-run"/></g></svg>
+      <div><b>${L('Link einfügen', 'Paste a link')}</b><span>${L('Ausstellung, Shop, Insta, Tickets', 'Your show, shop, Insta, tickets')}</span></div></div>
+    <div class="panel p2"><div class="num">2</div><svg viewBox="0 0 220 250"><g style="color:var(--pink)"><use href="#pose-hold"/></g><rect x="150" y="70" width="62" height="62" rx="8" fill="#fff" stroke="#111" stroke-width="8"/><path d="M163 83h13v13h-13zM189 83h13v13h-13zM163 109h13v13h-13zM189 109h7v7h-7z" fill="#111"/></svg>
+      <div><b>${L('QR holen', 'Get your QR')}</b><span>${L('PNG oder SVG, druckfertig', 'PNG or SVG, ready to print')}</span></div></div>
+    <div class="panel p3"><div class="num">3</div><svg viewBox="0 0 220 250"><g style="color:var(--yellow)"><use href="#pose-jump"/></g><use href="#burst" x="200" y="50"/></svg>
+      <div><b>${L('Jederzeit ändern', 'Change any time')}</b><span>${L('Der gedruckte Code bleibt gleich', 'The printed code stays the same')}</span></div></div>
+    <div class="spacer"></div>`,
+  3: () => `
+    <h2>${L('Sieh, wer scannt.', 'See who scans.')}<br><span class="w g">${L('Nicht, wer sie sind.', 'Not who they are.')}</span></h2>
+    <div class="spacer"></div>
+    <svg viewBox="0 0 420 300" style="width:100%;height:auto;overflow:visible">
+      <g stroke="#f5f5f0" stroke-width="7" stroke-linecap="round" fill="none"><path d="M10 290 H410"/>
+        <path d="M40 290 V230 M80 290 V200 M120 290 V215 M160 290 V170 M200 290 V185 M240 290 V140 M280 290 V120"/></g>
+      <g transform="translate(260 40) scale(.9)"><use href="#chalk-fig"/></g>
+      <g stroke="var(--pink)" stroke-width="7" stroke-linecap="round"><path d="M240 75 l-20 -10 M246 55 l-22 -2 M250 97 l-20 6"/></g>
+    </svg>
+    <div class="spacer"></div>
+    <div class="chalk"><ul>
+      <li class="yes">${L('Scans & Besucher pro Tag', 'Scans & visitors per day')}</li>
+      <li class="yes">${L('Stadt, Gerät, Sprache, Uhrzeit', 'City, device, language, time')}</li>
+      <li>${L('Keine Tracking-Cookies', 'No tracking cookies')}</li>
+      <li>${L('Keine gespeicherten IP-Adressen', 'No stored IP addresses')}</li>
+    </ul></div>`,
+  4: () => `
+    <h2>${L('Mach deinen eigenen', 'Make your own')} <span class="w y">${L('QR-Code!', 'QR code!')}</span></h2>
+    ${qrStage(true)}
+    <div style="text-align:center"><span class="url">qr.viennastruggle.at</span></div>
+    <div class="spacer" style="min-height:50px"></div>
+    <div class="tags" style="justify-content:center"><span class="tag p">${L('Gratis', 'Free')}</span><span class="tag g">${L('Ohne Anmeldung', 'No sign-up')}</span><span class="tag y">${L('Mit Statistik', 'With stats')}</span></div>`,
 };
+if (s === 3) document.body.classList.add('dark');
 document.getElementById('root').innerHTML =
-  `<div class="logo">qr</div><div class="pager">${s}/4</div><div class="frame">${T[lang][s]}</div>`;
-const bars = document.getElementById('bars');
-if (bars) { const h=[12,18,9,22,30,26,14,8,20,35,41,28,19,24,33,47,52,38,29,31,44,58,62,49,40,55,70,64,81,76];
-  bars.innerHTML = h.map(v=>`<i style="height:${v/81*100}%"></i>`).join(''); }
+  `<div class="logo">q<span>r</span></div><div class="pager">${s}/4</div><div class="frame">${slides[s]()}</div>`;
 </script>
 </body>
 </html>

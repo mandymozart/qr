@@ -29,7 +29,7 @@ document.addEventListener('click', (ev) => {
   copyText(btn.dataset.copy).then(() => {
     const old = btn.dataset.label || btn.textContent;
     btn.dataset.label = old;
-    btn.textContent = 'Copied ✓';
+    btn.textContent = document.documentElement.lang === 'de' ? 'Kopiert ✓' : 'Copied ✓';
     setTimeout(() => (btn.textContent = old), 1200);
   });
 });

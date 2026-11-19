@@ -10,6 +10,7 @@ date_default_timezone_set('Europe/Vienna');
 
 define('ROOT', dirname(__DIR__));
 require ROOT . '/vendor/autoload.php';
+require_once __DIR__ . '/i18n.php';
 
 function config(string $key, mixed $default = null): mixed
 {
@@ -141,17 +142,22 @@ function valid_url(string $u): bool
 
 function fmt_date(?string $d, string $f = 'M j, Y'): string
 {
-    return $d ? date($f, strtotime($d)) : '—';
+    if (!$d) return '—';
+    if (lang() === 'de') {
+        // English formats used in the app → German order ("19. Nov 2026", "19. Nov, 14:02")
+        $f = strtr($f, ['D, M j' => 'D, j. M', 'M j, Y' => 'j. M Y', 'M j, H:i' => 'j. M, H:i', 'M j' => 'j. M']);
+    }
+    return localize_date(date($f, strtotime($d)));
 }
 
 function ago(?string $d): string
 {
-    if (!$d) return 'never';
+    if (!$d) return t('never');
     $s = time() - strtotime($d);
-    if ($s < 60) return 'just now';
-    if ($s < 3600) return floor($s / 60) . ' min ago';
-    if ($s < 86400) return floor($s / 3600) . ' h ago';
-    if ($s < 86400 * 30) return floor($s / 86400) . ' d ago';
+    if ($s < 60) return t('just now');
+    if ($s < 3600) return t('{n} min ago', ['n' => floor($s / 60)]);
+    if ($s < 86400) return t('{n} h ago', ['n' => floor($s / 3600)]);
+    if ($s < 86400 * 30) return t('{n} d ago', ['n' => floor($s / 86400)]);
     return fmt_date($d);
 }
 
@@ -209,7 +215,7 @@ function start_session(int $userId, ?int $impersonatorId = null): void
     if (!$impersonatorId) {
         q('UPDATE users SET last_login_at = NOW() WHERE id = ?', [$userId]);
         if (function_exists('claim_guest_codes') && ($n = claim_guest_codes($userId))) {
-            flash($n === 1 ? 'The code from this browser is now in your account.' : "The $n codes from this browser are now in your account.");
+            flash($n === 1 ? t('The code from this browser is now in your account.') : t('The {n} codes from this browser are now in your account.', ['n' => $n]));
         }
     }
     q('DELETE FROM sessions WHERE expires_at < NOW()');

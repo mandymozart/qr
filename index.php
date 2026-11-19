@@ -52,19 +52,19 @@ if ($code !== '') {
     // Unknown or paused code
     require_once __DIR__ . '/lib/app.php';
     http_response_code(404);
-    public_head('Code not found · qr');
+    public_head(t('Code not found · qr'));
     ?>
     <section class="hero">
       <svg viewBox="0 0 260 260" width="180" height="180" aria-hidden="true" style="overflow:visible;display:block;margin-bottom:8px">
         <g transform="translate(20 10)" style="color:var(--blue)"><use href="#pose-hold"/></g>
         <text x="200" y="70" font-family="Permanent Marker, cursive" font-size="80" fill="var(--red)" stroke="#111" stroke-width="3">?</text>
       </svg>
-      <span class="entity-type">Hmm.</span>
-      <h1>This QR code doesn't lead anywhere (anymore).</h1>
-      <p class="entity-description">The code <span class="url"><?= e($code) ?></span> doesn't exist or was paused by its owner.
-        If you scanned it from a poster or flyer, the organisers may have ended that campaign.</p>
-      <p><a class="button" href="/">Make your own QR code →</a></p>
-      <p class="field-hint">Free, takes 10 seconds, and you can change where it points to any time.</p>
+      <span class="entity-type"><?= te('Hmm.') ?></span>
+      <h1><?= te('This QR code doesn\'t lead anywhere (anymore).') ?></h1>
+      <p class="entity-description"><?= t('The code {code} doesn\'t exist or was paused by its owner.', ['code' => '<span class="url">' . e($code) . '</span>']) ?>
+        <?= te('If you scanned it from a poster or flyer, the organisers may have ended that campaign.') ?></p>
+      <p><a class="button" href="/"><?= te('Make your own QR code →') ?></a></p>
+      <p class="field-hint"><?= te('Free, takes 10 seconds, and you can change where it points to any time.') ?></p>
     </section>
     <?php
     public_foot();
@@ -81,11 +81,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $url = post('target_url');
     $host = strtolower((string) parse_url($url, PHP_URL_HOST));
     if (post('website') !== '') {
-        $error = 'Something went wrong. Please try again.'; // honeypot filled → bot
+        $error = t('Something went wrong. Please try again.'); // honeypot filled → bot
     } elseif (!valid_url($url)) {
-        $error = 'Please paste a full web address, starting with https://';
+        $error = t('Please paste a full web address, starting with https://');
     } elseif ($host === strtolower((string) parse_url(base_url(), PHP_URL_HOST))) {
-        $error = "That's already a qr link. Paste the address it should lead to.";
+        $error = t('That\'s already a qr link. Paste the address it should lead to.');
     } else {
         $creator = visitor_id((string) ($_SERVER['REMOTE_ADDR'] ?? ''), (string) ($_SERVER['HTTP_USER_AGENT'] ?? ''));
         $error = guest_limit_error($creator);
@@ -101,29 +101,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $mine = current_user() ? [] : guest_links();
-public_head('qr · QR codes you can change later', 'wide');
+public_head(t('qr · QR codes you can change later'), 'wide');
 ?>
 <div class="st-hero">
   <div>
-    <h1>QR codes you can <span class="w r">change</span> <span class="w y">later!</span></h1>
-    <p class="lead">Print it once. Point it anywhere, any time. See who scans. Free, no sign-up.</p>
+    <h1><?= t('QR codes you can {change} {later}', ['change' => '<span class="w r">' . te('change') . '</span>', 'later' => '<span class="w y">' . te('later!') . '</span>']) ?></h1>
+    <p class="lead"><?= te('Print it once. Point it anywhere, any time. See who scans. Free, no sign-up.') ?></p>
 
     <?php if ($error): ?><div class="notice err"><?= e($error) ?></div><?php endif; ?>
 
     <form method="post" class="create">
-      <input type="url" name="target_url" value="<?= e($url) ?>" required aria-label="Link the QR code should open" placeholder="https://your-show.at">
+      <input type="url" name="target_url" value="<?= e($url) ?>" required aria-label="<?= te('Link the QR code should open') ?>" placeholder="<?= te('https://your-show.at') ?>">
       <input type="text" name="website" value="" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
-      <button class="btn r">Make my QR!</button>
+      <button class="btn r"><?= te('Make my QR!') ?></button>
     </form>
     <?php if (current_user()): ?>
-      <p class="hint">You're signed in. <a href="/app/edit.php">Make it in your account</a> for campaigns and full stats.</p>
+      <p class="hint"><?= t('You\'re signed in. {link} for campaigns and full stats.', ['link' => '<a href="/app/edit.php">' . te('Make it in your account') . '</a>']) ?></p>
     <?php else: ?>
-      <p class="hint">For posters, flyers, stickers, gallery walls &amp; merch tables.</p>
+      <p class="hint"><?= te('For posters, flyers, stickers, gallery walls & merch tables.') ?></p>
     <?php endif; ?>
   </div>
 
   <div class="stage">
-    <svg viewBox="0 0 600 600" role="img" aria-label="Dancing figures around a QR code">
+    <svg viewBox="0 0 600 600" role="img" aria-label="<?= te('Dancing figures around a QR code') ?>">
       <rect x="170" y="140" width="260" height="260" rx="22" fill="#fff" stroke="#111" stroke-width="10"/>
       <image href="/app/assets/qr-landing.svg" x="190" y="160" width="220" height="220"/>
       <use href="#burst" x="300" y="100" class="pulse"/>
@@ -140,16 +140,16 @@ public_head('qr · QR codes you can change later', 'wide');
 
 <?php if ($mine): ?>
 <section class="st-sec">
-  <span class="tag">Yours</span>
-  <h2>Your codes in this browser</h2>
-  <p class="hint" style="margin-top:-12px">Use each code's edit link on other devices, or <a href="/app/register.php">create an account</a> to keep them for good.</p>
+  <span class="tag"><?= te('Yours') ?></span>
+  <h2><?= te('Your codes in this browser') ?></h2>
+  <p class="hint" style="margin-top:-12px"><?= t('Use each code\'s edit link on other devices, or {link} to keep them for good.', ['link' => '<a href="/app/register.php">' . te('create an account') . '</a>']) ?></p>
   <div class="list">
   <?php foreach ($mine as $l): ?>
     <a class="row" href="/manage.php?id=<?= $l['id'] ?>">
       <img class="qr-thumb" src="/app/qr.php?id=<?= $l['id'] ?>&amp;v=<?= e($l['code']) ?>" alt="">
-      <div class="main"><h4><?= e($l['title']) ?><?= $l['active'] ? '' : ' <span class="badge off">paused</span>' ?></h4>
+      <div class="main"><h4><?= e($l['title']) ?><?= $l['active'] ? '' : ' <span class="badge off">' . te('paused') . '</span>' ?></h4>
         <div class="meta"><span class="url">?c=<?= e($l['code']) ?></span><span class="target">→ <?= e($l['target_url']) ?></span></div></div>
-      <div class="stat"><strong><?= (int) $l['scans'] ?></strong><span>scans</span></div>
+      <div class="stat"><strong><?= (int) $l['scans'] ?></strong><span><?= te('scans') ?></span></div>
     </a>
   <?php endforeach; ?>
   </div>
@@ -157,41 +157,41 @@ public_head('qr · QR codes you can change later', 'wide');
 <?php endif; ?>
 
 <section class="st-sec">
-  <span class="tag">How it works</span>
-  <h2>A QR code in 10 seconds.</h2>
+  <span class="tag"><?= te('How it works') ?></span>
+  <h2><?= te('A QR code in 10 seconds.') ?></h2>
   <div class="st-steps">
     <div class="panel">
       <div class="num">1</div>
       <svg viewBox="0 0 220 250" aria-hidden="true"><g transform="translate(10 0)" style="color:#fff"><use href="#pose-run"/></g></svg>
-      <h3>Paste a link</h3>
-      <p>Your show, your shop, your Insta, your ticket page.</p>
+      <h3><?= te('Paste a link') ?></h3>
+      <p><?= te('Your show, your shop, your Insta, your ticket page.') ?></p>
     </div>
     <div class="panel">
       <div class="num">2</div>
       <svg viewBox="0 0 220 250" aria-hidden="true"><g transform="translate(10 0)" style="color:var(--pink)"><use href="#pose-hold"/></g>
         <rect x="150" y="70" width="58" height="58" rx="8" fill="#fff" stroke="#111" stroke-width="7"/>
         <path d="M162 82h12v12h-12zM186 82h12v12h-12zM162 106h12v12h-12zM186 106h6v6h-6z" fill="#111"/></svg>
-      <h3>Get your QR</h3>
-      <p>PNG or SVG. Sharp on a sticker, sharp on a billboard.</p>
+      <h3><?= te('Get your QR') ?></h3>
+      <p><?= te('PNG or SVG. Sharp on a sticker, sharp on a billboard.') ?></p>
     </div>
     <div class="panel">
       <div class="num">3</div>
       <svg viewBox="0 0 220 250" aria-hidden="true"><g transform="translate(10 0)" style="color:var(--yellow)"><use href="#pose-jump"/></g><use href="#burst" x="190" y="60"/></svg>
-      <h3>Change it any time</h3>
-      <p>Show's over? Point the same printed code to the next one.</p>
+      <h3><?= te('Change it any time') ?></h3>
+      <p><?= te('Show\'s over? Point the same printed code to the next one.') ?></p>
     </div>
   </div>
 </section>
 
 <div class="chalk">
   <div>
-    <span class="tag">Stats included</span>
-    <h2>See who scans.<br>Not who they are.</h2>
+    <span class="tag"><?= te('Stats included') ?></span>
+    <h2><?= t('See who scans.{br}Not who they are.', ['br' => '<br>']) ?></h2>
     <ul>
-      <li class="yes">Scans per day, unique visitors</li>
-      <li class="yes">City, device, language, time of day</li>
-      <li>No tracking cookies</li>
-      <li>No stored IP addresses</li>
+      <li class="yes"><?= te('Scans per day, unique visitors') ?></li>
+      <li class="yes"><?= te('City, device, language, time of day') ?></li>
+      <li><?= te('No tracking cookies') ?></li>
+      <li><?= te('No stored IP addresses') ?></li>
     </ul>
   </div>
   <svg viewBox="0 0 420 320" aria-hidden="true">
@@ -205,42 +205,42 @@ public_head('qr · QR codes you can change later', 'wide');
 </div>
 
 <section class="st-sec">
-  <span class="tag">Good for</span>
+  <span class="tag"><?= te('Good for') ?></span>
   <div class="goodfor">
-    <span>Exhibition posters</span><span>Gallery walls</span><span>Flyers</span><span>Stickers</span><span>Merch</span>
-    <span>Zines</span><span>Tickets</span><span>Price tags</span><span>Studio doors</span><span>Tote bags</span>
+    <span><?= te('Exhibition posters') ?></span><span><?= te('Gallery walls') ?></span><span><?= te('Flyers') ?></span><span><?= te('Stickers') ?></span><span><?= te('Merch') ?></span>
+    <span><?= te('Zines') ?></span><span><?= te('Tickets') ?></span><span><?= te('Price tags') ?></span><span><?= te('Studio doors') ?></span><span><?= te('Tote bags') ?></span>
   </div>
 </section>
 
 <section class="st-sec">
-  <span class="tag">Free</span>
-  <h2>Start now. Keep more later.</h2>
+  <span class="tag"><?= te('Free') ?></span>
+  <h2><?= te('Start now. Keep more later.') ?></h2>
   <div class="st-tiers">
     <div class="panel">
-      <h3>Without an account</h3>
+      <h3><?= te('Without an account') ?></h3>
       <ul>
-        <li>QR code as PNG and SVG</li>
-        <li>Change the target any time with your edit link</li>
-        <li>Scan count for the last 30 days</li>
-        <li>Up to <?= GUEST_MAX_CODES ?> codes per browser</li>
+        <li><?= te('QR code as PNG and SVG') ?></li>
+        <li><?= te('Change the target any time with your edit link') ?></li>
+        <li><?= te('Scan count for the last 30 days') ?></li>
+        <li><?= te('Up to {n} codes per browser', ['n' => GUEST_MAX_CODES]) ?></li>
       </ul>
     </div>
     <div class="panel">
-      <h3>With a free account</h3>
+      <h3><?= te('With a free account') ?></h3>
       <ul>
-        <li>Unlimited codes, kept safe in your account</li>
-        <li>Campaigns &amp; bulk codes for print runs</li>
-        <li>Stats by place, city, time, device &amp; language</li>
-        <li>Codes from this browser move in automatically</li>
+        <li><?= te('Unlimited codes, kept safe in your account') ?></li>
+        <li><?= te('Campaigns & bulk codes for print runs') ?></li>
+        <li><?= te('Stats by place, city, time, device & language') ?></li>
+        <li><?= te('Codes from this browser move in automatically') ?></li>
       </ul>
-      <a class="btn y" href="/app/register.php">Create a free account</a>
+      <a class="btn y" href="/app/register.php"><?= te('Create a free account') ?></a>
     </div>
   </div>
 </section>
 
 <section class="st-cta">
-  <h2>Make your own QR code.</h2>
-  <a class="btn y" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});document.querySelector('.create input').focus({preventScroll:true});return false">Let's go!</a>
-  <p class="hint">Free · No sign-up · With stats</p>
+  <h2><?= te('Make your own QR code.') ?></h2>
+  <a class="btn y" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});document.querySelector('.create input').focus({preventScroll:true});return false"><?= te('Let\'s go!') ?></a>
+  <p class="hint"><?= te('Free · No sign-up · With stats') ?></p>
 </section>
 <?php public_foot();
