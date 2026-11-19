@@ -135,6 +135,17 @@ function maintenance(): void
     @touch($stamp);
     q('DELETE FROM hits WHERE created_at < NOW() - INTERVAL ' . (RETENTION_MONTHS * 31) . ' DAY');
     q('DELETE FROM salts WHERE day < ?', [date('Y-m-d')]);
+    // uploaded mini-app files whose mini-app (or code, or user) was deleted
+    $updir = __DIR__ . '/uploads';
+    if (is_dir($updir)) {
+        $live = array_flip(array_map('strval', q('SELECT id FROM steps')->fetchAll(PDO::FETCH_COLUMN)));
+        foreach (glob($updir . '/*', GLOB_ONLYDIR) ?: [] as $dir) {
+            if (!isset($live[basename($dir)])) {
+                foreach (glob($dir . '/*') ?: [] as $f) @unlink($f);
+                @rmdir($dir);
+            }
+        }
+    }
     if (!is_file(GEO_DB) || filemtime(GEO_DB) < time() - 35 * 86400) geo_update();
 }
 

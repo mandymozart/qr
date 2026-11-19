@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             flash($link['active'] ? t('Paused. The code now shows a "not found" page.') : t('Activated.'));
             redirect('/app/code.php?id=' . $id);
         case 'delete':
+            if ($mini = step_for_link($id)) step_delete_files((int) $mini['id']);
             q('DELETE FROM links WHERE id = ? AND user_id = ?', [$id, $user['id']]);
             qr_delete_logo($id);
             flash(t('Deleted "{title}".', ['title' => $link['title']]));
