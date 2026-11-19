@@ -80,6 +80,9 @@ page_head('Codes', 'codes');
     <?= sparkline($counts) ?>
     <div class="stat"><strong><?= (int) $l['scans'] ?></strong><span>scans</span></div>
     <div class="tools">
+      <button class="button small ghost" data-copy="<?= e(short_url($l['code'])) ?>">Copy link</button>
+      <a class="button small ghost" href="/app/qr.php?id=<?= $l['id'] ?>&amp;fmt=png&amp;dl=1" download title="Download PNG">PNG</a>
+      <a class="button small ghost" href="/app/qr.php?id=<?= $l['id'] ?>&amp;fmt=svg&amp;dl=1" download title="Download SVG">SVG</a>
       <a class="button small ghost" href="/app/code.php?id=<?= $l['id'] ?>">Stats</a>
       <a class="button small ghost" href="/app/edit.php?id=<?= $l['id'] ?>">Edit</a>
     </div>

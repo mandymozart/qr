@@ -41,14 +41,17 @@ page_head($link['title'], 'codes');
   <div>
     <div class="qr-big"><img src="/app/qr.php?id=<?= $id ?>&amp;v=<?= e($link['code']) ?>" alt="QR code for <?= e($short) ?>"></div>
     <div class="dl">
-      <a class="button small ghost" href="/app/qr.php?id=<?= $id ?>&amp;fmt=svg&amp;dl=1">SVG</a>
-      <a class="button small ghost" href="/app/qr.php?id=<?= $id ?>&amp;fmt=png&amp;dl=1">PNG</a>
+      <a class="button small" href="/app/qr.php?id=<?= $id ?>&amp;fmt=png&amp;dl=1" download>↓ PNG</a>
+      <a class="button small" href="/app/qr.php?id=<?= $id ?>&amp;fmt=svg&amp;dl=1" download>↓ SVG</a>
     </div>
   </div>
   <div>
+    <label class="copy-label" for="short-link">Link</label>
+    <div class="copy-field">
+      <input id="short-link" value="<?= e($short) ?>" readonly onclick="this.select()">
+      <button class="button" data-copy="<?= e($short) ?>">Copy</button>
+    </div>
     <dl class="kv">
-      <dt>Short</dt><dd><a class="url" href="<?= e($short) ?>" target="_blank" rel="noopener"><?= e(preg_replace('~^https?://~', '', $short)) ?></a>
-        <button class="button small ghost" data-copy="<?= e($short) ?>">Copy</button></dd>
       <dt>Target</dt><dd class="mono"><a href="<?= e($link['target_url']) ?>" target="_blank" rel="noopener noreferrer"><?= e($link['target_url']) ?></a></dd>
       <dt>Campaign</dt><dd><?= $link['campaign_name'] ? e($link['campaign_name']) : '—' ?></dd>
       <dt>Created</dt><dd><?= e(fmt_date($link['created_at'])) ?></dd>

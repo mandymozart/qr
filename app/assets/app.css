@@ -245,6 +245,14 @@ table.data td.num, table.data th.num { text-align: right; font-variant-numeric: 
 .qr-big { background: #fff; border-radius: 0.75rem; padding: 0.75rem; border: 1px solid var(--line); }
 .qr-big img, .qr-big svg { width: 100%; height: auto; display: block; }
 .dl { display: flex; gap: 0.35rem; margin-top: 0.5rem; justify-content: center; }
+.copy-label { display: block; font-size: 0.75rem; color: var(--neutral-20); text-transform: uppercase; letter-spacing: 0.04rem; margin-bottom: 0.3rem; }
+.copy-field { display: flex; gap: 0.4rem; margin-bottom: 1.25rem; }
+.copy-field input {
+  flex: 1; min-width: 0; font-family: var(--font-mono); font-size: 0.85rem;
+  padding: 0.4rem 0.6rem; border: 1px solid var(--neutral-10); border-radius: 0.5rem;
+  background: var(--mint); color: var(--text); outline: none;
+}
+.copy-field input:focus { border-color: var(--mint-40); }
 dl.kv { display: grid; grid-template-columns: 7rem 1fr; gap: 0.35rem 1rem; margin: 0; font-size: 0.9rem; }
 dl.kv dt { color: var(--neutral-20); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04rem; padding-top: 0.15rem; }
 dl.kv dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
