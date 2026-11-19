@@ -73,7 +73,7 @@ page_head($c['name'], 'campaigns');
   <form method="post" action="/app/campaigns.php">
     <?= csrf_field() ?><input type="hidden" name="campaign_id" value="<?= $cid ?>">
     <div class="form-grid">
-      <div class="field"><label for="count">Number of codes</label><input id="count" name="count" type="number" min="1" max="500" value="10"></div>
+      <div class="field"><label for="count">Number of codes</label><input id="count" name="count" type="number" min="1" max="500" value="1"></div>
       <div class="field"><label for="title">Code names</label><input id="title" name="title" value="<?= e($c['name']) ?> #{n}"></div>
     </div>
     <div class="field"><label for="target_url">Target URL</label><input id="target_url" name="target_url" value="<?= e($links[0]['target_url'] ?? 'https://') ?>"></div>

@@ -14,7 +14,7 @@ function bulk_create(array $user, int $cid, int $n, string $title, string $url):
     for ($i = 1; $i <= $n; $i++) {
         $code = unique_code();
         $num = str_pad((string) ($start + $i), max(2, $pad), '0', STR_PAD_LEFT);
-        $t = str_contains($title, '{n}') ? str_replace('{n}', $num, $title) : "$title #$num";
+        $t = str_contains($title, '{n}') ? str_replace('{n}', $num, $title) : ($n === 1 && $start === 0 ? $title : "$title #$num");
         $u = str_replace(['{n}', '{code}'], [$num, $code], $url);
         q('INSERT INTO links (user_id, campaign_id, code, title, target_url) VALUES (?, ?, ?, ?, ?)', [$user['id'], $cid, $code, $t, $u]);
     }
@@ -86,7 +86,7 @@ page_head('Campaigns', 'campaigns');
     <div class="form-grid">
       <div class="field"><label for="name">New campaign name</label><input id="name" name="name" value="<?= e($_POST['name'] ?? '') ?>" placeholder="Poster run November"></div>
       <div class="field"><label for="campaign_id">…or add to existing</label><?= campaign_select($user, (int) ($_POST['campaign_id'] ?? 0) ?: null) ?></div>
-      <div class="field"><label for="count">Number of codes</label><input id="count" name="count" type="number" min="0" max="500" value="<?= e($_POST['count'] ?? '10') ?>"></div>
+      <div class="field"><label for="count">Number of codes</label><input id="count" name="count" type="number" min="0" max="500" value="<?= e($_POST['count'] ?? '1') ?>"></div>
       <div class="field"><label for="title">Code names</label><input id="title" name="title" value="<?= e($_POST['title'] ?? '') ?>" placeholder="Poster #{n}"></div>
     </div>
     <div class="field"><label for="target_url">Target URL (same for all)</label><input id="target_url" name="target_url" value="<?= e($_POST['target_url'] ?? 'https://') ?>"></div>
