@@ -10,7 +10,15 @@ declare(strict_types=1);
 function style_save(array $link): array
 {
     $id = (int) $link['id'];
-    $style = qr_style(['shape' => post('shape'), 'color' => post('color'), 'logo' => post('logo')]);
+    $style = qr_style(['shape' => post('shape'), 'color' => post('color'), 'logo' => post('logo'), 'eye' => post('eye'),
+                       'c1' => post('c1'), 'c2' => post('c2')]);
+    if ($style['color'] === 'custom') {
+        foreach (['c1' => t('dots'), 'c2' => t('corners')] as $k => $what) {
+            if (qr_contrast_with_white($style[$k]) < 3.0) {
+                return ['err', t('The color for the {what} is too light to scan reliably. Pick a darker one.', ['what' => $what])];
+            }
+        }
+    }
     $newLogo = false;
 
     if ($style['logo'] === 'upload' && !empty($_FILES['logo_file']['name'])) {
@@ -52,7 +60,9 @@ function style_save(array $link): array
 function style_form(array $link, string $img, string $hidden): void
 {
     $style = qr_style($link['style'] ?? null);
-    $hasUpload = is_file(QR_LOGO_DIR . '/' . (int) $link['id'] . '.png');
+    $logoFile = QR_LOGO_DIR . '/' . (int) $link['id'] . '.png';
+    $hasUpload = is_file($logoFile);
+    $logoThumb = $hasUpload ? 'data:image/png;base64,' . base64_encode((string) file_get_contents($logoFile)) : '';
     ?>
 <section class="block style-editor">
   <h3><?= te('Style') ?></h3>
@@ -69,6 +79,14 @@ function style_form(array $link, string $img, string $hidden): void
       </div>
     </fieldset>
     <fieldset>
+      <legend><?= te('Corners') ?></legend>
+      <div class="choices">
+        <?php foreach (['square' => t('Square'), 'rounded' => t('Rounded'), 'round' => t('Round')] as $k => $label): ?>
+          <label class="choice"><input type="radio" name="eye" value="<?= $k ?>"<?= $style['eye'] === $k ? ' checked' : '' ?>><span><i class="eye-<?= $k ?>"></i><?= e($label) ?></span></label>
+        <?php endforeach; ?>
+      </div>
+    </fieldset>
+    <fieldset>
       <legend><?= te('Colors') ?></legend>
       <div class="choices">
         <?php foreach (QR_COLORS as $k => $c):
@@ -76,6 +94,13 @@ function style_form(array $link, string $img, string $hidden): void
           <label class="choice"><input type="radio" name="color" value="<?= $k ?>"<?= $style['color'] === $k ? ' checked' : '' ?>>
             <span><i class="swatch" style="background:<?= e($d) ?>;box-shadow:inset 0 0 0 4px <?= e($c['eye']) ?>"></i><?= te($c['label']) ?></span></label>
         <?php endforeach; ?>
+        <label class="choice"><input type="radio" name="color" value="custom"<?= $style['color'] === 'custom' ? ' checked' : '' ?>>
+          <span><i class="swatch swatch-custom"></i><?= te('Custom') ?></span></label>
+      </div>
+      <div class="custom-colors"<?= $style['color'] === 'custom' ? '' : ' hidden' ?>>
+        <label class="picker"><input type="color" name="c1" value="<?= e($style['c1'] ?? '#1f4fd8') ?>"><span><?= te('Dots') ?></span></label>
+        <label class="picker"><input type="color" name="c2" value="<?= e($style['c2'] ?? '#e01010') ?>"><span><?= te('Corners') ?></span></label>
+        <small class="contrast-hint" hidden><?= te('Too light: scanners need dark colors on white.') ?></small>
       </div>
     </fieldset>
     <fieldset>
@@ -85,10 +110,14 @@ function style_form(array $link, string $img, string $hidden): void
           <label class="choice"><input type="radio" name="logo" value="<?= $k ?>"<?= $style['logo'] === $k ? ' checked' : '' ?>><span><?= e($label) ?></span></label>
         <?php endforeach; ?>
       </div>
-      <div class="logo-upload"<?= $style['logo'] === 'upload' ? '' : ' hidden' ?>>
+      <label class="dropzone<?= $hasUpload ? ' has-file' : '' ?>">
         <input type="file" name="logo_file" accept="image/png,image/jpeg,image/gif,image/webp">
-        <p class="field-hint"><?= $hasUpload ? te('A logo is uploaded. Choose a new file to replace it.') : te('Square images work best. PNG, JPG, GIF or WebP, max. 3 MB.') ?></p>
-      </div>
+        <span class="dz-thumb"><?php if ($logoThumb): ?><img src="<?= $logoThumb ?>" alt=""><?php endif; ?></span>
+        <span class="dz-text">
+          <b data-default="<?= te('Drop your logo here') ?>"><?= $hasUpload ? te('Your logo') : te('Drop your logo here') ?></b>
+          <small><?= te('or click to choose a file · square works best · PNG, JPG, GIF, WebP · max. 3 MB') ?></small>
+        </span>
+      </label>
     </fieldset>
     <p class="field-hint"><?= te('Tip: keep the colors dark and print the code at least 2 cm wide. Logos make the code a bit denser.') ?></p>
     <button class="button"><?= te('Save style') ?></button>

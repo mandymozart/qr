@@ -95,8 +95,8 @@ function public_head(string $title, string $mainClass = 'narrow'): void
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= e($title) ?></title>
 <meta name="description" content="<?= te('Free QR codes you can change later, with scan stats. No tracking cookies.') ?>">
-<link rel="stylesheet" href="/app/assets/app.css?v=10">
-<link rel="stylesheet" href="/app/assets/street.css?v=9">
+<link rel="stylesheet" href="/app/assets/app.css?v=12">
+<link rel="stylesheet" href="/app/assets/street.css?v=12">
 </head>
 <body class="public street">
 <?php street_defs(); ?>
@@ -121,7 +121,7 @@ function public_foot(): void
     ?>
 </main>
 <footer class="st-foot"><?= te('No tracking cookies. Scans are counted anonymously.') ?></footer>
-<script src="/app/assets/app.js?v=5"></script>
+<script src="/app/assets/app.js?v=7"></script>
 </body>
 </html>
 <?php

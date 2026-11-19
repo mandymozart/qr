@@ -42,14 +42,14 @@ $mobilePct = $total ? round((($devices['mobile'] ?? 0) + ($devices['tablet'] ?? 
 
 page_head($link['title'], 'codes');
 ?>
-<div style="max-width:44rem">
+<div class="code-page">
 <span class="entity-type"><?= te('Code') ?></span>
 <h2 class="entity-title"><?= e($link['title']) ?>
   <?php if ($link['campaign_name']): ?><a class="badge campaign" href="/app/campaign.php?id=<?= $link['campaign_id'] ?>" style="text-decoration:none"><?= e($link['campaign_name']) ?></a><?php endif; ?>
   <span class="badge <?= $link['active'] ? 'on' : 'off' ?>"><?= $link['active'] ? te('active') : te('paused') ?></span></h2>
 
-<div class="qr-panel" style="margin-top:1rem">
-  <div>
+<div class="code-top">
+  <div class="code-qr">
     <div class="qr-big"><img id="qr-preview" src="/app/qr.php?id=<?= $id ?>&amp;v=<?= e(qr_version($link)) ?>" alt="<?= te('QR code for {url}', ['url' => $short]) ?>"></div>
     <div class="dl">
       <a class="button small" href="/app/qr.php?id=<?= $id ?>&amp;fmt=png&amp;dl=1" download>↓ PNG</a>
@@ -57,7 +57,7 @@ page_head($link['title'], 'codes');
       <a class="button small ghost" href="#style">🎨 <?= te('Style') ?></a>
     </div>
   </div>
-  <div>
+  <div class="code-info">
     <label class="copy-label" for="short-link"><?= te('Link') ?></label>
     <div class="copy-field">
       <input id="short-link" value="<?= e($short) ?>" readonly onclick="this.select()">
@@ -78,10 +78,8 @@ page_head($link['title'], 'codes');
         <button class="button danger"><?= te('Delete') ?></button></form>
     </div>
   </div>
+  <div class="code-style" id="style"><?php style_form($link, '/app/qr.php?id=' . $id, csrf_field()); ?></div>
 </div>
-
-<div id="style"></div>
-<?php style_form($link, '/app/qr.php?id=' . $id, csrf_field()); ?>
 
 <section class="block" style="margin-top:2rem">
   <h3><?= te('Scans') ?></h3><p class="hint"><?= te('Bots and link previews are not counted.') ?></p>

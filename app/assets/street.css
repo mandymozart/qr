@@ -243,3 +243,26 @@ body.street {
 }
 /* active language: pushed in */
 .street .lang-switch.st strong { box-shadow: inset 2px 2px 0 rgba(0, 0, 0, .6); }
+
+/* logo dropzone in pop-art style */
+.street .dropzone { border: 4px dashed var(--ink); border-radius: 20px; background: #fff; transition: transform .12s ease, background-color .12s ease, box-shadow .12s ease; }
+.street .dropzone:hover { background: #fff6d6; }
+.street .dropzone.drag { background: var(--yellow); border-style: solid; transform: translate(3px, 3px); box-shadow: inset 4px 4px 0 rgba(23, 10, 44, .45); }
+.street .dropzone:focus-within { outline: 3px solid var(--blue); outline-offset: 3px; }
+.street .dz-thumb { border: 3px solid var(--ink); border-radius: 14px; background: var(--pink); box-shadow: 3px 3px 0 var(--ink); width: 4rem; height: 4rem; }
+.street .dz-thumb:empty::before { font-family: "Permanent Marker", cursive; color: var(--ink); font-size: 2rem; }
+.street .dropzone.has-file .dz-thumb { background: #fff; }
+.street .dz-text b { font: 400 22px/1.1 "Permanent Marker", cursive; color: var(--ink); }
+.street .dz-text small { font-weight: 600; color: var(--ink); }
+.street .logo-overlay { border: 2px solid var(--ink); }
+.street .eye-square, .street .eye-rounded, .street .eye-round { color: var(--ink); }
+/* guest edit page: space between action buttons and the next divider */
+.street .dl { flex-wrap: wrap; }
+.street .form-actions + .form-actions { margin-top: .75rem; }
+.street .public-main section.block { margin-top: 2rem; }
+
+.street .picker input[type=color] { filter: drop-shadow(3px 3px 0 var(--ink)); }
+.street .contrast-hint { color: var(--red); }
+
+/* no divider lines between sections: the boxes already separate things, spacing does the rest */
+.street section.block, .street .block { border-top: 0; padding-top: 0; margin-top: 2.5rem; }
