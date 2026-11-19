@@ -55,6 +55,10 @@ if ($code !== '') {
     public_head('Code not found · qr');
     ?>
     <section class="hero">
+      <svg viewBox="0 0 260 260" width="180" height="180" aria-hidden="true" style="overflow:visible;display:block;margin-bottom:8px">
+        <g transform="translate(20 10)" style="color:var(--blue)"><use href="#pose-hold"/></g>
+        <text x="200" y="70" font-family="Permanent Marker, cursive" font-size="80" fill="var(--red)" stroke="#111" stroke-width="3">?</text>
+      </svg>
       <span class="entity-type">Hmm.</span>
       <h1>This QR code doesn't lead anywhere (anymore).</h1>
       <p class="entity-description">The code <span class="url"><?= e($code) ?></span> doesn't exist or was paused by its owner.
@@ -97,32 +101,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $mine = current_user() ? [] : guest_links();
-public_head('qr · QR codes you can change later');
+public_head('qr · QR codes you can change later', 'wide');
 ?>
-<section class="hero">
-  <h1>QR codes you can <span class="hl">change later.</span></h1>
-  <p class="entity-description">Paste a link, get a QR code. Change where it leads any time, and see how often it's scanned. Free, no sign-up.</p>
+<div class="st-hero">
+  <div>
+    <h1>QR codes you can <span class="w r">change</span> <span class="w y">later!</span></h1>
+    <p class="lead">Print it once. Point it anywhere, any time. See who scans. Free, no sign-up.</p>
 
-  <?php if ($error): ?><div class="notice err"><?= e($error) ?></div><?php endif; ?>
+    <?php if ($error): ?><div class="notice err"><?= e($error) ?></div><?php endif; ?>
 
-  <form method="post" class="quick-create">
-    <input type="url" name="target_url" value="<?= e($url) ?>" required aria-label="Web address the QR code should open" placeholder="https://…" autofocus>
-    <input type="text" name="website" value="" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
-    <button class="button">Create QR code</button>
-  </form>
-  <?php if (current_user()): ?>
-    <p class="field-hint">You're signed in. <a href="/app/edit.php">Create it in your account</a> to use campaigns and full stats.</p>
-  <?php endif; ?>
-</section>
+    <form method="post" class="create">
+      <input type="url" name="target_url" value="<?= e($url) ?>" required aria-label="Link the QR code should open" placeholder="https://your-show.at">
+      <input type="text" name="website" value="" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
+      <button class="btn r">Make my QR!</button>
+    </form>
+    <?php if (current_user()): ?>
+      <p class="hint">You're signed in. <a href="/app/edit.php">Make it in your account</a> for campaigns and full stats.</p>
+    <?php else: ?>
+      <p class="hint">For posters, flyers, stickers, gallery walls &amp; merch tables.</p>
+    <?php endif; ?>
+  </div>
+
+  <div class="stage">
+    <svg viewBox="0 0 600 600" role="img" aria-label="Dancing figures around a QR code">
+      <rect x="170" y="140" width="260" height="260" rx="22" fill="#fff" stroke="#111" stroke-width="10"/>
+      <image href="/app/assets/qr-landing.svg" x="190" y="160" width="220" height="220"/>
+      <use href="#burst" x="300" y="100" class="pulse"/>
+      <use href="#burst" x="530" y="270" class="pulse" style="animation-delay:-.6s"/>
+      <use href="#burst" x="80" y="480" class="pulse" style="animation-delay:-.3s"/>
+      <g transform="translate(20 150) scale(.95)"><g class="wiggle" style="color:var(--red)"><use href="#pose-jump"/></g></g>
+      <g transform="translate(400 320) scale(.95)"><g class="wiggle d2" style="color:var(--blue)"><use href="#pose-run"/></g></g>
+      <g transform="translate(205 385) scale(.8)"><g class="wiggle d3" style="color:var(--yellow)"><use href="#pose-hold"/></g></g>
+      <path d="M470 120 l14 -14 a10 10 0 0 1 14 14 l-14 14 -14 -14 a10 10 0 0 1 14 -14z" fill="var(--pink)" stroke="#111" stroke-width="6"/>
+      <circle cx="120" cy="110" r="16" fill="var(--green)" stroke="#111" stroke-width="6"/>
+    </svg>
+  </div>
+</div>
 
 <?php if ($mine): ?>
-<section class="block">
-  <h3>Your codes in this browser</h3>
-  <p class="hint">Kept in this browser. Use each code's edit link from another device, or <a href="/app/register.php">create an account</a> to keep them for good.</p>
+<section class="st-sec">
+  <span class="tag">Yours</span>
+  <h2>Your codes in this browser</h2>
+  <p class="hint" style="margin-top:-12px">Use each code's edit link on other devices, or <a href="/app/register.php">create an account</a> to keep them for good.</p>
   <div class="list">
   <?php foreach ($mine as $l): ?>
     <a class="row" href="/manage.php?id=<?= $l['id'] ?>">
-      <img class="qr-thumb" src="/app/qr.php?id=<?= $l['id'] ?>&amp;v=<?= e($l['code']) ?>" alt="" loading="lazy">
+      <img class="qr-thumb" src="/app/qr.php?id=<?= $l['id'] ?>&amp;v=<?= e($l['code']) ?>" alt="">
       <div class="main"><h4><?= e($l['title']) ?><?= $l['active'] ? '' : ' <span class="badge off">paused</span>' ?></h4>
         <div class="meta"><span class="url">?c=<?= e($l['code']) ?></span><span class="target">→ <?= e($l['target_url']) ?></span></div></div>
       <div class="stat"><strong><?= (int) $l['scans'] ?></strong><span>scans</span></div>
@@ -132,39 +156,91 @@ public_head('qr · QR codes you can change later');
 </section>
 <?php endif; ?>
 
-<section class="block">
-  <span class="entity-type">How it works</span>
-  <div class="story-strip" aria-label="How it works, in 4 slides">
-    <?php foreach ([
-        1 => 'QR codes you can change later. Printed means final? Not anymore.',
-        2 => 'A QR code in 10 seconds: 1. paste a link, 2. get your QR code as PNG or SVG, 3. change the target any time, the printed code stays the same. No sign-up, free.',
-        3 => 'See who scans, no tracking cookies: scans, visitors, last 30 days, top city, mobile share. No IP addresses stored.',
-        4 => 'Make your own QR code at qr.viennastruggle.at. Free, no sign-up, with stats.',
-    ] as $n => $alt): ?>
-      <img src="/app/assets/story/story-<?= $n ?>.webp" width="540" height="960" alt="<?= e($alt) ?>" decoding="async">
-    <?php endforeach; ?>
+<section class="st-sec">
+  <span class="tag">How it works</span>
+  <h2>A QR code in 10 seconds.</h2>
+  <div class="st-steps">
+    <div class="panel">
+      <div class="num">1</div>
+      <svg viewBox="0 0 220 250" aria-hidden="true"><g transform="translate(10 0)" style="color:#fff"><use href="#pose-run"/></g></svg>
+      <h3>Paste a link</h3>
+      <p>Your show, your shop, your Insta, your ticket page.</p>
+    </div>
+    <div class="panel">
+      <div class="num">2</div>
+      <svg viewBox="0 0 220 250" aria-hidden="true"><g transform="translate(10 0)" style="color:var(--pink)"><use href="#pose-hold"/></g>
+        <rect x="150" y="70" width="58" height="58" rx="8" fill="#fff" stroke="#111" stroke-width="7"/>
+        <path d="M162 82h12v12h-12zM186 82h12v12h-12zM162 106h12v12h-12zM186 106h6v6h-6z" fill="#111"/></svg>
+      <h3>Get your QR</h3>
+      <p>PNG or SVG. Sharp on a sticker, sharp on a billboard.</p>
+    </div>
+    <div class="panel">
+      <div class="num">3</div>
+      <svg viewBox="0 0 220 250" aria-hidden="true"><g transform="translate(10 0)" style="color:var(--yellow)"><use href="#pose-jump"/></g><use href="#burst" x="190" y="60"/></svg>
+      <h3>Change it any time</h3>
+      <p>Show's over? Point the same printed code to the next one.</p>
+    </div>
   </div>
 </section>
 
-<section class="block tiers">
+<div class="chalk">
   <div>
-    <h3>Without an account</h3>
+    <span class="tag">Stats included</span>
+    <h2>See who scans.<br>Not who they are.</h2>
     <ul>
-      <li>QR code as PNG and SVG</li>
-      <li>Change the target any time with your edit link</li>
-      <li>Scan count for the last 30 days</li>
-      <li>Up to <?= GUEST_MAX_CODES ?> codes per browser</li>
+      <li class="yes">Scans per day, unique visitors</li>
+      <li class="yes">City, device, language, time of day</li>
+      <li>No tracking cookies</li>
+      <li>No stored IP addresses</li>
     </ul>
   </div>
-  <div>
-    <h3>With a free account</h3>
-    <ul>
-      <li>Unlimited codes, kept safely in your account</li>
-      <li>Campaigns and bulk codes for print runs</li>
-      <li>Stats by place, city, time, device and language</li>
-      <li>Codes from this browser move in automatically</li>
-    </ul>
-    <p><a class="button" href="/app/register.php">Create a free account</a></p>
+  <svg viewBox="0 0 420 320" aria-hidden="true">
+    <g stroke="#f5f5f0" stroke-width="6" stroke-linecap="round" fill="none">
+      <path d="M20 290 H400"/>
+      <path d="M50 290 V230 M90 290 V200 M130 290 V215 M170 290 V170 M210 290 V185 M250 290 V140 M290 290 V120"/>
+    </g>
+    <g transform="translate(250 30) scale(.95)"><use href="#chalk-fig"/></g>
+    <g stroke="var(--pink)" stroke-width="6" stroke-linecap="round"><path d="M230 70 l-18 -10 M236 50 l-20 -2 M240 92 l-18 6"/></g>
+  </svg>
+</div>
+
+<section class="st-sec">
+  <span class="tag">Good for</span>
+  <div class="goodfor">
+    <span>Exhibition posters</span><span>Gallery walls</span><span>Flyers</span><span>Stickers</span><span>Merch</span>
+    <span>Zines</span><span>Tickets</span><span>Price tags</span><span>Studio doors</span><span>Tote bags</span>
   </div>
+</section>
+
+<section class="st-sec">
+  <span class="tag">Free</span>
+  <h2>Start now. Keep more later.</h2>
+  <div class="st-tiers">
+    <div class="panel">
+      <h3>Without an account</h3>
+      <ul>
+        <li>QR code as PNG and SVG</li>
+        <li>Change the target any time with your edit link</li>
+        <li>Scan count for the last 30 days</li>
+        <li>Up to <?= GUEST_MAX_CODES ?> codes per browser</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>With a free account</h3>
+      <ul>
+        <li>Unlimited codes, kept safe in your account</li>
+        <li>Campaigns &amp; bulk codes for print runs</li>
+        <li>Stats by place, city, time, device &amp; language</li>
+        <li>Codes from this browser move in automatically</li>
+      </ul>
+      <a class="btn y" href="/app/register.php">Create a free account</a>
+    </div>
+  </div>
+</section>
+
+<section class="st-cta">
+  <h2>Make your own QR code.</h2>
+  <a class="btn y" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});document.querySelector('.create input').focus({preventScroll:true});return false">Let's go!</a>
+  <p class="hint">Free · No sign-up · With stats</p>
 </section>
 <?php public_foot();

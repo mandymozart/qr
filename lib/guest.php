@@ -83,8 +83,8 @@ function guest_limit_error(string $creator): ?string
     return null;
 }
 
-/** Simple public page shell (landing, manage, not found). */
-function public_head(string $title): void
+/** Public page shell (landing, guest edit, not found) in the street/pop-art style. */
+function public_head(string $title, string $mainClass = 'narrow'): void
 {
     $user = current_user();
     $f = flash();
@@ -96,20 +96,22 @@ function public_head(string $title): void
 <title><?= e($title) ?></title>
 <meta name="description" content="Free QR codes you can change later, with scan stats. No tracking cookies.">
 <link rel="stylesheet" href="/app/assets/app.css?v=7">
+<link rel="stylesheet" href="/app/assets/street.css?v=1">
 </head>
-<body class="public">
-<header class="topbar">
-  <a class="logo" href="/">qr</a>
-  <div class="actions">
+<body class="public street">
+<?php street_defs(); ?>
+<header class="st-header">
+  <a class="st-logo" href="/">q<span>r</span></a>
+  <nav class="st-nav">
     <?php if ($user): ?>
-      <a class="button small" href="/app/">My codes</a>
+      <a class="btn y" href="/app/">My codes</a>
     <?php else: ?>
-      <a class="nav-button" href="/app/login.php">Sign in</a>
-      <a class="button small" href="/app/register.php">Create account</a>
+      <a class="plain" href="/app/login.php">Sign in</a>
+      <a class="btn y" href="/app/register.php">Create account</a>
     <?php endif; ?>
-  </div>
+  </nav>
 </header>
-<main class="public-main">
+<main class="public-main <?= e($mainClass) ?>">
 <?php if ($f): ?><div class="notice <?= $f[0] === 'err' ? 'err' : ($f[0] === 'info' ? 'info' : 'ok') ?>"><?= e($f[1]) ?></div><?php endif;
 }
 
@@ -117,11 +119,29 @@ function public_foot(): void
 {
     ?>
 </main>
-<footer class="public-foot">
-  <span>No tracking cookies. Scans are counted anonymously.</span>
-</footer>
+<footer class="st-foot">No tracking cookies. Scans are counted anonymously.</footer>
 <script src="/app/assets/app.js?v=3"></script>
 </body>
 </html>
 <?php
+}
+
+/** Reusable SVG drawings: original bold-outline figures (black outline under a colored stroke, color = currentColor). */
+function street_defs(): void
+{
+    $limbs = [
+        'jump' => ['M100 82 L100 150 M100 96 L62 58 L44 26 M100 96 L140 62 L160 30 M100 150 L70 190 L52 230 M100 150 L132 188 L152 226', 100, 44],
+        'hold' => ['M100 82 L104 152 M102 98 L140 112 L170 96 M102 98 L64 120 L40 100 M104 152 L80 196 L84 236 M104 152 L130 194 L124 234', 98, 44],
+        'run'  => ['M108 84 L94 150 M104 100 L146 86 L168 104 M104 100 L66 118 L46 98 M94 150 L136 176 L150 220 M94 150 L66 186 L32 196', 112, 46],
+    ];
+    echo '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>';
+    foreach ($limbs as $id => [$d, $hx, $hy]) {
+        echo "<g id=\"pose-$id\"><path d=\"$d\" stroke=\"#111\" stroke-width=\"36\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/>"
+           . "<circle cx=\"$hx\" cy=\"$hy\" r=\"27\" fill=\"#111\"/>"
+           . "<path d=\"$d\" stroke=\"currentColor\" stroke-width=\"22\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/>"
+           . "<circle cx=\"$hx\" cy=\"$hy\" r=\"20\" fill=\"currentColor\"/></g>";
+    }
+    echo '<g id="burst" stroke="#111" stroke-width="7" stroke-linecap="round" fill="none"><path d="M0 -40 L0 -58 M28 -28 L41 -41 M40 0 L58 0 M28 28 L41 41 M-28 -28 L-41 -41 M-40 0 L-58 0 M-28 28 L-41 41"/></g>';
+    echo '<g id="chalk-fig" stroke="#f5f5f0" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="' . $limbs['jump'][0] . '"/><circle cx="100" cy="44" r="22"/></g>';
+    echo '</defs></svg>';
 }

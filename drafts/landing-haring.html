@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>qr · draft: art crowd landing</title>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Source+Sans+3:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  /* Draft: bold outline pop / street-art style. Original figures, inspired by 80s subway & pop art. */
+  :root {
+    --ink: #111; --paper: #fffdf5;
+    --red: #ff2a2a; --yellow: #ffd60a; --blue: #1f6fff; --green: #00c46a; --pink: #ff4fb0; --orange: #ff8a00;
+    --line: 5px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Source Sans 3", sans-serif; font-size: 18px; overflow-x: hidden; }
+  .marker { font-family: "Permanent Marker", cursive; font-weight: 400; letter-spacing: .01em; }
+  a { color: inherit; }
+
+  /* header */
+  header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; max-width: 1120px; margin: 0 auto; }
+  .logo { font-family: "Permanent Marker", cursive; font-size: 42px; text-decoration: none; line-height: 1; }
+  .logo span { color: var(--red); }
+  .btn { display: inline-block; font: 800 16px/1 "Source Sans 3", sans-serif; text-transform: uppercase; letter-spacing: .04em; text-decoration: none;
+         border: var(--line) solid var(--ink); border-radius: 999px; padding: 12px 20px; background: #fff; box-shadow: 5px 5px 0 var(--ink); cursor: pointer; transition: transform .1s, box-shadow .1s; }
+  .btn:hover { transform: translate(-2px, -2px) rotate(-2deg); box-shadow: 7px 7px 0 var(--ink); }
+  .btn:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--ink); }
+  .btn.y { background: var(--yellow); } .btn.r { background: var(--red); color: #fff; } .btn.b { background: var(--blue); color: #fff; }
+  .nav { display: flex; gap: 12px; align-items: center; }
+  .nav a.plain { font-weight: 800; text-transform: uppercase; font-size: 15px; text-decoration: none; }
+
+  /* hero */
+  .hero { max-width: 1120px; margin: 0 auto; padding: 24px 24px 56px; display: grid; grid-template-columns: 1.1fr .9fr; gap: 32px; align-items: center; }
+  h1 { font-family: "Permanent Marker", cursive; font-weight: 400; font-size: clamp(48px, 7.4vw, 96px); line-height: .95; margin: 0 0 22px; }
+  h1 .w { display: inline-block; padding: 0 .12em; border: var(--line) solid var(--ink); border-radius: .18em; margin: .04em 0; }
+  h1 .w.r { background: var(--red); color: #fff; transform: rotate(-3deg); }
+  h1 .w.y { background: var(--yellow); transform: rotate(2deg); }
+  .lead { font-size: 22px; line-height: 1.4; max-width: 30ch; margin: 0 0 26px; font-weight: 600; }
+  .create { display: flex; gap: 12px; max-width: 560px; }
+  .create input { flex: 1; min-width: 0; font: 600 20px "Source Sans 3", sans-serif; padding: 14px 18px; border: var(--line) solid var(--ink); border-radius: 18px; background: #fff; outline: none; box-shadow: 5px 5px 0 var(--ink); }
+  .create input:focus { background: #fffbe0; }
+  .create .btn { font-size: 18px; padding: 16px 24px; }
+  .hint { font-size: 15px; margin-top: 16px; font-weight: 600; }
+
+  .stage { position: relative; aspect-ratio: 1 / 1; }
+  .stage svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .wiggle { animation: wiggle 1.6s ease-in-out infinite; transform-origin: 50% 90%; transform-box: fill-box; }
+  .wiggle.d2 { animation-delay: -.5s; } .wiggle.d3 { animation-delay: -1s; }
+  .pulse { animation: pulse 1.2s steps(2) infinite; }
+  @keyframes wiggle { 0%,100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg) translateY(-6px); } }
+  @keyframes pulse { 50% { opacity: .15; } }
+  @media (prefers-reduced-motion: reduce) { .wiggle, .pulse { animation: none; } }
+
+  /* sections */
+  section { max-width: 1120px; margin: 0 auto; padding: 56px 24px; }
+  h2 { font-family: "Permanent Marker", cursive; font-weight: 400; font-size: clamp(36px, 5vw, 60px); line-height: 1; margin: 0 0 28px; }
+  .tag { display: inline-block; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; font-size: 14px; border: 3px solid var(--ink); border-radius: 999px; padding: 4px 12px; background: #fff; margin-bottom: 14px; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .panel { border: var(--line) solid var(--ink); border-radius: 26px; padding: 22px 22px 26px; box-shadow: 8px 8px 0 var(--ink); position: relative; }
+  .panel:nth-child(1) { background: var(--red); color: #fff; transform: rotate(-1.5deg); }
+  .panel:nth-child(2) { background: var(--yellow); transform: rotate(1deg); }
+  .panel:nth-child(3) { background: var(--blue); color: #fff; transform: rotate(-.5deg); }
+  .panel .num { position: absolute; top: -26px; left: 18px; width: 56px; height: 56px; border: var(--line) solid var(--ink); border-radius: 50%; background: #fff; color: var(--ink);
+                display: grid; place-items: center; font: 400 30px "Permanent Marker", cursive; }
+  .panel svg { width: 100%; height: 170px; display: block; margin: 8px 0 6px; overflow: visible; }
+  .panel h3 { font: 400 30px/1.05 "Permanent Marker", cursive; margin: 0 0 6px; }
+  .panel p { margin: 0; font-size: 17px; line-height: 1.4; font-weight: 600; }
+
+  /* chalk board: subway vibe */
+  .chalk { background: #141414; color: #f5f5f0; border-radius: 34px; border: var(--line) solid var(--ink); padding: 44px 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: center; max-width: 1072px; margin: 24px auto; }
+  .chalk h2 { color: #fff; }
+  .chalk .tag { background: var(--green); color: var(--ink); border-color: #fff; }
+  .chalk ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; font-size: 19px; font-weight: 600; }
+  .chalk li::before { content: "✕ "; color: var(--pink); font-family: "Permanent Marker", cursive; }
+  .chalk li.yes::before { content: "✓ "; color: var(--green); }
+  .chalk svg { width: 100%; height: auto; overflow: visible; }
+
+  .goodfor { display: flex; flex-wrap: wrap; gap: 12px; }
+  .goodfor span { font: 400 22px "Permanent Marker", cursive; border: 4px solid var(--ink); border-radius: 14px; padding: 6px 14px; background: #fff; box-shadow: 4px 4px 0 var(--ink); }
+  .goodfor span:nth-child(5n+1) { background: var(--pink); transform: rotate(-2deg); }
+  .goodfor span:nth-child(5n+2) { background: var(--green); transform: rotate(1.5deg); }
+  .goodfor span:nth-child(5n+3) { background: var(--yellow); transform: rotate(-1deg); }
+  .goodfor span:nth-child(5n+4) { background: var(--orange); transform: rotate(2deg); }
+
+  .cta { text-align: center; padding-bottom: 90px; }
+  .cta h2 { font-size: clamp(42px, 6vw, 76px); }
+  .cta .btn { font-size: 20px; padding: 18px 28px; }
+  footer { text-align: center; font-weight: 600; font-size: 14px; padding: 0 24px 40px; }
+
+  @media (max-width: 820px) {
+    .hero, .chalk { grid-template-columns: 1fr; }
+    .stage { max-width: 420px; margin: 0 auto; width: 100%; }
+    .steps { grid-template-columns: 1fr; gap: 40px; }
+    .create { flex-direction: column; }
+    .chalk { margin: 24px 16px; padding: 32px 22px; }
+    header { padding: 14px 16px; } .hero, section { padding-left: 16px; padding-right: 16px; }
+    .nav a.plain { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- Original figures: thick black outline (wide black stroke) under a colored stroke. color = currentColor -->
+    <g id="pose-jump">
+      <g stroke="#111" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <path d="M100 82 L100 150 M100 96 L62 58 L44 26 M100 96 L140 62 L160 30 M100 150 L70 190 L52 230 M100 150 L132 188 L152 226"/>
+      </g>
+      <circle cx="100" cy="44" r="27" fill="#111"/>
+      <g stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <path d="M100 82 L100 150 M100 96 L62 58 L44 26 M100 96 L140 62 L160 30 M100 150 L70 190 L52 230 M100 150 L132 188 L152 226"/>
+      </g>
+      <circle cx="100" cy="44" r="20" fill="currentColor"/>
+    </g>
+    <g id="pose-hold">
+      <g stroke="#111" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <path d="M100 82 L104 152 M102 98 L140 112 L170 96 M102 98 L64 120 L40 100 M104 152 L80 196 L84 236 M104 152 L130 194 L124 234"/>
+      </g>
+      <circle cx="98" cy="44" r="27" fill="#111"/>
+      <g stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <path d="M100 82 L104 152 M102 98 L140 112 L170 96 M102 98 L64 120 L40 100 M104 152 L80 196 L84 236 M104 152 L130 194 L124 234"/>
+      </g>
+      <circle cx="98" cy="44" r="20" fill="currentColor"/>
+    </g>
+    <g id="pose-run">
+      <g stroke="#111" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <path d="M108 84 L94 150 M104 100 L146 86 L168 104 M104 100 L66 118 L46 98 M94 150 L136 176 L150 220 M94 150 L66 186 L32 196"/>
+      </g>
+      <circle cx="112" cy="46" r="27" fill="#111"/>
+      <g stroke="currentColor" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <path d="M108 84 L94 150 M104 100 L146 86 L168 104 M104 100 L66 118 L46 98 M94 150 L136 176 L150 220 M94 150 L66 186 L32 196"/>
+      </g>
+      <circle cx="112" cy="46" r="20" fill="currentColor"/>
+    </g>
+    <!-- motion lines -->
+    <g id="burst" stroke="#111" stroke-width="7" stroke-linecap="round" fill="none">
+      <path d="M0 -40 L0 -58 M28 -28 L41 -41 M40 0 L58 0 M28 28 L41 41 M-28 -28 L-41 -41 M-40 0 L-58 0 M-28 28 L-41 41"/>
+    </g>
+    <!-- chalk version: white outline only -->
+    <g id="chalk-fig" stroke="#f5f5f0" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <path d="M100 82 L100 150 M100 96 L62 58 L44 26 M100 96 L140 62 L160 30 M100 150 L70 190 L52 230 M100 150 L132 188 L152 226"/>
+      <circle cx="100" cy="44" r="22"/>
+    </g>
+  </defs>
+</svg>
+
+<header>
+  <a class="logo" href="#">q<span>r</span></a>
+  <nav class="nav">
+    <a class="plain" href="#">Sign in</a>
+    <a class="btn y" href="#">Create account</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div>
+    <h1>QR codes you can <span class="w r">change</span> <span class="w y">later!</span></h1>
+    <p class="lead">Print it once. Point it anywhere, any time. See who scans. Free, no sign-up.</p>
+    <form class="create" onsubmit="return false">
+      <input type="url" placeholder="https://your-show.at" aria-label="Link for the QR code">
+      <button class="btn r">Make my QR!</button>
+    </form>
+    <p class="hint">For posters, flyers, stickers, gallery walls &amp; merch tables.</p>
+  </div>
+
+  <div class="stage">
+    <svg viewBox="0 0 600 600" role="img" aria-label="Dancing figures around a QR code">
+      <!-- the QR as a canvas on the wall -->
+      <rect x="170" y="140" width="260" height="260" rx="22" fill="#fff" stroke="#111" stroke-width="10"/>
+      <image href="../social/qr-landing.svg" x="190" y="160" width="220" height="220"/>
+      <!-- motion lines -->
+      <use href="#burst" x="300" y="100" class="pulse"/>
+      <use href="#burst" x="520" y="250" class="pulse" style="animation-delay:-.6s"/>
+      <use href="#burst" x="80" y="470" class="pulse" style="animation-delay:-.3s"/>
+      <!-- figures -->
+      <g transform="translate(20 150) scale(.95)"><g class="wiggle" style="color:var(--red)"><use href="#pose-jump"/></g></g>
+      <g transform="translate(400 320) scale(.95)"><g class="wiggle d2" style="color:var(--blue)"><use href="#pose-run"/></g></g>
+      <g transform="translate(205 385) scale(.8)"><g class="wiggle d3" style="color:var(--yellow)"><use href="#pose-hold"/></g></g>
+      <!-- little hearts / scan sparks -->
+      <path d="M470 120 l14 -14 a10 10 0 0 1 14 14 l-14 14 -14 -14 a10 10 0 0 1 14 -14z" fill="var(--pink)" stroke="#111" stroke-width="6"/>
+      <circle cx="120" cy="110" r="16" fill="var(--green)" stroke="#111" stroke-width="6"/>
+    </svg>
+  </div>
+</div>
+
+<section>
+  <span class="tag">How it works</span>
+  <h2>A QR code in 10 seconds.</h2>
+  <div class="steps">
+    <div class="panel">
+      <div class="num">1</div>
+      <svg viewBox="0 0 220 250"><g transform="translate(10 0)" style="color:#fff"><use href="#pose-run"/></g></svg>
+      <h3>Paste a link</h3>
+      <p>Your show, your shop, your Insta, your ticket page.</p>
+    </div>
+    <div class="panel">
+      <div class="num">2</div>
+      <svg viewBox="0 0 220 250"><g transform="translate(10 0)" style="color:var(--pink)"><use href="#pose-hold"/></g>
+        <rect x="150" y="70" width="58" height="58" rx="8" fill="#fff" stroke="#111" stroke-width="7"/>
+        <path d="M162 82h12v12h-12zM186 82h12v12h-12zM162 106h12v12h-12zM186 106h6v6h-6z" fill="#111"/></svg>
+      <h3>Get your QR</h3>
+      <p>PNG or SVG. Sharp on a sticker, sharp on a billboard.</p>
+    </div>
+    <div class="panel">
+      <div class="num">3</div>
+      <svg viewBox="0 0 220 250"><g transform="translate(10 0)" style="color:var(--yellow)"><use href="#pose-jump"/></g>
+        <use href="#burst" x="190" y="60"/></svg>
+      <h3>Change it any time</h3>
+      <p>Show's over? Point the same printed code to the next one.</p>
+    </div>
+  </div>
+</section>
+
+<div class="chalk">
+  <div>
+    <span class="tag">Stats included</span>
+    <h2>See who scans.<br>Not who they are.</h2>
+    <ul>
+      <li class="yes">Scans per day, unique visitors</li>
+      <li class="yes">City, device, language, time of day</li>
+      <li>No tracking cookies</li>
+      <li>No stored IP addresses</li>
+    </ul>
+  </div>
+  <svg viewBox="0 0 420 320" aria-hidden="true">
+    <!-- chalk bar chart + figure -->
+    <g stroke="#f5f5f0" stroke-width="6" stroke-linecap="round" fill="none">
+      <path d="M20 290 H400"/>
+      <path d="M50 290 V230 M90 290 V200 M130 290 V215 M170 290 V170 M210 290 V185 M250 290 V140 M290 290 V120"/>
+    </g>
+    <g transform="translate(250 30) scale(.95)"><use href="#chalk-fig"/></g>
+    <g stroke="var(--pink)" stroke-width="6" stroke-linecap="round"><path d="M230 70 l-18 -10 M236 50 l-20 -2 M240 92 l-18 6"/></g>
+  </svg>
+</div>
+
+<section>
+  <span class="tag">Good for</span>
+  <div class="goodfor">
+    <span>Exhibition posters</span><span>Gallery walls</span><span>Flyers</span><span>Stickers</span><span>Merch</span>
+    <span>Zines</span><span>Tickets</span><span>Price tags</span><span>Studio doors</span><span>Tote bags</span>
+  </div>
+</section>
+
+<section class="cta">
+  <h2>Make your own QR code.</h2>
+  <a class="btn y" href="#">Let's go!</a>
+  <p class="hint">Free · No sign-up · With stats</p>
+</section>
+
+<footer>No tracking cookies. Scans are counted anonymously.</footer>
+</body>
+</html>

@@ -1,0 +1,154 @@
+/*
+ * qr public pages: bold outline street/pop-art style (landing, guest edit, not found).
+ * Loaded after app.css, only on public pages (body.street). The /app/ tool keeps app.css alone.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Source+Sans+3:wght@400;600;800&display=swap");
+
+body.street {
+  --ink: #111; --paper: #fffdf5;
+  --red: #ff2a2a; --yellow: #ffd60a; --blue: #1f6fff; --green: #00c46a; --pink: #ff4fb0; --orange: #ff8a00;
+  --bw: 5px;
+  background: var(--paper); color: var(--ink); font-size: 18px; overflow-x: hidden;
+}
+.street .marker, .street h1, .street h2, .street h3.mk { font-family: "Permanent Marker", cursive; font-weight: 400; letter-spacing: .01em; }
+
+/* ---------- header / footer ---------- */
+.street .st-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; max-width: 1120px; margin: 0 auto; }
+.street .st-logo { font-family: "Permanent Marker", cursive; font-size: 42px; text-decoration: none; line-height: 1; color: var(--ink); }
+.street .st-logo span { color: var(--red); }
+.street .st-nav { display: flex; gap: 14px; align-items: center; }
+.street .st-nav a.plain { font-weight: 800; text-transform: uppercase; font-size: 15px; text-decoration: none; color: var(--ink); }
+.street .st-foot { text-align: center; font-weight: 600; font-size: 14px; padding: 24px 24px 40px; color: var(--ink); }
+
+/* ---------- buttons (also restyles .button on public pages) ---------- */
+.street .btn, .street .button {
+  display: inline-flex; align-items: center; justify-content: center; gap: .35rem;
+  font: 800 16px/1 "Source Sans 3", sans-serif; text-transform: uppercase; letter-spacing: .04em; text-decoration: none;
+  border: var(--bw) solid var(--ink); border-radius: 999px; padding: 12px 20px; background: #fff; color: var(--ink);
+  box-shadow: 5px 5px 0 var(--ink); cursor: pointer; transition: transform .1s, box-shadow .1s; white-space: nowrap;
+}
+.street .btn:hover, .street .button:hover { transform: translate(-2px, -2px) rotate(-2deg); box-shadow: 7px 7px 0 var(--ink); background-color: inherit; border-radius: 999px; }
+.street .btn:active, .street .button:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--ink); }
+.street .btn.y, .street .button { background: var(--yellow); }
+.street .btn.r { background: var(--red); color: #fff; }
+.street .btn.b { background: var(--blue); color: #fff; }
+.street .button.ghost { background: #fff; }
+.street .button.danger { background: var(--red); color: #fff; }
+.street .button.small { font-size: 13px; padding: 8px 14px; border-width: 4px; box-shadow: 4px 4px 0 var(--ink); }
+.street .btn:hover.y, .street .button:hover { background: var(--yellow); }
+.street .button.ghost:hover { background: #fff; }
+.street .button.danger:hover, .street .btn.r:hover { background: var(--red); }
+
+/* ---------- landing hero ---------- */
+.street .st-wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+.street .st-hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 32px; align-items: center; padding: 24px 0 48px; }
+.street .st-hero h1 { font-size: clamp(48px, 7.4vw, 96px); line-height: .95; margin: 0 0 22px; }
+.street h1 .w { display: inline-block; padding: 0 .12em; border: var(--bw) solid var(--ink); border-radius: .18em; margin: .04em 0; }
+.street h1 .w.r { background: var(--red); color: #fff; transform: rotate(-3deg); }
+.street h1 .w.y { background: var(--yellow); transform: rotate(2deg); }
+.street .lead { font-size: 22px; line-height: 1.4; max-width: 30ch; margin: 0 0 26px; font-weight: 600; }
+.street .create { display: flex; gap: 12px; max-width: 560px; }
+.street .create input[type=url] { flex: 1; min-width: 0; font: 600 20px "Source Sans 3", sans-serif; padding: 14px 18px; border: var(--bw) solid var(--ink); border-radius: 18px; background: #fff; outline: none; box-shadow: 5px 5px 0 var(--ink); color: var(--ink); }
+.street .create input[type=url]:focus { background: #fffbe0; }
+.street .create .btn { font-size: 18px; padding: 16px 24px; }
+.street .hint { font-size: 15px; margin-top: 16px; font-weight: 600; }
+
+.street .stage { position: relative; aspect-ratio: 1 / 1; }
+.street .stage svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.street .wiggle { animation: st-wiggle 1.6s ease-in-out infinite; transform-origin: 50% 90%; transform-box: fill-box; }
+.street .wiggle.d2 { animation-delay: -.5s; } .street .wiggle.d3 { animation-delay: -1s; }
+.street .pulse { animation: st-pulse 1.2s steps(2) infinite; }
+@keyframes st-wiggle { 0%,100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg) translateY(-6px); } }
+@keyframes st-pulse { 50% { opacity: .15; } }
+@media (prefers-reduced-motion: reduce) { .street .wiggle, .street .pulse { animation: none; } }
+
+/* ---------- sections ---------- */
+.street .st-sec { padding: 48px 0; }
+.street .st-sec h2 { font-size: clamp(36px, 5vw, 60px); line-height: 1; margin: 0 0 28px; }
+.street .tag { display: inline-block; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; font-size: 14px; border: 3px solid var(--ink); border-radius: 999px; padding: 4px 12px; background: #fff; margin-bottom: 14px; }
+
+.street .st-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; padding-top: 14px; }
+.street .panel { border: var(--bw) solid var(--ink); border-radius: 26px; padding: 22px 22px 26px; box-shadow: 8px 8px 0 var(--ink); position: relative; }
+.street .st-steps .panel:nth-child(1) { background: var(--red); color: #fff; transform: rotate(-1.5deg); }
+.street .st-steps .panel:nth-child(2) { background: var(--yellow); transform: rotate(1deg); }
+.street .st-steps .panel:nth-child(3) { background: var(--blue); color: #fff; transform: rotate(-.5deg); }
+.street .panel .num { position: absolute; top: -26px; left: 18px; width: 56px; height: 56px; border: var(--bw) solid var(--ink); border-radius: 50%; background: #fff; color: var(--ink); display: grid; place-items: center; font: 400 30px "Permanent Marker", cursive; }
+.street .panel svg { width: 100%; height: 170px; display: block; margin: 8px 0 6px; overflow: visible; }
+.street .panel h3 { font: 400 30px/1.05 "Permanent Marker", cursive; margin: 0 0 6px; }
+.street .panel p { margin: 0; font-size: 17px; line-height: 1.4; font-weight: 600; }
+
+.street .chalk { background: #141414; color: #f5f5f0; border-radius: 34px; border: var(--bw) solid var(--ink); padding: 44px 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 34px; align-items: center; margin: 24px 0; }
+.street .chalk h2 { color: #fff; }
+.street .chalk .tag { background: var(--green); color: var(--ink); border-color: #fff; }
+.street .chalk ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; font-size: 19px; font-weight: 600; }
+.street .chalk li::before { content: "✕ "; color: var(--pink); font-family: "Permanent Marker", cursive; }
+.street .chalk li.yes::before { content: "✓ "; color: var(--green); }
+.street .chalk svg { width: 100%; height: auto; overflow: visible; }
+
+.street .goodfor { display: flex; flex-wrap: wrap; gap: 12px; }
+.street .goodfor span { font: 400 22px "Permanent Marker", cursive; border: 4px solid var(--ink); border-radius: 14px; padding: 6px 14px; background: #fff; box-shadow: 4px 4px 0 var(--ink); }
+.street .goodfor span:nth-child(5n+1) { background: var(--pink); transform: rotate(-2deg); }
+.street .goodfor span:nth-child(5n+2) { background: var(--green); transform: rotate(1.5deg); }
+.street .goodfor span:nth-child(5n+3) { background: var(--yellow); transform: rotate(-1deg); }
+.street .goodfor span:nth-child(5n+4) { background: var(--orange); transform: rotate(2deg); }
+
+.street .st-tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.street .st-tiers .panel { background: #fff; }
+.street .st-tiers .panel:nth-child(2) { background: var(--green); }
+.street .st-tiers h3 { font: 400 30px/1.1 "Permanent Marker", cursive; margin: 0 0 10px; }
+.street .st-tiers ul { margin: 0 0 18px; padding-left: 1.1rem; font-weight: 600; line-height: 1.6; }
+
+.street .st-cta { text-align: center; padding: 56px 0 40px; }
+.street .st-cta h2 { font-size: clamp(42px, 6vw, 76px); margin: 0 0 24px; }
+.street .st-cta .btn { font-size: 20px; padding: 18px 28px; }
+
+/* ---------- shared app components on public pages ---------- */
+.street .public-main { max-width: 1120px; padding: 8px 24px 40px; }
+.street .public-main.narrow { max-width: 820px; }
+.street .notice { border: 4px solid var(--ink); border-radius: 16px; font-weight: 600; box-shadow: 4px 4px 0 var(--ink); }
+.street .notice.info { background: var(--yellow); color: var(--ink); }
+.street .notice.ok { background: var(--green); color: var(--ink); }
+.street .notice.err { background: var(--red); color: #fff; }
+.street .entity-type { font-weight: 800; letter-spacing: .08em; font-size: 14px; color: var(--ink); border: 3px solid var(--ink); border-radius: 999px; padding: 3px 12px; background: #fff; display: inline-block; }
+.street .entity-title { font-family: "Permanent Marker", cursive; font-weight: 400; font-size: clamp(36px, 5vw, 56px); line-height: 1.05; margin: 14px 0 10px; }
+.street .entity-description { color: var(--ink); font-weight: 600; font-size: 19px; }
+.street .badge { border: 2px solid var(--ink); font-size: 12px; vertical-align: middle; }
+.street .badge.on { background: var(--green); color: var(--ink); }
+.street .badge.off { background: var(--red); color: #fff; }
+.street .url { background: var(--yellow); border: 2px solid var(--ink); }
+.street .block { border-top: 4px solid var(--ink); }
+.street .block > h3 { font-family: "Permanent Marker", cursive; font-weight: 400; font-size: 32px; }
+.street .block > .hint { color: var(--ink); font-weight: 600; }
+.street .qr-big { border: var(--bw) solid var(--ink); border-radius: 22px; box-shadow: 6px 6px 0 var(--ink); }
+.street .copy-label { color: var(--ink); font-weight: 800; }
+.street .copy-field input, .street .field input, .street .field textarea, .street .field select {
+  border: 4px solid var(--ink); border-radius: 14px; font-weight: 600; background: #fff; color: var(--ink);
+}
+.street .copy-field input { background: var(--yellow); font-family: var(--font-mono); }
+.street .copy-field input.secret { background: var(--pink); color: var(--ink); }
+.street .field label { font-weight: 800; text-transform: uppercase; letter-spacing: .04em; font-size: 13px; }
+.street .field-hint { color: var(--ink); font-weight: 600; }
+.street .tile { background: #fff; border: 4px solid var(--ink); border-radius: 18px; box-shadow: 4px 4px 0 var(--ink); }
+.street .tile .label { color: var(--ink); font-weight: 800; }
+.street .tile .value { font-family: "Permanent Marker", cursive; font-weight: 400; }
+.street .chart { background: #141414; border: 4px solid var(--ink); border-radius: 18px; }
+.street .chart .bar { background: var(--green); }
+.street .chart .bar.zero { background: #444; }
+.street .chart .axis { color: #ddd; }
+.street .row { background: #fff; border: 4px solid var(--ink); border-radius: 18px; box-shadow: 4px 4px 0 var(--ink); }
+.street a.row:hover { background: var(--yellow); }
+.street .row .stat strong { font-family: "Permanent Marker", cursive; font-weight: 400; }
+.street .hero h1 { font-family: "Permanent Marker", cursive; font-weight: 400; letter-spacing: .01em; }
+
+/* ---------- mobile ---------- */
+@media (max-width: 820px) {
+  .street .st-hero, .street .chalk, .street .st-tiers { grid-template-columns: 1fr; }
+  .street .stage { max-width: 420px; margin: 0 auto; width: 100%; }
+  .street .st-steps { grid-template-columns: 1fr; gap: 40px; }
+  .street .create { flex-direction: column; }
+  .street .chalk { padding: 32px 22px; }
+  .street .st-header { padding: 14px 16px; }
+  .street .st-wrap, .street .public-main { padding-left: 16px; padding-right: 16px; }
+  .street .st-nav a.plain { display: none; }
+  .street .st-logo { font-size: 36px; }
+}
