@@ -32,6 +32,7 @@ const QR_LOGOS = ['none', 'badge', 'upload'];
 const QR_EYES = ['square', 'rounded', 'round']; // the three big corner pieces
 const QR_LOGO_DIR = __DIR__ . '/logos';
 const QR_BADGE = __DIR__ . '/../app/assets/qr-badge.png';
+const QR_LOGO_PLACEHOLDER = __DIR__ . '/../app/assets/qr-logo-placeholder.png'; // preview only, before an upload
 
 /** Normalizes a stored style (JSON string or array) to a full, valid style array. */
 function qr_style(string|array|null $s): array

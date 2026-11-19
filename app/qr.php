@@ -55,7 +55,7 @@ if (isset($_GET['preview'])) {
     header('Cache-Control: private, max-age=3600');
 }
 $logo = qr_logo_file($style, (int) $link['id']);
-if ($style['logo'] === 'upload' && !$logo) $logo = QR_BADGE; // preview before the first upload
+if ($style['logo'] === 'upload' && !$logo) $logo = QR_LOGO_PLACEHOLDER; // preview before the first upload
 
 if ($fmt === 'png') {
     header('Content-Type: image/png');

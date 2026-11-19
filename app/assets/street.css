@@ -266,3 +266,7 @@ body.street {
 
 /* no divider lines between sections: the boxes already separate things, spacing does the rest */
 .street section.block, .street .block { border-top: 0; padding-top: 0; margin-top: 2.5rem; }
+
+.street .dropzone.nudge { animation: dz-nudge .5s ease 3; background: #fff6d6; }
+@keyframes dz-nudge { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(3px, 3px); } }
+@media (prefers-reduced-motion: reduce) { .street .dropzone.nudge { animation: none; } }

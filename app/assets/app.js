@@ -102,6 +102,16 @@ document.querySelectorAll('.style-form').forEach((form) => {
     fileInput.addEventListener('change', () => pick(fileInput.files[0]));
   }
   form.addEventListener('change', (e) => { if (e.target !== fileInput) update(); });
+  // "My own" without a logo yet: open the file picker and point at the dropzone
+  if (uploadRadio && zone) {
+    uploadRadio.addEventListener('click', () => {
+      if (zone.classList.contains('has-file')) return;
+      zone.classList.add('nudge');
+      setTimeout(() => zone.classList.remove('nudge'), 1600);
+      zone.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      fileInput.click();
+    });
+  }
   // color pickers: update the preview while dragging, but not on every pixel
   let t; form.querySelectorAll('input[type=color]').forEach((c) => c.addEventListener('input', () => { clearTimeout(t); t = setTimeout(update, 250); }));
 });

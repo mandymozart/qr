@@ -419,3 +419,6 @@ body.public .topbar { max-width: 52rem; margin: 0 auto; }
 .picker input[type=color]::-webkit-color-swatch { border: 3px solid var(--ink, #111); border-radius: 50%; }
 .picker input[type=color]::-moz-color-swatch { border: 3px solid var(--ink, #111); border-radius: 50%; }
 .contrast-hint { flex-basis: 100%; color: var(--danger); font-weight: 700; }
+
+/* the "Style" jump button is only useful when the editor is not already next to the QR */
+@media (min-width: 1251px) { .code-top .button.jump-style { display: none; } }
