@@ -319,6 +319,10 @@ body.public .topbar { max-width: 52rem; margin: 0 auto; }
 .usecases { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
 .usecases span { background: var(--lavender-400); color: #2d0d41; border-radius: 2rem; padding: 0.35rem 0.9rem; font-size: 0.9rem; }
 
+/* story slides on the landing page (same images as the Instagram stories) */
+.story-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-top: 0.75rem; }
+.story-strip img { width: 100%; height: auto; display: block; border-radius: 1rem; border: 1px solid var(--line); box-shadow: 0 6px 20px rgba(37, 35, 33, 0.08); }
+
 /* ---------- Mobile ---------- */
 .mobile-nav { display: none; }
 @media (max-width: 768px) {
@@ -331,6 +335,8 @@ body.public .topbar { max-width: 52rem; margin: 0 auto; }
   .quick-create { flex-direction: column; }
   .quick-create .button { justify-content: center; }
   .usps { grid-template-columns: 1fr; }
+  .story-strip { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0.75rem -1rem 0; padding: 0 1rem 0.75rem; }
+  .story-strip img { flex: 0 0 72%; scroll-snap-align: center; }
   .qr-panel .qr-big { max-width: 14rem; }
   .row { flex-wrap: wrap; }
   .row .spark { display: none; }

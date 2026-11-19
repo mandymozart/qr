@@ -100,7 +100,7 @@ $mine = current_user() ? [] : guest_links();
 public_head('qr · QR codes you can change later');
 ?>
 <section class="hero">
-  <h1>QR codes you can change later.</h1>
+  <h1>QR codes you can <span class="hl">change later.</span></h1>
   <p class="entity-description">Paste a link, get a QR code. Change where it leads any time, and see how often it's scanned. Free, no sign-up.</p>
 
   <?php if ($error): ?><div class="notice err"><?= e($error) ?></div><?php endif; ?>
@@ -134,31 +134,15 @@ public_head('qr · QR codes you can change later');
 
 <section class="block">
   <span class="entity-type">How it works</span>
-  <h2 class="section-title">A QR code in 10 seconds.</h2>
-  <div class="steps">
-    <div class="step"><div class="n">1</div><div><b>Paste a link</b><span>Website, Instagram, ticket shop, menu, anything with an address.</span></div></div>
-    <div class="step"><div class="n">2</div><div><b>Get your QR code</b><span>Download it as PNG or SVG, sharp at any size, ready to print.</span></div></div>
-    <div class="step"><div class="n">3</div><div><b>Change the target any time</b><span>The printed code stays the same. Only where it leads changes.</span></div></div>
-  </div>
-</section>
-
-<section class="block">
-  <span class="entity-type">Why qr</span>
-  <h2 class="section-title">Print once. <span class="hl">Stay flexible.</span></h2>
-  <div class="usps">
-    <div class="usp"><div class="ico">↻</div><b>Never reprint</b><p>Event moved, page renamed, offer over? Point the code somewhere else. Posters and flyers keep working.</p></div>
-    <div class="usp"><div class="ico">▁▃▆</div><b>See what works</b><p>Scans per day, unique visitors, city, device, language and time of day.</p></div>
-    <div class="usp"><div class="ico">◎</div><b>No creepy tracking</b><p>No tracking cookies, no stored IP addresses. Your visitors stay anonymous.</p></div>
-    <div class="usp"><div class="ico">⌁</div><b>Pause any time</b><p>Switch a code off and scanners see a friendly note instead of an old page.</p></div>
-    <div class="usp"><div class="ico">▦</div><b>Campaigns &amp; bulk</b><p>Make 50 codes for 50 posters in one go and compare which spot gets scanned most.</p></div>
-    <div class="usp"><div class="ico">✓</div><b>Free, no sign-up</b><p>Start right away. Create an account when you want to keep more codes.</p></div>
-  </div>
-</section>
-
-<section class="block">
-  <span class="entity-type">Good for</span>
-  <div class="usecases">
-    <span>Posters &amp; flyers</span><span>Event tickets</span><span>Menus</span><span>Stickers</span><span>Merch</span><span>Business cards</span><span>Shop windows</span><span>Packaging</span>
+  <div class="story-strip" aria-label="How it works, in 4 slides">
+    <?php foreach ([
+        1 => 'QR codes you can change later. Printed means final? Not anymore.',
+        2 => 'A QR code in 10 seconds: 1. paste a link, 2. get your QR code as PNG or SVG, 3. change the target any time, the printed code stays the same. No sign-up, free.',
+        3 => 'See who scans, no tracking cookies: scans, visitors, last 30 days, top city, mobile share. No IP addresses stored.',
+        4 => 'Make your own QR code at qr.viennastruggle.at. Free, no sign-up, with stats.',
+    ] as $n => $alt): ?>
+      <img src="/app/assets/story/story-<?= $n ?>.webp" width="540" height="960" alt="<?= e($alt) ?>" decoding="async">
+    <?php endforeach; ?>
   </div>
 </section>
 
