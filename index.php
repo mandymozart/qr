@@ -230,6 +230,7 @@ public_head(t('qr · QR codes you can change later'), 'wide');
       <ul>
         <li><?= te('Unlimited codes, kept safe in your account') ?></li>
         <li><?= te('Campaigns & bulk codes for print runs') ?></li>
+        <li><?= te('Mini-apps: flyer pages, sign-ups, polls before the target') ?></li>
         <li><?= te('Stats by place, city, time, device & language') ?></li>
         <li><?= te('Codes from this browser move in automatically') ?></li>
       </ul>

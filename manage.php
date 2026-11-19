@@ -141,7 +141,7 @@ public_head($link['title'] . ' · qr');
 
 <section class="block cta">
   <h3><?= te('Want more?') ?></h3>
-  <p class="hint"><?= te('With a free account you keep all your codes safely, make campaigns and bulk codes, and see where, when and on what devices people scan.') ?> <?= te('Codes from this browser move in automatically.') ?></p>
+  <p class="hint"><?= te('With a free account you keep all your codes safely, make campaigns and bulk codes, and see where, when and on what devices people scan.') ?> <?= te('You can also show a flyer page, a sign-up form or a poll before the target.') ?> <?= te('Codes from this browser move in automatically.') ?></p>
   <a class="button" href="/app/register.php"><?= te('Create a free account') ?></a>
 </section>
 <?php public_foot();

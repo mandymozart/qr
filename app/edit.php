@@ -46,6 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = (int) db()->lastInsertId();
             flash(t('Code created.'));
         }
+        // new code with "show a mini-app first": continue in the mini-app editor with the chosen preset
+        $presetKey = post('after') === 'mini' ? post('preset') : '';
+        if ($presetKey !== '' && isset(step_presets()[$presetKey]) && !step_for_link($id)) redirect('/app/step.php?id=' . $id . '&preset=' . rawurlencode($presetKey));
         // no target and no mini-app yet: go set up the hosted page right away
         if ($data['target_url'] === '' && !step_for_link($id)) redirect('/app/step.php?id=' . $id . '&preset=flyer');
         redirect('/app/code.php?id=' . $id);
@@ -83,6 +86,21 @@ page_head($link ? t('Edit code') : t('New code'), 'codes');
     <div class="field-hint"><?= te('Where the code is printed or hung. Shows up in the stats.') ?></div></div>
   <div class="field check"><label><input type="checkbox" name="utm" value="1"<?= $data['utm'] ? ' checked' : '' ?>> <?= t('Add UTM tags to the target ({utm}), so your website analytics see where visitors came from', ['utm' => '<code>utm_source=qr&amp;utm_campaign=…&amp;utm_content=' . e($data['code'] ?: 'code') . '</code>']) ?></label></div>
   <div class="field check"><label><input type="checkbox" name="active" value="1"<?= $data['active'] ? ' checked' : '' ?>> <?= te('Active (paused codes show a "not found" page)') ?></label></div>
+  <?php if (!$link): $after = post('after') ?: 'direct'; ?>
+  <fieldset class="after-scan">
+    <legend><?= te('After scanning') ?></legend>
+    <div class="choices">
+      <label class="choice"><input type="radio" name="after" value="direct"<?= $after !== 'mini' ? ' checked' : '' ?>><span><?= te('Go straight to the target') ?></span></label>
+      <label class="choice"><input type="radio" name="after" value="mini"<?= $after === 'mini' ? ' checked' : '' ?>><span>🧩 <?= te('Show a mini-app first') ?></span></label>
+    </div>
+    <div class="field after-preset"<?= $after === 'mini' ? '' : ' hidden' ?>>
+      <select name="preset" aria-label="<?= te('Mini-app') ?>">
+        <?php foreach (step_presets() as $k => $pr): ?><option value="<?= $k ?>"<?= post('preset') === $k ? ' selected' : '' ?>><?= e($pr['label']) ?></option><?php endforeach; ?>
+      </select>
+      <div class="field-hint"><?= te('A flyer page, sign-up form, poll or ticket button people see before the target. You set it up right after saving.') ?></div>
+    </div>
+  </fieldset>
+  <?php endif; ?>
   <div class="form-actions" style="justify-content:flex-start">
     <button class="button"><?= $link ? te('Save') : te('Create code') ?></button>
     <a class="button ghost" href="<?= $link ? '/app/code.php?id=' . $link['id'] : '/app/' ?>"><?= te('Cancel') ?></a>

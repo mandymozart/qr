@@ -159,4 +159,11 @@ return [
     'Form' => 'Formular',
     'Info + button' => 'Info + Button',
     '{email} is now Pro (no code limit).' => '{email} ist jetzt Pro (kein Code-Limit).',
+    'After scanning' => 'Nach dem Scannen',
+    'Go straight to the target' => 'Direkt zum Ziel',
+    'Show a mini-app first' => 'Zuerst eine Mini-App zeigen',
+    'A flyer page, sign-up form, poll or ticket button people see before the target. You set it up right after saving.' => 'Eine Flyer-Seite, ein Anmeldeformular, eine Abstimmung oder ein Ticket-Button vor dem Ziel. Du richtest sie gleich nach dem Speichern ein.',
+    'Each code can also get a mini-app afterwards (flyer page, sign-up, poll, tickets): open the code and add it there.' => 'Jeder Code kann danach auch eine Mini-App bekommen (Flyer-Seite, Anmeldung, Abstimmung, Tickets): Code öffnen und dort hinzufügen.',
+    'Mini-apps: flyer pages, sign-ups, polls before the target' => 'Mini-Apps: Flyer-Seiten, Anmeldungen, Abstimmungen vor dem Ziel',
+    'You can also show a flyer page, a sign-up form or a poll before the target.' => 'Außerdem kannst du vor dem Ziel eine Flyer-Seite, ein Anmeldeformular oder eine Abstimmung zeigen.',
 ];

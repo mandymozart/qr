@@ -95,7 +95,7 @@ function public_head(string $title, string $mainClass = 'narrow'): void
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= e($title) ?></title>
 <meta name="description" content="<?= te('Free QR codes you can change later, with scan stats. No tracking cookies.') ?>">
-<link rel="stylesheet" href="/app/assets/app.css?v=16">
+<link rel="stylesheet" href="/app/assets/app.css?v=17">
 <link rel="stylesheet" href="/app/assets/street.css?v=17">
 </head>
 <body class="public street">
@@ -121,7 +121,7 @@ function public_foot(): void
     ?>
 </main>
 <footer class="st-foot"><?= te('No tracking cookies. Scans are counted anonymously.') ?><br><small><?= t('Emoji graphics: {link} (CC-BY 4.0)', ['link' => '<a href="https://github.com/jdecked/twemoji" rel="noopener">Twemoji</a>']) ?></small></footer>
-<script src="/app/assets/app.js?v=10"></script>
+<script src="/app/assets/app.js?v=11"></script>
 </body>
 </html>
 <?php

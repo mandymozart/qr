@@ -200,3 +200,9 @@ document.querySelectorAll('.step-drop').forEach((zone) => {
   rows.querySelectorAll('.field-row').forEach(syncOpts);
   showType();
 })();
+
+// New code: show the mini-app preset picker only when "Show a mini-app first" is chosen
+document.querySelectorAll('.after-scan').forEach((box) => {
+  const pick = box.querySelector('.after-preset');
+  box.addEventListener('change', () => { pick.hidden = (box.querySelector('input[name=after]:checked') || {}).value !== 'mini'; });
+});

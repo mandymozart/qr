@@ -472,3 +472,7 @@ body.public .topbar { max-width: 52rem; margin: 0 auto; }
 .code-mini p { margin: .25rem 0 .75rem; font-size: .9rem; }
 @media (max-width: 1000px) { .step-editor-grid { grid-template-columns: 1fr; } }
 @media (max-width: 600px) { .field-row { grid-template-columns: 1fr 1fr; } .field-row input[name$="[label]"] { grid-column: 1 / -1; } .link-row { grid-template-columns: 1fr; } .poll-row { grid-template-columns: 1fr 3rem; } .poll-row .poll-bar { grid-column: 1 / -1; grid-row: 2; } }
+
+.after-scan { border: 0; padding: 0; margin: 1rem 0 0; }
+.after-scan legend { font-size: .8rem; font-weight: 700; margin-bottom: .45rem; padding: 0; text-transform: uppercase; letter-spacing: .04em; }
+.after-scan .after-preset { margin: .75rem 0 0; max-width: 22rem; }

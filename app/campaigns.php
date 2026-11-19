@@ -82,6 +82,7 @@ page_head(t('Campaigns'), 'campaigns');
 <section class="block" id="bulk" style="margin-top:2rem;max-width:40rem">
   <h3><?= te('New campaign / bulk codes') ?></h3>
   <p class="hint"><?= t('Make a campaign and optionally fill it with codes right away. Use {num} for the running number and {short} for the short code, e.g. {example}.', ['num' => '<code>{n}</code>', 'short' => '<code>{code}</code>', 'example' => '<code>https://viennastruggle.at/?utm_campaign=posters&amp;utm_content={code}</code>']) ?></p>
+  <p class="hint">🧩 <?= te('Each code can also get a mini-app afterwards (flyer page, sign-up, poll, tickets): open the code and add it there.') ?></p>
   <form method="post">
     <?= csrf_field() ?>
     <div class="form-grid">
