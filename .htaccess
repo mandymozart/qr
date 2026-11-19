@@ -1,4 +1,4 @@
-Options -Indexes
+Options -Indexes -MultiViews
 DirectoryIndex index.php
 
 # Internal folders and dotfiles are not public (keep .well-known for SSL certs)
