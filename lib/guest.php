@@ -119,7 +119,6 @@ function public_foot(): void
 </main>
 <footer class="public-foot">
   <span>No tracking cookies. Scans are counted anonymously.</span>
-  <a href="https://viennastruggle.at" rel="noopener">viennastruggle.at</a>
 </footer>
 <script src="/app/assets/app.js?v=3"></script>
 </body>

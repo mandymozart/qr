@@ -2,7 +2,7 @@ Options -Indexes
 DirectoryIndex index.php
 
 # Internal folders and dotfiles are not public (keep .well-known for SSL certs)
-RedirectMatch 404 ^/(lib|vendor|drafts)(/|$)
+RedirectMatch 404 ^/(lib|vendor|drafts|social)(/|$)
 RedirectMatch 404 ^/\.(?!well-known)
 RedirectMatch 404 ^/(composer\.(json|lock)|README\.md)$
 
