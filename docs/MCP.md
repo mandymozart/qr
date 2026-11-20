@@ -27,13 +27,19 @@ mcp-publisher publish           # run in the repo root, uses server.json
 
 If `publish` complains about the schema, run `mcp-publisher init` once and copy the `remotes` block from our `server.json` into the generated file. Bump `version` for every later change.
 
-## 2. Directories (submit by hand, ~10 min each)
+## 2. Directories (status 2026-11-20)
 
-- **Smithery** (smithery.ai): "Add server" → remote URL `https://qr.viennastruggle.at/mcp`.
-- **Glama** (glama.ai/mcp/servers): indexes GitHub repos with MCP servers, submit the repo.
-- **mcp.so**: "Submit" → name, URL, short description.
-- **PulseMCP** (pulsemcp.com): "Submit server".
-- **awesome-mcp-servers** on GitHub: a pull request adding one line under "Other tools / Utilities".
+- **Official MCP Registry**: published 2026-11-20 as `io.github.mandymozart/qr` 1.0.0.
+- **Glama** (glama.ai/mcp/connectors): "Add Server" needs a Glama login (sign in with GitHub). Connectors use the registry names, so ours would be `glama.ai/mcp/connectors/io.github.mandymozart/qr`; it may also get imported from the registry on its own.
+- **awesome-remote-mcp-servers** (github.com/punkpeye/awesome-remote-mcp-servers): the list for hosted servers like ours (the big awesome-mcp-servers list only takes installable ones). Needs the Glama connector badge first, and the PR account must star the repo. Entry, under "Art & Design" before "QR Branding":
+  ```markdown
+  - [qr](https://qr.viennastruggle.at/en/developers) `https://qr.viennastruggle.at/mcp`
+    [![qr MCP connector](https://glama.ai/mcp/connectors/io.github.mandymozart/qr/badges/score.svg)](https://glama.ai/mcp/connectors/io.github.mandymozart/qr)
+    🔓 - Dynamic QR codes that never expire: style them, change the target later, read scan stats; no key needed.
+  ```
+- **PulseMCP** (pulsemcp.com/submit): form by hand (blocks automated access).
+- **mcp.so**: the submit page only offers a paid listing ($39 one-time). Skipped for now.
+- **Smithery**: stopped taking submissions on 2026-10-31 (now a curated directory run by Arcade). Nothing to do.
 
 Suggested one-liner:
 > **qr**: create free dynamic QR codes that never expire, change their target later, privacy-friendly scan stats. Remote MCP, no key needed. https://qr.viennastruggle.at/mcp
