@@ -1,26 +1,26 @@
 {
-  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
-  "name": "io.github.mandymozart/qr",
-  "title": "qr: QR codes that never expire",
-  "description": "Create free dynamic QR codes that never expire, change their target later, get privacy-friendly scan stats. Styles with dots, colors and emoji. No key needed.",
-  "version": "1.0.0",
-  "websiteUrl": "https://qr.viennastruggle.at/en/developers",
-  "repository": {
-    "url": "https://github.com/mandymozart/qr",
-    "source": "github"
-  },
-  "remotes": [
-    {
-      "type": "streamable-http",
-      "url": "https://qr.viennastruggle.at/mcp",
-      "headers": [
+    "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+    "name": "io.github.mandymozart/qr",
+    "title": "qr: QR codes that never expire",
+    "description": "Free dynamic QR codes that never expire: retarget later, styles, scan stats. No API key needed.",
+    "version": "1.0.0",
+    "websiteUrl": "https://qr.viennastruggle.at/en/developers",
+    "repository": {
+        "url": "https://github.com/mandymozart/qr",
+        "source": "github"
+    },
+    "remotes": [
         {
-          "name": "Authorization",
-          "description": "Optional: 'Bearer qr_…' API key for higher limits and managing your codes (free, create one in your account).",
-          "isRequired": false,
-          "isSecret": true
+            "type": "streamable-http",
+            "url": "https://qr.viennastruggle.at/mcp",
+            "headers": [
+                {
+                    "name": "Authorization",
+                    "description": "Optional: 'Bearer qr_…' API key for higher limits and managing your codes (free, create one in your account).",
+                    "isRequired": false,
+                    "isSecret": true
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }
